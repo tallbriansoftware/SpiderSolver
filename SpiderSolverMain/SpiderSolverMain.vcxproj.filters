@@ -1,0 +1,58 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Main">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Main\Utils">
+      <UniqueIdentifier>{658ac5df-e8cd-4596-aaff-038c7e023392}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="SpiderSolverMain.cpp">
+      <Filter>Main</Filter>
+    </ClCompile>
+    <ClCompile Include="CommandLineArguments.cpp">
+      <Filter>Main</Filter>
+    </ClCompile>
+    <ClCompile Include="Utils\ChronoTimer.cpp">
+      <Filter>Main\Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="Utils\CsvTable.cpp">
+      <Filter>Main\Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="Utils\DateTime.cpp">
+      <Filter>Main\Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="MyCsv.cpp">
+      <Filter>Main</Filter>
+    </ClCompile>
+    <ClCompile Include="RunBoard.cpp">
+      <Filter>Main</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="CommandLineArguments.h">
+      <Filter>Main</Filter>
+    </ClInclude>
+    <ClInclude Include="SeriesTotal.h">
+      <Filter>Main</Filter>
+    </ClInclude>
+    <ClInclude Include="Utils\ChronoTimer.h">
+      <Filter>Main\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="Utils\CsvTable.h">
+      <Filter>Main\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="Utils\DateTime.h">
+      <Filter>Main\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="MyCsv.h">
+      <Filter>Main</Filter>
+    </ClInclude>
+    <ClInclude Include="RunBoard.h">
+      <Filter>Main</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>

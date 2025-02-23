@@ -1,0 +1,206 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Public">
+      <UniqueIdentifier>{0e61fe31-e88d-4512-8e17-e333dca4896e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Public\Model">
+      <UniqueIdentifier>{856b38ea-6f48-425c-bfa1-d1c65c0fbdf8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Main">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Main\Model">
+      <UniqueIdentifier>{e732c644-66f0-4290-8fe9-98e65f241163}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Public\Core">
+      <UniqueIdentifier>{53bc1d3f-ffaf-4c9e-bc68-842e51ae6589}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Main\Core">
+      <UniqueIdentifier>{2bde74ad-10a4-4b9b-b24d-555873a1d71a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Main\Strategy">
+      <UniqueIdentifier>{74d5d663-3599-4cbc-824c-051e5f14218d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Public\Utils">
+      <UniqueIdentifier>{4cb393cd-2aa2-4290-8b4a-632b71f5dec4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Main\Utils">
+      <UniqueIdentifier>{cf46da95-6014-444d-b827-bd13bb78a27a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Public\Logic">
+      <UniqueIdentifier>{2e855732-4650-4787-a151-57885dd292da}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Main\Logic">
+      <UniqueIdentifier>{6be05b43-c0a6-43d2-bf01-8740f8b18158}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Public\Strategy">
+      <UniqueIdentifier>{e7919f6b-0f4f-4ba7-a95e-f40767be6596}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="main\model\Card.cpp">
+      <Filter>Main\Model</Filter>
+    </ClCompile>
+    <ClCompile Include="main\core\SpiderException.cpp">
+      <Filter>Main\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="main\core\MoveSingle.cpp">
+      <Filter>Main\Model</Filter>
+    </ClCompile>
+    <ClCompile Include="main\model\SpiderStack.cpp">
+      <Filter>Main\Model</Filter>
+    </ClCompile>
+    <ClCompile Include="main\model\SpiderString.cpp">
+      <Filter>Main\Model</Filter>
+    </ClCompile>
+    <ClCompile Include="main\model\MoveReversible.cpp">
+      <Filter>Main\Model</Filter>
+    </ClCompile>
+    <ClCompile Include="main\model\SpiderTableau.cpp">
+      <Filter>Main\Model</Filter>
+    </ClCompile>
+    <ClCompile Include="main\model\MoveCombo.cpp">
+      <Filter>Main\Model</Filter>
+    </ClCompile>
+    <ClCompile Include="public\spidersolvercore\model\Ancestry.cpp">
+      <Filter>Main\Model</Filter>
+    </ClCompile>
+    <ClCompile Include="main\strategy\ScoredMove.cpp">
+      <Filter>Main\Strategy</Filter>
+    </ClCompile>
+    <ClCompile Include="main\strategy\BoardScorer.cpp">
+      <Filter>Main\Strategy</Filter>
+    </ClCompile>
+    <ClCompile Include="main\model\StackStats.cpp">
+      <Filter>Main\Model</Filter>
+    </ClCompile>
+    <ClCompile Include="main\model\TableauStats.cpp">
+      <Filter>Main\Model</Filter>
+    </ClCompile>
+    <ClCompile Include="main\model\SpiderTableauFactory.cpp">
+      <Filter>Main\Model</Filter>
+    </ClCompile>
+    <ClCompile Include="main\model\SpiderDeckFactory.cpp">
+      <Filter>Main\Model</Filter>
+    </ClCompile>
+    <ClCompile Include="main\strategy\StrategyUtil.cpp">
+      <Filter>Main\Strategy</Filter>
+    </ClCompile>
+    <ClCompile Include="public\spidersolvercore\utils\SpiderPrint.cpp">
+      <Filter>Main\Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="public\spidersolvercore\strategy\Strategy.cpp">
+      <Filter>Main\Strategy</Filter>
+    </ClCompile>
+    <ClCompile Include="public\spidersolvercore\strategy\BoardStats.cpp">
+      <Filter>Main\Strategy</Filter>
+    </ClCompile>
+    <ClCompile Include="main\strategy\SearchContext.cpp">
+      <Filter>Main\Strategy</Filter>
+    </ClCompile>
+    <ClCompile Include="main\logic\IsMoveLegal.cpp">
+      <Filter>Main\Logic</Filter>
+    </ClCompile>
+    <ClCompile Include="main\logic\SingleMoveFinder.cpp">
+      <Filter>Main\Logic</Filter>
+    </ClCompile>
+    <ClCompile Include="main\logic\SingleMoveFindingFuncs.cpp">
+      <Filter>Main\Logic</Filter>
+    </ClCompile>
+    <ClCompile Include="main\logic\HolePreservingMoveFinder.cpp">
+      <Filter>Main\Logic</Filter>
+    </ClCompile>
+    <ClCompile Include="main\logic\FindStacks.cpp">
+      <Filter>Main\Logic</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="simple.h" />
+    <ClInclude Include="public\spidersolvercore\model\Card.h">
+      <Filter>Public\Model</Filter>
+    </ClInclude>
+    <ClInclude Include="public\spidersolvercore\model\CardEnums.h">
+      <Filter>Public\Model</Filter>
+    </ClInclude>
+    <ClInclude Include="public\spidersolvercore\core\SpiderException.h">
+      <Filter>Public\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="public\spidersolvercore\model\MoveSingle.h">
+      <Filter>Public\Model</Filter>
+    </ClInclude>
+    <ClInclude Include="public\spidersolvercore\model\SpiderString.h">
+      <Filter>Public\Model</Filter>
+    </ClInclude>
+    <ClInclude Include="public\spidersolvercore\model\SpiderStack.h">
+      <Filter>Public\Model</Filter>
+    </ClInclude>
+    <ClInclude Include="public\spidersolvercore\model\DoTurnCard.h">
+      <Filter>Public\Model</Filter>
+    </ClInclude>
+    <ClInclude Include="public\spidersolvercore\model\MoveReversible.h">
+      <Filter>Public\Model</Filter>
+    </ClInclude>
+    <ClInclude Include="public\spidersolvercore\model\SpiderTableau.h">
+      <Filter>Public\Model</Filter>
+    </ClInclude>
+    <ClInclude Include="public\spidersolvercore\model\MoveCombo.h">
+      <Filter>Public\Model</Filter>
+    </ClInclude>
+    <ClInclude Include="public\spidersolvercore\strategy\Strategy.h">
+      <Filter>Public\Strategy</Filter>
+    </ClInclude>
+    <ClInclude Include="public\spidersolvercore\strategy\ScoredMove.h">
+      <Filter>Public\Strategy</Filter>
+    </ClInclude>
+    <ClInclude Include="public\spidersolvercore\model\Ancestry.h">
+      <Filter>Public\Model</Filter>
+    </ClInclude>
+    <ClInclude Include="public\spidersolvercore\strategy\BoardScorer.h">
+      <Filter>Public\Strategy</Filter>
+    </ClInclude>
+    <ClInclude Include="public\spidersolvercore\strategy\BoardStats.h">
+      <Filter>Public\Strategy</Filter>
+    </ClInclude>
+    <ClInclude Include="public\spidersolvercore\model\TableauStats.h">
+      <Filter>Public\Model</Filter>
+    </ClInclude>
+    <ClInclude Include="public\spidersolvercore\model\StackStats.h">
+      <Filter>Public\Model</Filter>
+    </ClInclude>
+    <ClInclude Include="public\spidersolvercore\model\SpiderTableauFactory.h">
+      <Filter>Public\Model</Filter>
+    </ClInclude>
+    <ClInclude Include="public\spidersolvercore\model\SpiderDeckFactory.h">
+      <Filter>Public\Model</Filter>
+    </ClInclude>
+    <ClInclude Include="public\spidersolvercore\model\SpiderConstants.h">
+      <Filter>Public\Model</Filter>
+    </ClInclude>
+    <ClInclude Include="public\spidersolvercore\strategy\StrategyUtil.h">
+      <Filter>Public\Strategy</Filter>
+    </ClInclude>
+    <ClInclude Include="public\spidersolvercore\utils\SpiderPrint.h">
+      <Filter>Public\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="public\spidersolvercore\strategy\SearchContext.h">
+      <Filter>Public\Strategy</Filter>
+    </ClInclude>
+    <ClInclude Include="public\spidersolvercore\logic\IsMoveLegal.h">
+      <Filter>Public\Logic</Filter>
+    </ClInclude>
+    <ClInclude Include="public\spidersolvercore\logic\SingleMoveFinder.h">
+      <Filter>Public\Logic</Filter>
+    </ClInclude>
+    <ClInclude Include="public\spidersolvercore\logic\SingleMoveFindingFuncs.h">
+      <Filter>Public\Logic</Filter>
+    </ClInclude>
+    <ClInclude Include="public\spidersolvercore\logic\HolePreservingMoveFinder.h">
+      <Filter>Public\Logic</Filter>
+    </ClInclude>
+    <ClInclude Include="public\spidersolvercore\logic\FindStacks.h">
+      <Filter>Public\Logic</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>
