@@ -1,0 +1,33 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="Helpers\DeckHelper.cpp">
+      <Filter>Helpers</Filter>
+    </ClCompile>
+    <ClCompile Include="Logic\HolePreservingMoveFinderTests.cpp">
+      <Filter>LogicTest</Filter>
+    </ClCompile>
+    <ClCompile Include="Strategy\BoardScoringTests.cpp">
+      <Filter>StrategyTest</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Helpers\DeckHelper.h">
+      <Filter>Helpers</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Helpers">
+      <UniqueIdentifier>{3730537e-6d20-4d7e-b753-6da867b4ecfd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="LogicTest">
+      <UniqueIdentifier>{a7f1ecc7-1159-443c-9bb0-50af3a6f5745}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="StrategyTest">
+      <UniqueIdentifier>{4c5a478a-6ff5-4ef9-b3b3-4fb39b4e1856}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
+</Project>

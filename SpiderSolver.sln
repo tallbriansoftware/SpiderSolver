@@ -7,6 +7,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SpiderSolverMain", "SpiderS
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SpiderSolverCore", "SpiderSolverCore\SpiderSolverCore.vcxproj", "{E48CF795-0BDD-4CD3-A5D1-BBDE1EA36D60}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SpiderSolverTest", "SpiderSolverTest\SpiderSolverTest.vcxproj", "{6035FD07-9278-43EC-9A26-E2AD73BC0922}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -31,6 +33,14 @@ Global
 		{E48CF795-0BDD-4CD3-A5D1-BBDE1EA36D60}.Release|x64.Build.0 = Release|x64
 		{E48CF795-0BDD-4CD3-A5D1-BBDE1EA36D60}.Release|x86.ActiveCfg = Release|Win32
 		{E48CF795-0BDD-4CD3-A5D1-BBDE1EA36D60}.Release|x86.Build.0 = Release|Win32
+		{6035FD07-9278-43EC-9A26-E2AD73BC0922}.Debug|x64.ActiveCfg = Debug|x64
+		{6035FD07-9278-43EC-9A26-E2AD73BC0922}.Debug|x64.Build.0 = Debug|x64
+		{6035FD07-9278-43EC-9A26-E2AD73BC0922}.Debug|x86.ActiveCfg = Debug|Win32
+		{6035FD07-9278-43EC-9A26-E2AD73BC0922}.Debug|x86.Build.0 = Debug|Win32
+		{6035FD07-9278-43EC-9A26-E2AD73BC0922}.Release|x64.ActiveCfg = Release|x64
+		{6035FD07-9278-43EC-9A26-E2AD73BC0922}.Release|x64.Build.0 = Release|x64
+		{6035FD07-9278-43EC-9A26-E2AD73BC0922}.Release|x86.ActiveCfg = Release|Win32
+		{6035FD07-9278-43EC-9A26-E2AD73BC0922}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
