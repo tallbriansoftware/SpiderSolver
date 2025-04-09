@@ -10,6 +10,9 @@
     <ClCompile Include="Strategy\BoardScoringTests.cpp">
       <Filter>StrategyTest</Filter>
     </ClCompile>
+    <ClCompile Include="Logic\FindStacksTest.cpp">
+      <Filter>LogicTest</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Helpers\DeckHelper.h">

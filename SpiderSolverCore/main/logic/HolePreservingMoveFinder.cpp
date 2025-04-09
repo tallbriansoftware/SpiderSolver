@@ -122,7 +122,7 @@ std::vector<MoveCombo> HolePreservingMoveFinder::FlipRuns(const SpiderTableau& t
 
     std::vector<MoveCombo> moveFlipRuns;
 
-    std::vector<int> srcStackNos = FindStacks::Runs(tableau, 2, Exactly::Yes);
+    std::vector<int> srcStackNos = FindStacks::RunPattern(tableau, 2, Exactly::Yes);
 
     for (int srcNo : srcStackNos)
     {
@@ -171,7 +171,7 @@ std::vector<MoveCombo> HolePreservingMoveFinder::MoveTwoRuns(
 
     std::vector<MoveCombo> moveTwoRuns;
 
-    std::vector<int> srcStackNos = FindStacks::Runs(tableau, 2, Exactly::No, Sequential::Yes);
+    std::vector<int> srcStackNos = FindStacks::RunPattern(tableau, 2, Exactly::No, Sequential::Yes);
 
     for (int srcNo : srcStackNos)
     {
@@ -223,7 +223,7 @@ std::vector<MoveCombo> HolePreservingMoveFinder::InsertRun(const SpiderTableau& 
 
     std::vector<MoveCombo> moveInsertRun;
 
-    std::vector<int> targetStackNos = FindStacks::Runs(tableau, 2);
+    std::vector<int> targetStackNos = FindStacks::RunPattern(tableau, 2);
     for (int targetNo : targetStackNos)
     {
         // Confirm that the two runs are in order but have a gap.
@@ -240,7 +240,7 @@ std::vector<MoveCombo> HolePreservingMoveFinder::InsertRun(const SpiderTableau& 
             continue;
 
         // Find candidates to fill the gap.
-        std::vector<int> srcStackNos = FindStacks::Runs(tableau, 1);
+        std::vector<int> srcStackNos = FindStacks::RunPattern(tableau, 1);
         for (int srcNo : srcStackNos)
         {
             if (srcNo == targetNo)
@@ -289,7 +289,7 @@ std::vector<MoveCombo> HolePreservingMoveFinder::RemoveMiddleRun(
 
     std::vector<MoveCombo> moveMiddleRuns;
 
-    std::vector<int> srcStackNos = FindStacks::Runs(tableau, 3);
+    std::vector<int> srcStackNos = FindStacks::RunPattern(tableau, 3);
 
     for (int srcNo : srcStackNos)
     {
@@ -301,7 +301,7 @@ std::vector<MoveCombo> HolePreservingMoveFinder::RemoveMiddleRun(
         if ((int)card2.getRank() != (int)card0.getRank() + 1)
             continue;
 
-        std::vector<int> targetStackNos = FindStacks::Runs(tableau, 1);
+        std::vector<int> targetStackNos = FindStacks::RunPattern(tableau, 1);
         for (int targetNo : targetStackNos)
         {
             if (targetNo == srcNo)
@@ -349,8 +349,8 @@ std::vector<MoveCombo> HolePreservingMoveFinder::TradeHolesA(const SpiderTableau
 
     std::vector<MoveCombo> moveTradeHoles;
 
-    std::vector<int> srcStackNos = FindStacks::Runs(tableau, 1, Exactly::Yes);
-    std::vector<int> destStackNos = FindStacks::Runs(tableau, 2);
+    std::vector<int> srcStackNos = FindStacks::RunPattern(tableau, 1, Exactly::Yes);
+    std::vector<int> destStackNos = FindStacks::RunPattern(tableau, 2);
     for (int srcStkNo : srcStackNos)
     {
         auto srcStack = tableau.GetStack(srcStkNo);
@@ -393,8 +393,8 @@ std::vector<MoveCombo> HolePreservingMoveFinder::TradeHolesB(const SpiderTableau
         return {};
     }
 
-    std::vector<int> srcStackNos = FindStacks::Runs(tableau, 2, Exactly::Yes);
-    std::vector<int> destStackNos = FindStacks::Runs(tableau, 1);
+    std::vector<int> srcStackNos = FindStacks::RunPattern(tableau, 2, Exactly::Yes);
+    std::vector<int> destStackNos = FindStacks::RunPattern(tableau, 1);
     auto stkMoves = FindFits(tableau, srcStackNos, destStackNos, 1, 0);
 
     std::vector<MoveCombo> moveTradeHoles;
@@ -435,7 +435,7 @@ std::vector<MoveCombo> HolePreservingMoveFinder::SwapRuns(const SpiderTableau& t
 
     std::vector<MoveCombo> moveSwapRuns;
 
-    std::vector<int> multipleRunsStackNos = FindStacks::Runs(tableau, 2);
+    std::vector<int> multipleRunsStackNos = FindStacks::RunPattern(tableau, 2);
     for (int stk1 = 0; stk1 < SpiderTableau::NUM_STACKS; stk1++)
     {
         auto stack1 = tableau.GetStack(stk1);

@@ -106,6 +106,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Helpers\DeckHelper.cpp" />
+    <ClCompile Include="Logic\FindStacksTest.cpp" />
     <ClCompile Include="Logic\HolePreservingMoveFinderTests.cpp" />
     <ClCompile Include="Strategy\BoardScoringTests.cpp" />
   </ItemGroup>

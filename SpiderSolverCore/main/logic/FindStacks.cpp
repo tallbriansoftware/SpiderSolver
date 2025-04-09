@@ -20,73 +20,65 @@ std::vector<int> FindStacks::ThatWillRecieveRank(Rank rank, const SpiderTableau&
     return destStackNos;
 }
 
-// Moving the top run won't create a hole.
-// there are other cards face up or face down under the top run.
-//
-std::vector<int> FindStacks::RunThatWontMakeAHole(const SpiderTableau& tableau)
+
+bool FindStacks::RunPattern(
+    const SpiderStack& stack,
+    int numberOfRuns,
+    Exactly exactly,
+    Sequential seq)
 {
-    std::vector<int> stackNos;
-    for (auto& stack : tableau.GetStacks())
+    if (stack.IsEmptyOrTopCardNotFaceUp())
+        return false;
+
+    // There must be N runs (at least)
+    if (stack.GetRunCount() < numberOfRuns)
+        return false;
+
+    // Exactly means no more (leaves a hole basicly)
+    if (exactly == Exactly::Yes)
     {
-        int runCount = stack.GetRunCount();
-        if (runCount == 1 && stack.CountDownCards() == 0)
-            continue;
-
-        if (runCount == 0)
-            continue;
-
-        int stkNo = tableau.IndexOf(stack);
-        stackNos.push_back(stkNo);
+        // Must have N runs (exactly)
+        if (stack.GetRunCount() != numberOfRuns)
+            return false;
+        // and no down cards.
+        if (stack.CountDownCards() != 0)
+            return false;
     }
-    return stackNos;
+
+    if (seq == Sequential::Yes && numberOfRuns > 1)
+    {
+        bool isSeq = true;
+        for (int i = 0; i < numberOfRuns - 1; i++)
+        {
+            int index1 = stack.GetRunHead(i);
+            int index2 = stack.GetRunTail(i + 1);
+            Card card1 = stack.GetCard(index1);
+            Card card2 = stack.GetCard(index2);
+            if ((int)card2.getRank() != (int)card1.getRank() + 1)
+            {
+                isSeq = false;
+                break;
+            }
+        }
+        if (!isSeq)
+            return false;
+    }
+    return true;
+
 }
 
-std::vector<int> FindStacks::Runs(
+std::vector<int> FindStacks::RunPattern(
     const SpiderTableau& tableau,
     int numberOfRuns,
     Exactly exactly,
     Sequential seq)
 {
     std::vector<int> stackNumbers;
-    for (auto& stack : tableau.GetStacks())
+
+    for (int stackNo = 0; stackNo < SpiderTableau::NUM_STACKS; stackNo++)
     {
-        int stackNo = tableau.IndexOf(stack);
-        if (stack.IsEmptyOrTopCardNotFaceUp())
-            continue;
-
-        // There must be N runs (at least)
-        if (stack.GetRunCount() < numberOfRuns)
-            continue;
-
-        // Exactly means no more (leaves a hole basicly)
-        if (exactly == Exactly::Yes)
-        {
-            // Must have N runs (exactly)
-            if (stack.GetRunCount() != numberOfRuns)
-                continue;
-            // and no down cards.
-            if (stack.CountDownCards() != 0)
-                continue;
-        }
-        if (seq == Sequential::Yes && numberOfRuns > 1)
-        {
-            bool nonseq = true;
-            for (int i = 0; i < numberOfRuns - 1; i++)
-            {
-                int index1 = stack.GetRunHead(i);
-                int index2 = stack.GetRunTail(i + 1);
-                Card card1 = stack.GetCard(index1);
-                Card card2 = stack.GetCard(index2);
-                if ((int)card2.getRank() == (int)card1.getRank() + 1)
-                {
-                    nonseq = false;
-                    break;
-                }
-            }
-            if (nonseq)
-                continue;
-        }
-        stackNumbers.push_back(stackNo);
+        if (RunPattern(tableau.GetStack(stackNo), numberOfRuns, exactly, seq))
+            stackNumbers.push_back(stackNo);
     }
     return stackNumbers;
 }
