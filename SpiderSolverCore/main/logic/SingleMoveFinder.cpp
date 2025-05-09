@@ -10,21 +10,20 @@
 // SimpleMoves:  Find normal simple moves.
 // -- Excludes breaking suited run
 //
-std::vector<MoveSingle> SingleMoveFinder::AllSingleMoves(const SpiderTableau& tableau)
+std::vector<MoveSingle> SingleMoveFinder::AllMoveSingles(const SpiderTableau& tableau)
 {
     std::vector<MoveSingle> moves;
+
     AddSimpleMoves(moves, tableau);
     AddColorUpMoves(moves, tableau);
-    // Exclude rank-splitting moves.
-    // AddSuitedRankSplittingMoves(moves, tableau);
     AddHoleFillingMoves(moves, tableau);
 
     return moves;
 }
 
-std::vector<MoveCombo> SingleMoveFinder::AllSingleMovesAsCombos(const SpiderTableau& tableau)
+std::vector<MoveCombo> SingleMoveFinder::AllMoves(const SpiderTableau& tableau)
 {
-    std::vector<MoveSingle> smoves = SingleMoveFinder::AllSingleMoves(tableau);
+    std::vector<MoveSingle> smoves = SingleMoveFinder::AllMoveSingles(tableau);
     std::vector<MoveCombo> moves;
     for (auto& move : smoves)
         moves.push_back(MoveCombo(move));
@@ -41,12 +40,6 @@ int SingleMoveFinder::AddSimpleMoves(std::vector<MoveSingle>& moves, const Spide
 int SingleMoveFinder::AddColorUpMoves(std::vector<MoveSingle>& moves, const SpiderTableau& tableau)
 {
     return SingleMoveFindingFuncs::FindMoves(moves, tableau, SingleMoveFindingFuncs::ColorUpMove);
-}
-
-
-int SingleMoveFinder::AddSuitedRankSplittingMoves(std::vector<MoveSingle>& moves, const SpiderTableau& tableau)
-{
-    return SingleMoveFindingFuncs::FindMoves(moves, tableau, SingleMoveFindingFuncs::SuitedRunSplittingMove);
 }
 
 

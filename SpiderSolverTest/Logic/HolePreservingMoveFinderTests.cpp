@@ -101,7 +101,7 @@ JH  -  -  - JH  -  -  -  -  -
     PrintTableau(tableau);
 #endif
 
-    auto hole1_Moves = HolePreservingMoveFinder::AllGoodMoves(tableau);
+    auto hole1_Moves = HolePreservingMoveFinder::AllMoves(tableau);
 /*
     2{6S4}<=>8{6H} swap-runs
     0{JH}2{TH7-6S4} Move-2-Seq-Runs
@@ -152,7 +152,8 @@ TEST(HolePreservingMoveFinderTests, FlipRuns) {
     PrintTableau(tableau);
 #endif
 
-    auto moves = HolePreservingMoveFinder::FlipRuns(tableau);
+    std::vector<MoveCombo> moves;
+    int count = HolePreservingMoveFinder::AddFlipRuns(moves, tableau);
 
 /*
     5{E0}2{7S6}, 5{7S6}2{5H4=E1} Flip-Runs
@@ -163,6 +164,7 @@ TEST(HolePreservingMoveFinderTests, FlipRuns) {
 #endif
 
     EXPECT_EQ(moves.size(), 1);
+    EXPECT_EQ(count, 1);
     auto actual = moves[0].GetMoves();
 
     std::vector<MoveSingle> expected =
@@ -204,7 +206,8 @@ TEST(HolePreservingMoveFinderTests, TradeHolesA) {
     PrintTableau(tableau);
 #endif
 
-    auto moves = HolePreservingMoveFinder::TradeHolesA(tableau);
+    std::vector<MoveCombo> moves;
+    int count = HolePreservingMoveFinder::AddTradeHolesA(moves, tableau);
 /*
     5{E0}2{3S2}, 2{9H7}4{6S4=E1} Trade-Holes
 */
@@ -214,6 +217,7 @@ TEST(HolePreservingMoveFinderTests, TradeHolesA) {
 #endif
 
     EXPECT_EQ(moves.size(), 1);
+    EXPECT_EQ(count, 1);
     auto actual = moves[0].GetMoves();
 
     std::vector<MoveSingle> expected =
@@ -255,7 +259,8 @@ TEST(HolePreservingMoveFinderTests, TradeHolesB) {
     PrintTableau(tableau);
 #endif
 
-    auto moves = HolePreservingMoveFinder::TradeHolesB(tableau);
+    std::vector<MoveCombo> moves;
+    int count = HolePreservingMoveFinder::AddTradeHolesB(moves, tableau);
     /*
         5{E0}2{3S2}, 2{9H7}4{6S4=E1} Trade-Holes
     */
@@ -265,6 +270,7 @@ TEST(HolePreservingMoveFinderTests, TradeHolesB) {
 #endif
 
     EXPECT_EQ(moves.size(), 1);
+    EXPECT_EQ(count, 1);
     if (moves.size() > 0)
     {
         auto actual = moves[0].GetMoves();
@@ -308,7 +314,8 @@ TEST(HolePreservingMoveFinderTests, SwapRuns) {
     PrintTableau(tableau);
 #endif
 
-    auto moves = HolePreservingMoveFinder::SwapRuns(tableau);
+    std::vector<MoveCombo> moves;
+    int count = HolePreservingMoveFinder::AddSwapRuns(moves, tableau);
 
 /*
   5{E0}2{3S2}, 2{9H7}4{6S4=E1} Trade-Holes
@@ -319,6 +326,7 @@ TEST(HolePreservingMoveFinderTests, SwapRuns) {
 #endif
 
     EXPECT_EQ(moves.size(), 1);
+    EXPECT_EQ(count, 1);
     auto actual = moves[0].GetMoves();
 
     std::vector<MoveSingle> expected =
@@ -362,7 +370,8 @@ TEST(HolePreservingMoveFinderTests, MoveTwoSequentialRuns) {
     PrintTableau(tableau);
 #endif
 
-    auto moves = HolePreservingMoveFinder::MoveTwoRuns(tableau);
+    std::vector<MoveCombo> moves;
+    int count = HolePreservingMoveFinder::AddMoveTwoRuns(moves, tableau);
 
 /*
   2{9H8}4{7H6-5S3} Move-2-Seq-Runs
@@ -372,6 +381,7 @@ TEST(HolePreservingMoveFinderTests, MoveTwoSequentialRuns) {
     PrintMoves(tableau, moves);
 #endif
 
+    EXPECT_EQ(count, 1);
     EXPECT_EQ(moves.size(), 1);
     auto actual = moves[0].GetMoves();
 
@@ -418,7 +428,8 @@ TEST(HolePreservingMoveFinderTests, RemoveMiddleRun) {
     PrintTableau(tableau);
 #endif
 
-    auto moves = HolePreservingMoveFinder::RemoveMiddleRun(tableau);
+    std::vector<MoveCombo> moves;
+    int count = HolePreservingMoveFinder::AddRemoveMiddleRun(moves, tableau);
 
 /*
    5{E0}2{7S6}, 4{KHQ}2{JST}, 2{9H8}5{7S6=E1} remove-middle-run
@@ -429,6 +440,8 @@ TEST(HolePreservingMoveFinderTests, RemoveMiddleRun) {
 #endif
 
     EXPECT_EQ(moves.size(), 1);
+    EXPECT_EQ(count, 1);
+
     auto actual = moves[0].GetMoves();
     std::vector<MoveSingle> expected =
     {
@@ -470,7 +483,8 @@ TEST(HolePreservingMoveFinderTests, InsertRunIntoStack) {
     PrintTableau(tableau);
 #endif
 
-    auto moves = HolePreservingMoveFinder::InsertRun(tableau);
+    std::vector<MoveCombo> moves;
+    int count = HolePreservingMoveFinder::AddInsertRun(moves, tableau);
 
 /*
   5{E0}2{4H3}, 2{9S8}4{7H5}, 2{7H5}5{4H3=E1} insert-run
@@ -481,6 +495,8 @@ TEST(HolePreservingMoveFinderTests, InsertRunIntoStack) {
 #endif
 
     EXPECT_EQ(moves.size(), 1);
+    EXPECT_EQ(count, 1);
+
     auto actual = moves[0].GetMoves();
     std::vector<MoveSingle> expected =
     {

@@ -136,6 +136,7 @@ int SingleMoveFindingFuncs::ColorUpMove(const SpiderStack& src, const SpiderStac
     return srcTailIndex - countToMove + 1;
 }
 
+#ifdef _DEBUG
 //
 // This is like "ColorUp" but the dest does not have to be the same suit.
 // Not generally usefull except when clearing stacks.
@@ -176,6 +177,7 @@ int SingleMoveFindingFuncs::SuitedRunSplittingMove(const SpiderStack& src, const
 
     return srcTailIndex - countToMove + 1;
 }
+#endif
 
 
 int SingleMoveFindingFuncs::HoleFillingMove(const SpiderStack& src, const SpiderStack& dest)

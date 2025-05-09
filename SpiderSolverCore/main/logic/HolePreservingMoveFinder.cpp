@@ -16,34 +16,22 @@ namespace
     }
 }
 
-std::vector<MoveCombo> HolePreservingMoveFinder::AllGoodMoves(const SpiderTableau& tableau)
+std::vector<MoveCombo> HolePreservingMoveFinder::AllMoves(const SpiderTableau& tableau)
 {
     if (tableau.GetHoleCount() == 0)
         return {};
 
     std::vector<MoveCombo> allMoves;
     std::vector<MoveCombo> moves;
+    int moveCount = 0;
 
-    moves = FlipRuns(tableau);
-    append(allMoves, moves);
-
-    moves = MoveTwoRuns(tableau);
-    append(allMoves, moves);
-
-    moves = InsertRun(tableau);
-    append(allMoves, moves);
-
-    moves = RemoveMiddleRun(tableau);
-    append(allMoves, moves);
-
-    moves = TradeHolesA(tableau);
-    append(allMoves, moves);
-
-    moves = TradeHolesB(tableau);
-    append(allMoves, moves);
-
-    moves = SwapRuns(tableau);
-    append(allMoves, moves);
+    moveCount += AddMoveTwoRuns(allMoves, tableau);
+    moveCount += AddFlipRuns(allMoves, tableau);
+    moveCount += AddInsertRun(allMoves, tableau);
+    moveCount += AddRemoveMiddleRun(allMoves, tableau);
+    moveCount += AddTradeHolesA(allMoves, tableau);
+    moveCount += AddTradeHolesB(allMoves, tableau);
+    moveCount += AddSwapRuns(allMoves, tableau);
 
     return allMoves;
 }
@@ -105,72 +93,23 @@ namespace
     }
 }
 
-// 1. FlipRuns: Move two runs into a hole.  Fliping their order and creating a hole.
-// |X| |X|       |X| |X|
-// |A|     B->X      |B|
-// |B|     A->B      |A|
-//
-// Check that B-A
-//
-std::vector<MoveCombo> HolePreservingMoveFinder::FlipRuns(const SpiderTableau& tableau)
-{
-    int holeNo = tableau.FindFirstHoleIndex();
-    if (holeNo == -1)
-    {
-        return {};
-    }
-
-    std::vector<MoveCombo> moveFlipRuns;
-
-    std::vector<int> srcStackNos = FindStacks::RunPattern(tableau, 2, Exactly::Yes);
-
-    for (int srcNo : srcStackNos)
-    {
-        auto& src = tableau.GetStack(srcNo);
-        int headIndex1 = src.GetRunHead(1);
-        int tailIndex0 = src.GetRunTail(0);
-        assert(headIndex1 != -1);
-
-        int headVal1 = (int)src.GetCard(headIndex1).getRank();
-        int tailVal0 = (int)src.GetCard(tailIndex0).getRank();
-
-        // There must be a gap to fill between the tail1 and head0.
-        if (tailVal0 == headVal1 + 1)
-        {
-            int headIndex0 = src.GetRunHead(0);
-            int sizeOfRun0 = tailIndex0 - headIndex0 + 1;
-
-            std::vector<MoveSingle> smoves =
-            {
-                MoveSingle(srcNo, headIndex0, holeNo, 0),
-                MoveSingle(srcNo, headIndex1, holeNo, sizeOfRun0),
-            };
-
-            MoveCombo move(smoves);
-            move.SetComboType(ComboType::FlipRuns);
-            moveFlipRuns.push_back(move);
-        }
-    }
-    return moveFlipRuns;
-}
-
-// 2. MoveTwo:  Move two runs 
+// 1. MoveTwo:  Move two runs 
 // |?| |?| |X|         |?| |?| |X|
 // |A| |C|      B->X       |C|
 // |B|          A->C       |A| 
-//              B->A       |B|
+//             @B->A       |B|
 //
 // Check that C-A and A-B   dest.0 - src.1  and  src.1 -> src.0 
 //
-std::vector<MoveCombo> HolePreservingMoveFinder::MoveTwoRuns(
+int HolePreservingMoveFinder::AddMoveTwoRuns(
+    std::vector<MoveCombo>& moves,
     const SpiderTableau& tableau)
 {
     int holeNo = tableau.FindFirstHoleIndex();
     if (holeNo == -1)
-        return {};
+        return 0;
 
-    std::vector<MoveCombo> moveTwoRuns;
-
+    int startCount = (int)moves.size();
     std::vector<int> srcStackNos = FindStacks::RunPattern(tableau, 2, Exactly::No, Sequential::Yes);
 
     for (int srcNo : srcStackNos)
@@ -199,31 +138,79 @@ std::vector<MoveCombo> HolePreservingMoveFinder::MoveTwoRuns(
 
             MoveCombo move(smoves);
             move.SetComboType(ComboType::Move2Runs);
-            moveTwoRuns.push_back(move);
+            moves.push_back(move);
         }
     }
-    return moveTwoRuns;
+    return (int)moves.size() - startCount;
+}
+
+// 2. FlipRuns: Move two runs into a hole.  Fliping their order and creating a hole.
+// |X| |X|       |X| |X|
+// |A|     B->X      |B|
+// |B|    @A->B      |A|
+//
+// Check that B-A
+//
+int HolePreservingMoveFinder::AddFlipRuns(
+    std::vector<MoveCombo>& moves,
+    const SpiderTableau& tableau)
+{
+    int holeNo = tableau.FindFirstHoleIndex();
+    if (holeNo == -1)
+        return 0;
+
+    int startCount = (int)moves.size();
+    std::vector<int> srcStackNos = FindStacks::RunPattern(tableau, 2, Exactly::Yes);
+
+    for (int srcNo : srcStackNos)
+    {
+        auto& src = tableau.GetStack(srcNo);
+        int headIndex1 = src.GetRunHead(1);
+        int tailIndex0 = src.GetRunTail(0);
+        assert(headIndex1 != -1);
+
+        int headVal1 = (int)src.GetCard(headIndex1).getRank();
+        int tailVal0 = (int)src.GetCard(tailIndex0).getRank();
+
+        // There must be a gap to fill between the tail1 and head0.
+        if (tailVal0 == headVal1 + 1)
+        {
+            int headIndex0 = src.GetRunHead(0);
+            int sizeOfRun0 = tailIndex0 - headIndex0 + 1;
+
+            std::vector<MoveSingle> smoves =
+            {
+                MoveSingle(srcNo, headIndex0, holeNo, 0),
+                MoveSingle(srcNo, headIndex1, holeNo, sizeOfRun0),
+            };
+
+            MoveCombo move(smoves);
+            move.SetComboType(ComboType::FlipRuns);
+            moves.push_back(move);
+        }
+    }
+    return (int)moves.size() - startCount;
 }
 
 // 3. InsertRun:  Insert a run between two existing runs.
 // |?| |?| |X|        |?| |?| |X|
 // |A| |C|      B->X  |A|
 // |B|          C->A  |C|
-//              B->C  |B|
+//             @B->C  |B|
 //
 // Check that A-C and C-B  ie.  dest.1 - src.0  and src.0 - dest.0
 //
-std::vector<MoveCombo> HolePreservingMoveFinder::InsertRun(const SpiderTableau& tableau)
+int HolePreservingMoveFinder::AddInsertRun(
+    std::vector<MoveCombo>& moves,
+    const SpiderTableau& tableau)
 {
     int holeNo = tableau.FindFirstHoleIndex();
     if (holeNo == -1)
-    {
-        return {};
-    }
+        return 0;
 
-    std::vector<MoveCombo> moveInsertRun;
-
+    int startCount = (int)moves.size();
     std::vector<int> targetStackNos = FindStacks::RunPattern(tableau, 2);
+
     for (int targetNo : targetStackNos)
     {
         // Confirm that the two runs are in order but have a gap.
@@ -265,30 +252,30 @@ std::vector<MoveCombo> HolePreservingMoveFinder::InsertRun(const SpiderTableau& 
                 };
                 MoveCombo move(smoves);
                 move.SetComboType(ComboType::InsertRun);
-                moveInsertRun.push_back(move);
+                moves.push_back(move);
             }
         }
     }
-    return moveInsertRun;
+    return (int)moves.size() - startCount;
 }
 
 // 4. RemoveMiddleRun:  Remove run from between two runs.
 // |?| |?| |X|         |?| |?| |X|
 // |A| |D|      C->X   |A| |D|
 // |B|          B->D   |C| |B| 
-// |C|          C->A
+// |C|         @C->A
 //
 // Check that A-C and D-B  ie  src.2 - src.0  and dest.0 - src.1
 //
-std::vector<MoveCombo> HolePreservingMoveFinder::RemoveMiddleRun(
+int HolePreservingMoveFinder::AddRemoveMiddleRun(
+    std::vector<MoveCombo>& moves,
     const SpiderTableau& tableau)
 {
     int holeNo = tableau.FindFirstHoleIndex();
     if (holeNo == -1)
-        return {};
+        return 0;
 
-    std::vector<MoveCombo> moveMiddleRuns;
-
+    int startCount = (int)moves.size();
     std::vector<int> srcStackNos = FindStacks::RunPattern(tableau, 3);
 
     for (int srcNo : srcStackNos)
@@ -326,31 +313,31 @@ std::vector<MoveCombo> HolePreservingMoveFinder::RemoveMiddleRun(
 
             MoveCombo move(smoves);
             move.SetComboType(ComboType::RemoveMiddleRun);
-            moveMiddleRuns.push_back(move);
+            moves.push_back(move);
         }
     }
-    return moveMiddleRuns;
+    return (int)moves.size() - startCount;
 }
 
 // 5. TradeHoles-A: Fill a hole to make a hole.
 //  |X| |?| |X|       |X| |?| |X|
 //  |A| |B|     C->X      |B| |C|
-//      |C|     A->B      |A|
+//      |C|    @A->B      |A|
 //
 // Check that B-A  ie.  dest.1 - src.0
 //
-std::vector<MoveCombo> HolePreservingMoveFinder::TradeHolesA(const SpiderTableau& tableau)
+int HolePreservingMoveFinder::AddTradeHolesA(
+    std::vector<MoveCombo>& moves, 
+    const SpiderTableau& tableau)
 {
     int holeNo = tableau.FindFirstHoleIndex();
     if (holeNo == -1)
-    {
-        return {};
-    }
+        return 0;
 
-    std::vector<MoveCombo> moveTradeHoles;
-
+    int startCount = (int)moves.size();
     std::vector<int> srcStackNos = FindStacks::RunPattern(tableau, 1, Exactly::Yes);
     std::vector<int> destStackNos = FindStacks::RunPattern(tableau, 2);
+
     for (int srcStkNo : srcStackNos)
     {
         auto srcStack = tableau.GetStack(srcStkNo);
@@ -371,33 +358,33 @@ std::vector<MoveCombo> HolePreservingMoveFinder::TradeHolesA(const SpiderTableau
                 };
                 MoveCombo move(smoves);
                 move.SetComboType(ComboType::TradeHolesA);
-                moveTradeHoles.push_back(move);
+                moves.push_back(move);
             }
         }
     }
-    return moveTradeHoles;
+    return (int)moves.size() - startCount;
 }
 
 // 6. TradeHoles-B: Fill a hole to make a hole.
 //  |X| |?| |X|       |X| |?| |X|
 //  |A| |C|     B->X      |C| |B|
-//  |B|         A->C      |A|
+//  |B|        @A->C      |A|
 //
 // Check that C-A  ie.  dest.0 - src.1
 //
-std::vector<MoveCombo> HolePreservingMoveFinder::TradeHolesB(const SpiderTableau& tableau)
+int HolePreservingMoveFinder::AddTradeHolesB(
+    std::vector<MoveCombo>& moves, 
+    const SpiderTableau& tableau)
 {
     int holeNo = tableau.FindFirstHoleIndex();
     if (holeNo == -1)
-    {
-        return {};
-    }
+        return 0;
 
+    int startCount = (int)moves.size();
     std::vector<int> srcStackNos = FindStacks::RunPattern(tableau, 2, Exactly::Yes);
     std::vector<int> destStackNos = FindStacks::RunPattern(tableau, 1);
     auto stkMoves = FindFits(tableau, srcStackNos, destStackNos, 1, 0);
 
-    std::vector<MoveCombo> moveTradeHoles;
     for (auto& pair : stkMoves)
     {
         auto srcStack = tableau.GetStack(pair.src);
@@ -413,29 +400,29 @@ std::vector<MoveCombo> HolePreservingMoveFinder::TradeHolesB(const SpiderTableau
         };
         MoveCombo move(smoves);
         move.SetComboType(ComboType::TradeHolesB);
-        moveTradeHoles.push_back(move);
+        moves.push_back(move);
     }
-
-    return moveTradeHoles;
+    return (int)moves.size() - startCount;
 }
 
 // 7. SwapRuns: Swap two runs:
 // |?| |?| |X|  D->X  |?| |?| |X|
 // |A| |C|      B->C  |A| |C|
-// |B| |D|      D->A  |D| |B|
+// |B| |D|     @D->A  |D| |B|
 // 
 // check that A-D and C-B and at least one is suited.
 //
-std::vector<MoveCombo> HolePreservingMoveFinder::SwapRuns(const SpiderTableau& tableau)
+int HolePreservingMoveFinder::AddSwapRuns(
+    std::vector<MoveCombo>& moves,
+    const SpiderTableau& tableau)
 {
-    if (tableau.GetHoleCount() == 0)
-        return {};
     int holeNo = tableau.FindFirstHoleIndex();
-    assert(holeNo != -1);
+    if (holeNo == -1)
+        return 0;
 
-    std::vector<MoveCombo> moveSwapRuns;
-
+    int startCount = (int)moves.size();
     std::vector<int> multipleRunsStackNos = FindStacks::RunPattern(tableau, 2);
+
     for (int stk1 = 0; stk1 < SpiderTableau::NUM_STACKS; stk1++)
     {
         auto stack1 = tableau.GetStack(stk1);
@@ -482,8 +469,8 @@ std::vector<MoveCombo> HolePreservingMoveFinder::SwapRuns(const SpiderTableau& t
             };
             MoveCombo move(smoves);
             move.SetComboType(ComboType::SwapRuns);
-            moveSwapRuns.push_back(move);
+            moves.push_back(move);
         }
     }
-    return moveSwapRuns;
+    return (int)moves.size() - startCount;
 }

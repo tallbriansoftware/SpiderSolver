@@ -127,8 +127,8 @@ namespace
 {
     std::vector<MoveCombo> GetMoves(const SpiderTableau& tableau)
     {
-        auto moves = SingleMoveFinder::AllSingleMovesAsCombos(tableau);
-        auto holeMoves = HolePreservingMoveFinder::AllGoodMoves(tableau);
+        auto moves = SingleMoveFinder::AllMoves(tableau);
+        auto holeMoves = HolePreservingMoveFinder::AllMoves(tableau);
         moves.insert(moves.end(), holeMoves.begin(), holeMoves.end());
         return moves;
     }
