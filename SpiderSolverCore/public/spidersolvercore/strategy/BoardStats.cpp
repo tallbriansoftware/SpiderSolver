@@ -14,7 +14,7 @@ namespace
     float RunLengthScore(int runLength)
     {
         float fres = (float)(runLength - 1);
-        float result = fres + (fres * fres / 20);
+        float result = fres + (fres * fres / 10);
         return result;
     }
 }
@@ -47,7 +47,7 @@ float BoardStats::WinSuitedRunsScore()
 namespace
 {
     int TurnedCardsStackScore[] = { 15, 10, 6, 3, 1, 0 };
-    int HoleCountScores[] = { 0, 3, 5, 6, 7, 8, 8, 8, 8, 8, 8 };
+    int HoleCountScores[] = { 0, 5, 7, 9, 10, 10, 10, 10, 10, 10, 10 };
 }
 
 // -------- Turned Cards Depth Score

@@ -11,8 +11,8 @@ BoardScorer::BoardScorer()
     : m_setTerms(0)
     , m_suitedRunTerm(1.0)  // Everything is relative to this.
     , m_holesTerm(10)
-    , m_turnedCardsTerm(3)
-    , m_fullPackTerm(6)
+    , m_turnedCardsTerm(1)
+    , m_fullPackTerm(10)
 {
 }
 
