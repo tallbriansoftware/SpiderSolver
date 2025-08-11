@@ -7,8 +7,11 @@
 #include "spidersolvercore/strategy/BoardScorer.h"
 #include "spidersolvercore/strategy/ScoredMove.h"
 #include "spidersolvercore/strategy/SearchContext.h"
+#include "spidersolvercore/strategy/TreeMove.h"
 
 #include <algorithm>
+
+#include <assert.h>
 
 
 Strategy::Strategy()
@@ -24,7 +27,7 @@ Strategy::Strategy(const BoardScorer& boardScorer)
 
 }
 
-Strategy::~Strategy()
+Strategy::~Strategy()  
 { }
 
 int Strategy::GetEvals() const
@@ -47,12 +50,15 @@ std::vector<ScoredMove> Strategy::FindScoredMoves(
     const SpiderTableau& parentTableau,
     const Ancestry& ancestry)
 {
-    SpiderTableau tableau(parentTableau);
-    Ancestry searchAncestry(ancestry);
-    SearchContext ctx(4, ancestry);
-
-    auto scoredBoards = FindAndScoreTreeDepthOfChildren(0, ctx, tableau);
+    auto scoredBoards = IterativelyDeepen(parentTableau, ancestry);
     return scoredBoards;
+
+    //SpiderTableau tableau(parentTableau);
+    //Ancestry searchAncestry(ancestry);
+    //SearchContext ctx(4, ancestry);
+
+    //auto scoredBoards = FindAndScoreTreeDepthOfChildren(0, ctx, tableau);
+    //return scoredBoards;
 }
 
 const BoardScorer& Strategy::GetBoardScorer() const
@@ -184,5 +190,112 @@ std::vector<ScoredMove> Strategy::FindAndScoreTreeDepthOfChildren(
 
     ctx.RemoveParentPosition(parentTabString);
     return movesWithScores;
+}
+
+
+std::vector<ScoredMove> Strategy::IterativelyDeepen(
+    const SpiderTableau& parentTableau,
+    const Ancestry& ancestry)
+{
+    int totalLimit = 2;
+    std::vector<TreeMove> hackOne;
+    for (int depthLimit = 1; depthLimit < totalLimit; depthLimit += 1)
+    {
+        SpiderTableau tableau(parentTableau);
+        Ancestry searchAncestry(ancestry);
+        SearchContext ctx(depthLimit, ancestry);
+
+        auto treeMoves = FindAndScoreToDepth(1, ctx, parentTableau);
+        hackOne = treeMoves;
+    }
+
+    std::vector<ScoredMove> result;
+    for (auto& tm : hackOne)
+    {
+        result.push_back(ScoredMove(tm.GetScore(), tm.GetMove()));
+    }
+    return result;
+}
+
+namespace
+{
+    void SortTreeMoves(std::vector<TreeMove>& treeMoves)
+    {
+        // Sort the moves by score,  greatest to least.
+        std::sort(begin(treeMoves), end(treeMoves), [](TreeMove& a, TreeMove& b)
+            {
+                return a.GetScore() > b.GetScore();
+            });
+    }
+}
+
+
+TreeMove Strategy::CreateLeafMove(
+    const SpiderTableau& tableau,
+    const MoveCombo& move)
+{
+    float score = (float)ComputeScore(tableau);
+    return TreeMove(score, move);
+}
+
+
+TreeMove Strategy::CreateBranchMove(
+    const MoveCombo& move,
+    const TreeMove& bestChild)
+{
+    return TreeMove(move, bestChild);
+}
+
+
+std::vector<TreeMove> Strategy::FindAndScoreToDepth(
+    int depth,
+    SearchContext& ctx,
+    const SpiderTableau& parentTableau)
+{
+    // Get the child moves
+    auto moves = GetMoves(parentTableau);
+    if (moves.size() == 0)
+        return {};
+
+    // Put the current position in the history (prevent search loops)
+    std::string parentTabString = parentTableau.GetTableauString();
+    ctx.AddParentPosition(parentTabString);
+
+    SpiderTableau tableau(parentTableau);
+    std::vector<TreeMove> treeMoves;
+
+    // If we are not at the leaf level, then just expand down.
+    for (auto& move : moves)
+    {
+        SpiderTableau::SavePoint save(tableau);
+        tableau.DoMove(move, DoTurnCard::No);
+        std::string tabString = tableau.GetTableauString();
+
+        // if we have seen this before at a parent, then skip it.
+        if (ctx.IsAParentPosition(tabString))
+            continue;
+
+        if (depth >= ctx.GetMaxDepth())
+        {
+            float score = (float)ComputeScore(tableau);
+            treeMoves.push_back(TreeMove(score, move));
+        }
+        else
+        {
+            auto childTreeMoves = FindAndScoreToDepth(depth + 1, ctx, tableau);
+            if (childTreeMoves.size() == 0)
+            {
+                float score = (float)ComputeScore(tableau);
+                treeMoves.push_back(TreeMove(score, move));
+            }
+            else
+            {
+                auto& bestChild = childTreeMoves[0];
+                treeMoves.push_back(TreeMove(move, bestChild));
+            }
+        }
+    }
+    SortTreeMoves(treeMoves);
+    return treeMoves;
 }
 

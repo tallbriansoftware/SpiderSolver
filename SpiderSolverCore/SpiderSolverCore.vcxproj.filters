@@ -115,6 +115,9 @@
     <ClCompile Include="main\logic\FindStacks.cpp">
       <Filter>Main\Logic</Filter>
     </ClCompile>
+    <ClCompile Include="main\strategy\TreeMove.cpp">
+      <Filter>Main\Strategy</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="simple.h" />
@@ -201,6 +204,9 @@
     </ClInclude>
     <ClInclude Include="public\spidersolvercore\logic\FindStacks.h">
       <Filter>Public\Logic</Filter>
+    </ClInclude>
+    <ClInclude Include="public\spidersolvercore\strategy\TreeMove.h">
+      <Filter>Public\Strategy</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

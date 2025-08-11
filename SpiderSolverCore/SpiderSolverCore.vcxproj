@@ -166,6 +166,7 @@
     <ClCompile Include="main\strategy\BoardScorer.cpp" />
     <ClCompile Include="main\strategy\SearchContext.cpp" />
     <ClCompile Include="main\strategy\StrategyUtil.cpp" />
+    <ClCompile Include="main\strategy\TreeMove.cpp" />
     <ClCompile Include="public\spidersolvercore\model\Ancestry.cpp" />
     <ClCompile Include="public\spidersolvercore\strategy\BoardStats.cpp" />
     <ClCompile Include="public\spidersolvercore\strategy\Strategy.cpp" />
@@ -199,6 +200,7 @@
     <ClInclude Include="public\spidersolvercore\strategy\SearchContext.h" />
     <ClInclude Include="public\spidersolvercore\strategy\Strategy.h" />
     <ClInclude Include="public\spidersolvercore\strategy\StrategyUtil.h" />
+    <ClInclude Include="public\spidersolvercore\strategy\TreeMove.h" />
     <ClInclude Include="public\spidersolvercore\utils\SpiderPrint.h" />
     <ClInclude Include="simple.h" />
   </ItemGroup>

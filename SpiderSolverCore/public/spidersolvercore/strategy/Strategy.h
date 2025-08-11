@@ -8,6 +8,10 @@ class Ancestry;
 class SpiderTableau;
 class BoardScorer;
 class SearchContext;
+class TreeMove;
+class TreeContext;
+class MoveCombo;
+
 
 class Strategy
 {
@@ -43,6 +47,25 @@ private:
         int depth,
         SearchContext& ctx,
         const SpiderTableau& parentTableau);
+
+    std::vector<ScoredMove> IterativelyDeepen(
+        const SpiderTableau& parentTableau,
+        const Ancestry& ancestry);
+
+    std::vector<TreeMove> FindAndScoreToDepth(
+        int depth,
+        SearchContext& ctx,
+        const SpiderTableau& parentTableau);
+
+    TreeMove CreateLeafMove(
+        const SpiderTableau& tableau,
+        const MoveCombo& move);
+
+    TreeMove CreateBranchMove(
+        const MoveCombo& move,
+        const TreeMove& bestChild);
+
+
 
 private:
     std::unique_ptr<BoardScorer> m_boardScorer;
