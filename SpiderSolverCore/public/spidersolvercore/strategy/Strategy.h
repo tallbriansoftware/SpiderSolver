@@ -21,6 +21,7 @@ public:
     ~Strategy();
 
     int GetEvals() const;
+    void ClearEvals();
 
     float MaxScore() const;
 
@@ -33,20 +34,6 @@ public:
     const BoardScorer& GetBoardScorer() const;
 
 private:
-    std::vector<ScoredMove> GetSortedMoveScores(
-        const SearchContext& ctx,
-        const SpiderTableau& parentTableau,
-        const std::vector<MoveSingle>& moves);
-
-    std::vector<ScoredMove> GetSortedMoveScores(
-        const SearchContext& ctx,
-        const SpiderTableau& parentTableau,
-        const std::vector<MoveCombo>& moves);
-
-    std::vector<ScoredMove> FindAndScoreTreeDepthOfChildren(
-        int depth,
-        SearchContext& ctx,
-        const SpiderTableau& parentTableau);
 
     std::vector<ScoredMove> IterativelyDeepen(
         const SpiderTableau& parentTableau,
@@ -56,16 +43,6 @@ private:
         int depth,
         SearchContext& ctx,
         const SpiderTableau& parentTableau);
-
-    TreeMove CreateLeafMove(
-        const SpiderTableau& tableau,
-        const MoveCombo& move);
-
-    TreeMove CreateBranchMove(
-        const MoveCombo& move,
-        const TreeMove& bestChild);
-
-
 
 private:
     std::unique_ptr<BoardScorer> m_boardScorer;

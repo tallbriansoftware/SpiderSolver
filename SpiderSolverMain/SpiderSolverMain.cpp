@@ -82,7 +82,7 @@ SeriesTotal RunASeriesOfGames(const CommandLineArguments& args, CsvTable& csv)
         int totalCount = count * stratCount;
         for (int seed = start; seed < start + count; ++seed)
         {
-
+            strategy.ClearEvals();
             csv.StartRow();
             csv.AddValue(MyCsv::dateHeader, currentDate);
             csv.AddValue(MyCsv::seedHeader, seed);
