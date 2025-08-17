@@ -53,9 +53,14 @@ float Strategy::ComputeScore(const SpiderTableau& tableau)
 
 std::vector<ScoredMove> Strategy::FindScoredMoves(
     const SpiderTableau& parentTableau,
-    const Ancestry& ancestry)
+    const Ancestry& ancestry,
+    int depth)
 {
-    auto scoredBoards = IterativelyDeepen(parentTableau, ancestry);
+    int depthLimit = depth;
+    Ancestry searchAncestry(ancestry);
+    SearchContext ctx(depthLimit, ancestry);
+
+    auto scoredBoards = IterativelyDeepen(parentTableau, ctx);
     return scoredBoards;
 }
 
@@ -88,23 +93,11 @@ namespace
 
 std::vector<ScoredMove> Strategy::IterativelyDeepen(
     const SpiderTableau& parentTableau,
-    const Ancestry& ancestry)
+    SearchContext& ctx)
 {
-    int totalLimit = 4;
-    std::vector<TreeMove> treeMoves;
+    auto treeMoves = FindAndScoreToDepth(1, ctx, parentTableau);
 
-    for (int depthLimit = 1; depthLimit < totalLimit; depthLimit += 1)
-    {
-        SpiderTableau tableau(parentTableau);
-        Ancestry searchAncestry(ancestry);
-        SearchContext ctx(depthLimit, ancestry);
-
-        treeMoves = FindAndScoreToDepth(1, ctx, parentTableau);
-        if (treeMoves.size() == 0)
-            return {};
-
-    }
-
+    // convert to scored moves
     std::vector<ScoredMove> result;
     for (auto& tm : treeMoves)
     {
@@ -138,7 +131,7 @@ std::vector<TreeMove> Strategy::FindAndScoreToDepth(
         tableau.DoMove(move, DoTurnCard::No);
         std::string tabString = tableau.GetTableauString();
 
-        // if we have seen this before at a parent, then skip it.
+        // if we have seen this before as a parent, then skip it.
         if (ctx.IsAParentPosition(tabString))
             continue;
 

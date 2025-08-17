@@ -14,6 +14,7 @@ struct BoardResult
 {
     int moveCount;
     float score;
+    int searchDepth;
     int evals;
     int64_t usecs;
     bool won;
@@ -21,6 +22,7 @@ struct BoardResult
     BoardResult()
         : moveCount(0)
         , score(0.0)
+        , searchDepth(0)
         , evals(0)
         , usecs(0)
         , won(false)
@@ -36,4 +38,8 @@ void OutputScoredMoves(
     const SpiderTableau& tableau,
     const std::vector<ScoredMove>& scoredMoves);
 
-BoardResult RunOneBoard(const CommandLineArguments& args, int seed, Strategy& strategy);
+BoardResult RunOneBoard(
+    const CommandLineArguments& args,
+    int seed,
+    Strategy& strategy,
+    int depth);

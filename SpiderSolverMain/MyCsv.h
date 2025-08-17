@@ -11,5 +11,6 @@ namespace MyCsv
     const std::string scoreHeader = "score";
     const std::string evalsHeader = "evals";
     const std::string usecsHeader = "uSecs";
-    const std::string winHeader = "win";
+    const std::string winHeader   = "win";
+    const std::string searchDepth = "depth";
 }

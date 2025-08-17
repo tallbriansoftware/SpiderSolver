@@ -67,6 +67,7 @@ SeriesTotal RunASeriesOfGames(const CommandLineArguments& args, CsvTable& csv)
 
     int start = args.GetSeed();
     int count = args.GetCount();
+    int maxDepth = args.GetTreeDepth();
 
     auto strategyList = GetStrategies(args);
     int stratCount = (int)strategyList.size();
@@ -79,33 +80,36 @@ SeriesTotal RunASeriesOfGames(const CommandLineArguments& args, CsvTable& csv)
         Strategy& strategy = *stratPtr.get();
         auto termValues = strategy.GetBoardScorer().GetModifiedTerms();
 
-        int totalCount = count * stratCount;
+        int totalCount = count * stratCount * maxDepth;
         for (int seed = start; seed < start + count; ++seed)
         {
-            strategy.ClearEvals();
-            csv.StartRow();
-            csv.AddValue(MyCsv::dateHeader, currentDate);
-            csv.AddValue(MyCsv::seedHeader, seed);
+            for (int depth = 1; depth <= maxDepth; depth++)
+            {
+                csv.StartRow();
+                csv.AddValue(MyCsv::dateHeader, currentDate);
+                csv.AddValue(MyCsv::seedHeader, seed);
 
-            BoardResult result = RunOneBoard(args, seed, strategy);
+                BoardResult result = RunOneBoard(args, seed, strategy, depth);
 
-            csv.AddValue(MyCsv::movesHeader, result.moveCount);
-            csv.AddValue(MyCsv::scoreHeader, result.score);
-            csv.AddValue(MyCsv::evalsHeader, result.evals);
-            csv.AddValue(MyCsv::usecsHeader, result.usecs);
-            csv.AddValue(MyCsv::winHeader, result.won);
+                csv.AddValue(MyCsv::movesHeader, result.moveCount);
+                csv.AddValue(MyCsv::scoreHeader, result.score);
+                csv.AddValue(MyCsv::evalsHeader, result.evals);
+                csv.AddValue(MyCsv::usecsHeader, result.usecs);
+                csv.AddValue(MyCsv::winHeader, result.won);
+                csv.AddValue(MyCsv::searchDepth, result.searchDepth);
 
-            for (int i = 0; i < (int)termNames.size(); i++)
-                csv.AddValue(termNames[i], termValues[i]);
+                for (int i = 0; i < (int)termNames.size(); i++)
+                    csv.AddValue(termNames[i], termValues[i]);
 
-            CollectTotals(result, total);
-            total.completed += 1;
-            std::cerr << (total.completed * 100) / totalCount << "% complete(" << total.completed
-                << " of " << totalCount << ")   " << total.wins << " Wins("
-                << (total.wins * 100) / total.completed << "%) " << " (seed: "
-                << seed << ")               \r";
+                CollectTotals(result, total);
+                total.completed += 1;
+                std::cerr << (total.completed * 100) / totalCount << "% complete(" << total.completed
+                    << " of " << totalCount << ")   " << total.wins << " Wins("
+                    << (total.wins * 100) / total.completed << "%) " << " (seed: "
+                    << seed << ")               \r";
 
-            csv.EndRow();
+                csv.EndRow();
+            }
         }
         std::cerr << std::endl;
 
@@ -140,11 +144,11 @@ int main(int argc, char* argv[])
         {MyCsv::scoreHeader, CsvTable::typeFloat},
         {MyCsv::evalsHeader, CsvTable::typeInt},
         {MyCsv::usecsHeader, CsvTable::typeInt64},
-        {MyCsv::winHeader, CsvTable::typeBool}
+        {MyCsv::winHeader, CsvTable::typeBool},
+        {MyCsv::searchDepth, CsvTable::typeInt}
     };
 
     CsvTable csv(columns);
-
     SeriesTotal total = RunASeriesOfGames(args, csv);
     csv.PrintTable();
 

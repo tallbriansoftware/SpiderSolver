@@ -29,7 +29,8 @@ public:
 
     std::vector<ScoredMove> FindScoredMoves(
         const SpiderTableau& tableau,
-        const Ancestry& ancestry);
+        const Ancestry& ancestry,
+        int depth);
 
     const BoardScorer& GetBoardScorer() const;
 
@@ -37,7 +38,7 @@ private:
 
     std::vector<ScoredMove> IterativelyDeepen(
         const SpiderTableau& parentTableau,
-        const Ancestry& ancestry);
+        SearchContext& ctx);
 
     std::vector<TreeMove> FindAndScoreToDepth(
         int depth,

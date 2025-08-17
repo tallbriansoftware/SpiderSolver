@@ -37,7 +37,11 @@ void OutputScoredMoves(const SpiderTableau& tableau, const std::vector<ScoredMov
 }
 
 
-BoardResult RunBoardInner(const CommandLineArguments& args, int seed, Strategy& strategy)
+BoardResult RunBoardInner(
+    const CommandLineArguments& args,
+    int seed,
+    Strategy& strategy,
+    int depth)
 {
     BoardResult result;
 
@@ -61,7 +65,7 @@ BoardResult RunBoardInner(const CommandLineArguments& args, int seed, Strategy& 
             std::cout << "Board Score=" << currentScore << "/" << strategy.MaxScore() << std::endl;
         }
 
-        auto scoredMoves = strategy.FindScoredMoves(tableau, ancestry);
+        auto scoredMoves = strategy.FindScoredMoves(tableau, ancestry, depth);
         if (!scoredMoves.empty())
         {
             StrategyUtil::SortLocalMoves(scoredMoves);
@@ -100,6 +104,7 @@ BoardResult RunBoardInner(const CommandLineArguments& args, int seed, Strategy& 
     }
 
     result.score = strategy.ComputeScore(tableau);
+    result.searchDepth = depth;
     result.won = tableau.IsWon();
     result.moveCount = moveCount;
     result.evals = strategy.GetEvals();
@@ -107,12 +112,22 @@ BoardResult RunBoardInner(const CommandLineArguments& args, int seed, Strategy& 
 }
 
 
-BoardResult RunOneBoard(const CommandLineArguments& args, int seed, Strategy& strategy)
+BoardResult RunOneBoard(
+    const CommandLineArguments& args,
+    int seed,
+    Strategy& strategy,
+    int depth)
 {
     ChronoTimer timer;
+    int maxDepth = args.GetTreeDepth();
 
     timer.Start();
-    BoardResult result = RunBoardInner(args, seed, strategy);
+    strategy.ClearEvals();
+
+    BoardResult result;
+
+    result = RunBoardInner(args, seed, strategy, depth);
+
     result.usecs = timer.ReadMicroseconds();
 
     // Some Error Checking
