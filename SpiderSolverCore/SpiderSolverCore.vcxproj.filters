@@ -118,6 +118,9 @@
     <ClCompile Include="main\strategy\TreeMove.cpp">
       <Filter>Main\Strategy</Filter>
     </ClCompile>
+    <ClCompile Include="main\logic\MoveFinder.cpp">
+      <Filter>Main\Logic</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="simple.h" />
@@ -207,6 +210,9 @@
     </ClInclude>
     <ClInclude Include="public\spidersolvercore\strategy\TreeMove.h">
       <Filter>Public\Strategy</Filter>
+    </ClInclude>
+    <ClInclude Include="public\spidersolvercore\logic\MoveFinder.h">
+      <Filter>Public\Logic</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

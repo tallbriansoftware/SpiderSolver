@@ -20,7 +20,10 @@ std::vector<int> FindStacks::ThatWillRecieveRank(Rank rank, const SpiderTableau&
     return destStackNos;
 }
 
-
+// RunPattern (stack)
+// Returns true/false if the stack has a
+// requested number of suited runs.
+// At least or exactly.
 bool FindStacks::RunPattern(
     const SpiderStack& stack,
     int numberOfRuns,
@@ -34,13 +37,15 @@ bool FindStacks::RunPattern(
     if (stack.GetRunCount() < numberOfRuns)
         return false;
 
-    // Exactly means no more (leaves a hole basicly)
+    // Exactly means no more.
+    // (Leaves a hole)
     if (exactly == Exactly::Yes)
     {
         // Must have N runs (exactly)
         if (stack.GetRunCount() != numberOfRuns)
             return false;
         // and no down cards.
+        // exactly also means no down cards.
         if (stack.CountDownCards() != 0)
             return false;
     }
@@ -67,6 +72,9 @@ bool FindStacks::RunPattern(
 
 }
 
+// RunPattern (tabeau)
+// Collect the stack Numbers that pass
+// RunPattern(stack) test.
 std::vector<int> FindStacks::RunPattern(
     const SpiderTableau& tableau,
     int numberOfRuns,

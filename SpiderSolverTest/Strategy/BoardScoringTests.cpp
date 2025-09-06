@@ -1,7 +1,7 @@
 #include "gtest/gtest.h"
 
 #include "spidersolvercore/strategy/Strategy.h"
-#include "spidersolvercore/logic/SingleMoveFinder.h"
+#include "spidersolvercore/logic/MoveFinder.h"
 #include "spidersolvercore/Model/SpiderTableau.h"
 #include "spidersolvercore/utils/SpiderPrint.h"
 
@@ -73,7 +73,7 @@ TEST(BoardScoringTests, twoLongs) {
 #endif
 
     std::vector<MoveSingle> moves;
-    SingleMoveFinder::AddColorUpMoves(moves, tableau);
+    MoveFinder::AddColorUpMoves(moves, tableau);
     EXPECT_EQ(moves.size(), 1);
 
 /*
@@ -115,7 +115,7 @@ TEST(BoardScoringTests, VeryLongAndShort) {
 #endif
 
     std::vector<MoveSingle> moves;
-    SingleMoveFinder::AddColorUpMoves(moves, tableau);
+    MoveFinder::AddColorUpMoves(moves, tableau);
     EXPECT_EQ(moves.size(), 1);
 
 /*
@@ -176,7 +176,7 @@ TEST(BoardScoringTests, TwoVeryLong) {
 #endif
 
     std::vector<MoveSingle> moves;
-    SingleMoveFinder::AddColorUpMoves(moves, tableau);
+    MoveFinder::AddColorUpMoves(moves, tableau);
     EXPECT_EQ(moves.size(), 1);
 
 /*
@@ -237,7 +237,7 @@ TEST(BoardScoringTests, ShortAndLong) {
 #endif
 
     std::vector<MoveSingle> moves;
-    SingleMoveFinder::AddColorUpMoves(moves, tableau);
+    MoveFinder::AddColorUpMoves(moves, tableau);
     EXPECT_EQ(moves.size(), 1);
 
 /*

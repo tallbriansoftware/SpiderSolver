@@ -5,18 +5,16 @@
 
 class MoveSingle;
 class MoveCombo;
-
-class SpiderStack;
 class SpiderTableau;
+class SpiderStack;
 
-
-namespace SingleMoveFinder
+namespace MoveFinder
 {
-    std::vector<MoveCombo> AllMoves(const SpiderTableau& tableau);
+    std::vector<MoveCombo> AllSimpleMoves(const SpiderTableau& tableau);
 
-    std::vector<MoveSingle> AllMoveSingles(const SpiderTableau& tableau);
+    std::vector<MoveSingle> GetAllSimpleMoves(const SpiderTableau& tableau);
     int AddSimpleMoves(std::vector<MoveSingle>& moves, const SpiderTableau& tableau);
     int AddColorUpMoves(std::vector<MoveSingle>& moves, const SpiderTableau& tableau);
-    int AddSuitedRankSplittingMoves(std::vector<MoveSingle>& moves, const SpiderTableau& tableau);
     int AddHoleFillingMoves(std::vector<MoveSingle>& moves, const SpiderTableau& tableau);
+    int AddRunSplittingMoves(std::vector<MoveSingle>& moves, const SpiderTableau& tableau);
 }

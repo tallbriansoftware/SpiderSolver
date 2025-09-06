@@ -47,6 +47,13 @@ TEST(HolePreservingMoveFinderTests, RunPatternTest2) {
     {
         SpiderStack stack;
         stack.SetIsColumn();
+        SetStack(stack, { D2H(), U7S() });
+        EXPECT_TRUE(FindStacks::RunPattern(stack, 1, Exactly::No, Sequential::Yes));
+        EXPECT_FALSE(FindStacks::RunPattern(stack, 1, Exactly::Yes, Sequential::Yes));
+    }
+    {
+        SpiderStack stack;
+        stack.SetIsColumn();
         SetStack(stack, { D2H(), U7S(), U6S(), U5H(), U4H(), U3S(), U2S() });
         EXPECT_TRUE(FindStacks::RunPattern(stack, 3, Exactly::No, Sequential::Yes));
         EXPECT_FALSE(FindStacks::RunPattern(stack, 3, Exactly::Yes, Sequential::Yes));
