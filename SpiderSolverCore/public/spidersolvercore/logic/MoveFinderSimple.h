@@ -8,7 +8,7 @@ class MoveCombo;
 class SpiderTableau;
 class SpiderStack;
 
-namespace MoveFinder
+namespace MoveFinderSimple
 {
     std::vector<MoveCombo> AllSimpleMoves(const SpiderTableau& tableau);
 

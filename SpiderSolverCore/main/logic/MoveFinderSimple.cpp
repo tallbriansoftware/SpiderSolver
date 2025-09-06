@@ -1,4 +1,4 @@
-#include "spidersolvercore/Logic/MoveFinder.h"
+#include "spidersolvercore/Logic/MoveFinderSimple.h"
 
 #include "spidersolvercore/model/MoveSingle.h"
 #include "spidersolvercore/model/MoveCombo.h"
@@ -194,17 +194,17 @@ namespace {
     }
 }
 
-int MoveFinder::AddSimpleMoves(std::vector<MoveSingle>& moves, const SpiderTableau& tableau)
+int MoveFinderSimple::AddSimpleMoves(std::vector<MoveSingle>& moves, const SpiderTableau& tableau)
 {
     return ScanMoveTestFunc(moves, tableau, SimpleMove_TestFunc);
 }
 
-int MoveFinder::AddColorUpMoves(std::vector<MoveSingle>& moves, const SpiderTableau& tableau)
+int MoveFinderSimple::AddColorUpMoves(std::vector<MoveSingle>& moves, const SpiderTableau& tableau)
 {
     return ScanMoveTestFunc(moves, tableau, ColorUpMove_TestFunc);
 }
 
-int MoveFinder::AddHoleFillingMoves(std::vector<MoveSingle>& moves, const SpiderTableau& tableau)
+int MoveFinderSimple::AddHoleFillingMoves(std::vector<MoveSingle>& moves, const SpiderTableau& tableau)
 {
     int holeIndex = tableau.FindFirstHoleIndex();
     if (holeIndex < 0)
@@ -214,7 +214,7 @@ int MoveFinder::AddHoleFillingMoves(std::vector<MoveSingle>& moves, const Spider
     return ScanMoveTestFunc_DestStack(moves, destStack, tableau, HoleFillingMove_TestFunc);
 }
 
-int MoveFinder::AddRunSplittingMoves(std::vector<MoveSingle>& moves, const SpiderTableau& tableau)
+int MoveFinderSimple::AddRunSplittingMoves(std::vector<MoveSingle>& moves, const SpiderTableau& tableau)
 {
     return ScanMoveTestFunc(moves, tableau, RunSplittingMove_TestFunc);
 }
@@ -223,7 +223,7 @@ int MoveFinder::AddRunSplittingMoves(std::vector<MoveSingle>& moves, const Spide
 // -- Excludes breaking suited run
 // -- should exclude hole filling moves when I get smarter
 //
-std::vector<MoveSingle> MoveFinder::GetAllSimpleMoves(const SpiderTableau& tableau)
+std::vector<MoveSingle> MoveFinderSimple::GetAllSimpleMoves(const SpiderTableau& tableau)
 {
     std::vector<MoveSingle> moves;
 
@@ -235,7 +235,7 @@ std::vector<MoveSingle> MoveFinder::GetAllSimpleMoves(const SpiderTableau& table
 }
 
 
-std::vector<MoveCombo> MoveFinder::AllSimpleMoves(const SpiderTableau& tableau)
+std::vector<MoveCombo> MoveFinderSimple::AllSimpleMoves(const SpiderTableau& tableau)
 {
     std::vector<MoveSingle> smoves = GetAllSimpleMoves(tableau);
     std::vector<MoveCombo> cmoves;

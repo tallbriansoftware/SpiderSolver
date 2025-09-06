@@ -3,7 +3,6 @@
 #include "spidersolvercore/Model/MoveCombo.h"
 #include "spidersolvercore/Model/SpiderTableau.h"
 #include "spidersolvercore/logic/FindStacks.h"
-#include "spidersolvercore/logic/SingleMoveFindingFuncs.h"
 
 #include <assert.h>
 

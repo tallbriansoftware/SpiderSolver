@@ -150,9 +150,7 @@
     <ClCompile Include="main\logic\FindStacks.cpp" />
     <ClCompile Include="main\logic\HolePreservingMoveFinder.cpp" />
     <ClCompile Include="main\logic\IsMoveLegal.cpp" />
-    <ClCompile Include="main\logic\MoveFinder.cpp" />
-    <ClCompile Include="main\logic\SingleMoveFinder.cpp" />
-    <ClCompile Include="main\logic\SingleMoveFindingFuncs.cpp" />
+    <ClCompile Include="main\logic\MoveFinderSimple.cpp" />
     <ClCompile Include="main\model\Card.cpp" />
     <ClCompile Include="main\model\MoveCombo.cpp" />
     <ClCompile Include="main\model\MoveReversible.cpp" />
@@ -178,9 +176,7 @@
     <ClInclude Include="public\spidersolvercore\logic\FindStacks.h" />
     <ClInclude Include="public\spidersolvercore\logic\HolePreservingMoveFinder.h" />
     <ClInclude Include="public\spidersolvercore\logic\IsMoveLegal.h" />
-    <ClInclude Include="public\spidersolvercore\logic\MoveFinder.h" />
-    <ClInclude Include="public\spidersolvercore\logic\SingleMoveFinder.h" />
-    <ClInclude Include="public\spidersolvercore\logic\SingleMoveFindingFuncs.h" />
+    <ClInclude Include="public\spidersolvercore\logic\MoveFinderSimple.h" />
     <ClInclude Include="public\spidersolvercore\model\Ancestry.h" />
     <ClInclude Include="public\spidersolvercore\model\Card.h" />
     <ClInclude Include="public\spidersolvercore\model\CardEnums.h" />

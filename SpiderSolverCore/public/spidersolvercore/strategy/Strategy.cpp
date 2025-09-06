@@ -1,7 +1,7 @@
 #include "spidersolvercore/strategy/Strategy.h"
 
 #include "spidersolvercore/logic/HolePreservingMoveFinder.h"
-#include "spidersolvercore/logic/MoveFinder.h"
+#include "spidersolvercore/logic/MoveFinderSimple.h"
 #include "spidersolvercore/model/Ancestry.h"
 #include "spidersolvercore/model/SpiderTableau.h"
 #include "spidersolvercore/strategy/BoardScorer.h"
@@ -74,7 +74,7 @@ namespace
 {
     std::vector<MoveCombo> GetMoves(const SpiderTableau& tableau)
     {
-        auto moves = MoveFinder::AllSimpleMoves(tableau);
+        auto moves = MoveFinderSimple::AllSimpleMoves(tableau);
         auto holeMoves = HolePreservingMoveFinder::AllMoves(tableau);
         moves.insert(moves.end(), holeMoves.begin(), holeMoves.end());
         return moves;

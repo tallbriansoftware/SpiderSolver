@@ -103,12 +103,6 @@
     <ClCompile Include="main\logic\IsMoveLegal.cpp">
       <Filter>Main\Logic</Filter>
     </ClCompile>
-    <ClCompile Include="main\logic\SingleMoveFinder.cpp">
-      <Filter>Main\Logic</Filter>
-    </ClCompile>
-    <ClCompile Include="main\logic\SingleMoveFindingFuncs.cpp">
-      <Filter>Main\Logic</Filter>
-    </ClCompile>
     <ClCompile Include="main\logic\HolePreservingMoveFinder.cpp">
       <Filter>Main\Logic</Filter>
     </ClCompile>
@@ -118,7 +112,7 @@
     <ClCompile Include="main\strategy\TreeMove.cpp">
       <Filter>Main\Strategy</Filter>
     </ClCompile>
-    <ClCompile Include="main\logic\MoveFinder.cpp">
+    <ClCompile Include="main\logic\MoveFinderSimple.cpp">
       <Filter>Main\Logic</Filter>
     </ClCompile>
   </ItemGroup>
@@ -196,12 +190,6 @@
     <ClInclude Include="public\spidersolvercore\logic\IsMoveLegal.h">
       <Filter>Public\Logic</Filter>
     </ClInclude>
-    <ClInclude Include="public\spidersolvercore\logic\SingleMoveFinder.h">
-      <Filter>Public\Logic</Filter>
-    </ClInclude>
-    <ClInclude Include="public\spidersolvercore\logic\SingleMoveFindingFuncs.h">
-      <Filter>Public\Logic</Filter>
-    </ClInclude>
     <ClInclude Include="public\spidersolvercore\logic\HolePreservingMoveFinder.h">
       <Filter>Public\Logic</Filter>
     </ClInclude>
@@ -211,7 +199,7 @@
     <ClInclude Include="public\spidersolvercore\strategy\TreeMove.h">
       <Filter>Public\Strategy</Filter>
     </ClInclude>
-    <ClInclude Include="public\spidersolvercore\logic\MoveFinder.h">
+    <ClInclude Include="public\spidersolvercore\logic\MoveFinderSimple.h">
       <Filter>Public\Logic</Filter>
     </ClInclude>
   </ItemGroup>
