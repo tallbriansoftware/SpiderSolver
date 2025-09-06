@@ -1,6 +1,6 @@
 #include "gtest/gtest.h"
 
-#include "spidersolvercore/Logic/HolePreservingMoveFinder.h"
+#include "spidersolvercore/Logic/MoveFinderWithHole.h"
 #include "spidersolvercore/Model/SpiderTableau.h"
 #include "spidersolvercore/utils/SpiderPrint.h"
 
@@ -101,7 +101,7 @@ JH  -  -  - JH  -  -  -  -  -
     PrintTableau(tableau);
 #endif
 
-    auto hole1_Moves = HolePreservingMoveFinder::AllMoves(tableau);
+    auto hole1_Moves = MoveFinderWithHole::AllMoves(tableau);
 /*
     2{6S4}<=>8{6H} swap-runs
     0{JH}2{TH7-6S4} Move-2-Seq-Runs
@@ -153,7 +153,7 @@ TEST(HolePreservingMoveFinderTests, FlipRuns) {
 #endif
 
     std::vector<MoveCombo> moves;
-    int count = HolePreservingMoveFinder::AddFlipRuns(moves, tableau);
+    int count = MoveFinderWithHole::AddFlipRuns(moves, tableau);
 
 /*
     5{E0}2{7S6}, 5{7S6}2{5H4=E1} Flip-Runs
@@ -207,7 +207,7 @@ TEST(HolePreservingMoveFinderTests, TradeHolesA) {
 #endif
 
     std::vector<MoveCombo> moves;
-    int count = HolePreservingMoveFinder::AddTradeHolesA(moves, tableau);
+    int count = MoveFinderWithHole::AddTradeHolesA(moves, tableau);
 /*
     5{E0}2{3S2}, 2{9H7}4{6S4=E1} Trade-Holes
 */
@@ -260,7 +260,7 @@ TEST(HolePreservingMoveFinderTests, TradeHolesB) {
 #endif
 
     std::vector<MoveCombo> moves;
-    int count = HolePreservingMoveFinder::AddTradeHolesB(moves, tableau);
+    int count = MoveFinderWithHole::AddTradeHolesB(moves, tableau);
     /*
         5{E0}2{3S2}, 2{9H7}4{6S4=E1} Trade-Holes
     */
@@ -315,7 +315,7 @@ TEST(HolePreservingMoveFinderTests, SwapRuns) {
 #endif
 
     std::vector<MoveCombo> moves;
-    int count = HolePreservingMoveFinder::AddSwapRuns(moves, tableau);
+    int count = MoveFinderWithHole::AddSwapRuns(moves, tableau);
 
 /*
   5{E0}2{3S2}, 2{9H7}4{6S4=E1} Trade-Holes
@@ -371,7 +371,7 @@ TEST(HolePreservingMoveFinderTests, MoveTwoSequentialRuns) {
 #endif
 
     std::vector<MoveCombo> moves;
-    int count = HolePreservingMoveFinder::AddMoveTwoRuns(moves, tableau);
+    int count = MoveFinderWithHole::AddMoveTwoRuns(moves, tableau);
 
 /*
   2{9H8}4{7H6-5S3} Move-2-Seq-Runs
@@ -429,7 +429,7 @@ TEST(HolePreservingMoveFinderTests, RemoveMiddleRun) {
 #endif
 
     std::vector<MoveCombo> moves;
-    int count = HolePreservingMoveFinder::AddRemoveMiddleRun(moves, tableau);
+    int count = MoveFinderWithHole::AddRemoveMiddleRun(moves, tableau);
 
 /*
    5{E0}2{7S6}, 4{KHQ}2{JST}, 2{9H8}5{7S6=E1} remove-middle-run
@@ -484,7 +484,7 @@ TEST(HolePreservingMoveFinderTests, InsertRunIntoStack) {
 #endif
 
     std::vector<MoveCombo> moves;
-    int count = HolePreservingMoveFinder::AddInsertRun(moves, tableau);
+    int count = MoveFinderWithHole::AddInsertRun(moves, tableau);
 
 /*
   5{E0}2{4H3}, 2{9S8}4{7H5}, 2{7H5}5{4H3=E1} insert-run

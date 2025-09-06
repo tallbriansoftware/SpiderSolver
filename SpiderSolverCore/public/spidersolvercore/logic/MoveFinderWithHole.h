@@ -6,7 +6,7 @@
 
 class SpiderTableau;
 
-namespace HolePreservingMoveFinder
+namespace MoveFinderWithHole
 {
     std::vector<MoveCombo> AllMoves(const SpiderTableau& tableau);
 

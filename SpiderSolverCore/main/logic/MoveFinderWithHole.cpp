@@ -1,4 +1,4 @@
-#include "spidersolvercore/logic/HolePreservingMoveFinder.h"
+#include "spidersolvercore/logic/MoveFinderWithHole.h"
 
 #include "spidersolvercore/Model/MoveCombo.h"
 #include "spidersolvercore/Model/SpiderTableau.h"
@@ -15,7 +15,7 @@ namespace
     }
 }
 
-std::vector<MoveCombo> HolePreservingMoveFinder::AllMoves(const SpiderTableau& tableau)
+std::vector<MoveCombo> MoveFinderWithHole::AllMoves(const SpiderTableau& tableau)
 {
     if (tableau.GetHoleCount() == 0)
         return {};
@@ -100,7 +100,7 @@ namespace
 //
 // Check that C-A and A-B   dest.0 - src.1  and  src.1 -> src.0 
 //
-int HolePreservingMoveFinder::AddMoveTwoRuns(
+int MoveFinderWithHole::AddMoveTwoRuns(
     std::vector<MoveCombo>& moves,
     const SpiderTableau& tableau)
 {
@@ -150,7 +150,7 @@ int HolePreservingMoveFinder::AddMoveTwoRuns(
 //
 // Check that B-A
 //
-int HolePreservingMoveFinder::AddFlipRuns(
+int MoveFinderWithHole::AddFlipRuns(
     std::vector<MoveCombo>& moves,
     const SpiderTableau& tableau)
 {
@@ -199,7 +199,7 @@ int HolePreservingMoveFinder::AddFlipRuns(
 //
 // Check that A-C and C-B  ie.  dest.1 - src.0  and src.0 - dest.0
 //
-int HolePreservingMoveFinder::AddInsertRun(
+int MoveFinderWithHole::AddInsertRun(
     std::vector<MoveCombo>& moves,
     const SpiderTableau& tableau)
 {
@@ -266,7 +266,7 @@ int HolePreservingMoveFinder::AddInsertRun(
 //
 // Check that A-C and D-B  ie  src.2 - src.0  and dest.0 - src.1
 //
-int HolePreservingMoveFinder::AddRemoveMiddleRun(
+int MoveFinderWithHole::AddRemoveMiddleRun(
     std::vector<MoveCombo>& moves,
     const SpiderTableau& tableau)
 {
@@ -325,7 +325,7 @@ int HolePreservingMoveFinder::AddRemoveMiddleRun(
 //
 // Check that B-A  ie.  dest.1 - src.0
 //
-int HolePreservingMoveFinder::AddTradeHolesA(
+int MoveFinderWithHole::AddTradeHolesA(
     std::vector<MoveCombo>& moves, 
     const SpiderTableau& tableau)
 {
@@ -371,7 +371,7 @@ int HolePreservingMoveFinder::AddTradeHolesA(
 //
 // Check that C-A  ie.  dest.0 - src.1
 //
-int HolePreservingMoveFinder::AddTradeHolesB(
+int MoveFinderWithHole::AddTradeHolesB(
     std::vector<MoveCombo>& moves, 
     const SpiderTableau& tableau)
 {
@@ -411,7 +411,7 @@ int HolePreservingMoveFinder::AddTradeHolesB(
 // 
 // check that A-D and C-B and at least one is suited.
 //
-int HolePreservingMoveFinder::AddSwapRuns(
+int MoveFinderWithHole::AddSwapRuns(
     std::vector<MoveCombo>& moves,
     const SpiderTableau& tableau)
 {

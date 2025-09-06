@@ -103,7 +103,7 @@
     <ClCompile Include="main\logic\IsMoveLegal.cpp">
       <Filter>Main\Logic</Filter>
     </ClCompile>
-    <ClCompile Include="main\logic\HolePreservingMoveFinder.cpp">
+    <ClCompile Include="main\logic\MoveFinderWithHole.cpp">
       <Filter>Main\Logic</Filter>
     </ClCompile>
     <ClCompile Include="main\logic\FindStacks.cpp">
@@ -190,7 +190,7 @@
     <ClInclude Include="public\spidersolvercore\logic\IsMoveLegal.h">
       <Filter>Public\Logic</Filter>
     </ClInclude>
-    <ClInclude Include="public\spidersolvercore\logic\HolePreservingMoveFinder.h">
+    <ClInclude Include="public\spidersolvercore\logic\MoveFinderWithHole.h">
       <Filter>Public\Logic</Filter>
     </ClInclude>
     <ClInclude Include="public\spidersolvercore\logic\FindStacks.h">
