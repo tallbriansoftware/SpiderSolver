@@ -15,18 +15,21 @@ namespace
     }
 }
 
-std::vector<MoveCombo> MoveFinderWithHole::AllMoves(const SpiderTableau& tableau)
+std::vector<MoveCombo> MoveFinderWithHole::GetAllOneHoleMoves(const SpiderTableau& tableau)
 {
-    if (tableau.GetHoleCount() == 0)
+    if (tableau.FindFirstHoleIndex() < 0)
         return {};
 
     std::vector<MoveCombo> allMoves;
-    AddAllMoves(allMoves, tableau);
+    AddAllOneHoleMoves(allMoves, tableau);
     return allMoves;
 }
 
-int MoveFinderWithHole::AddAllMoves(std::vector<MoveCombo>& moves, const SpiderTableau& tableau)
+int MoveFinderWithHole::AddAllOneHoleMoves(std::vector<MoveCombo>& moves, const SpiderTableau& tableau)
 {
+    if (tableau.FindFirstHoleIndex() < 0)
+        return 0;
+
     int moveCount = 0;
 
     moveCount += AddMoveTwoRuns(moves, tableau);

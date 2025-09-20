@@ -102,7 +102,7 @@ JH  -  -  - JH  -  -  -  -  -
     PrintTableau(tableau);
 #endif
 
-    auto hole1_Moves = MoveFinderWithHole::AllMoves(tableau);
+    auto hole1_Moves = MoveFinderWithHole::GetAllOneHoleMoves(tableau);
 /*
     2{6S4}<=>8{6H} swap-runs
     0{JH}2{TH7-6S4} Move-2-Seq-Runs

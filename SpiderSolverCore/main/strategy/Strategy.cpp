@@ -71,7 +71,6 @@ std::vector<ScoredMove> Strategy::FindScoredMoves(
 {
     int depthLimit = depth;
     Ancestry searchAncestry(ancestry);
-    // float parentScore = ComputeScore(parentTableau);
     SearchContext ctx(depthLimit, ancestry, moveFinder);
 
     auto scoredMoves = TreeSearch(parentTableau, ctx);
