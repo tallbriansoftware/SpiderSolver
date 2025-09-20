@@ -2,24 +2,23 @@
 
 #include "spidersolvercore/Model/MoveCombo.h"
 
-struct ScoredMove
+class Strategy;
+class SpiderTableau;
+
+
+class ScoredMove
 {
-    // Score result from making this move.
-    float localScore;
+public:
+    ScoredMove(float score, const MoveCombo& move);
 
-    // One logical move, but it can be more than one "simple" move.
-    // E.g.  a swap, or a move through a hole.
-    MoveCombo move;
+    float GetScore() const;    
+    const MoveCombo& GetMove() const;
 
-    // This is the score at the end of the path.
-    float depthScore;
+    float GetLocalScore() const;
+    void SetLocalScore(const Strategy& strategy, const SpiderTableau& tableau);
 
-    // This is the path following this move that
-    // ends in the node for the "depthScore"
-    std::vector<MoveCombo> futurePath;
-
-    ScoredMove(float localScore, const MoveCombo& move);
-    ScoredMove(
-        float localScore, const MoveCombo& move,
-        float depthScore, const std::vector<MoveCombo>& futurePath);
+private:
+    float m_score;
+    float m_localScore;
+    MoveCombo m_move;
 };

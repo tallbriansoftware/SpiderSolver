@@ -31,8 +31,11 @@ void OutputScoredMoves(const SpiderTableau& tableau, const std::vector<ScoredMov
     // output moves with scores
     for (auto& scoredMove : scoredMoves)
     {
-        std::string moveString = SpiderPrint::PrintBookMove(tableau, scoredMove.move, DoTurnCard::No);
-        std::cout << scoredMove.localScore << "   " << moveString << std::endl;
+        std::string moveString = SpiderPrint::PrintBookMove(tableau, scoredMove.GetMove(), DoTurnCard::No);
+        std::cout << scoredMove.GetScore();
+        if (scoredMove.GetLocalScore() != -1.0)
+            std::cout << "(" << scoredMove.GetLocalScore() << ")";
+        std::cout << "   " << moveString << std::endl;
     }
 }
 
@@ -68,20 +71,20 @@ BoardResult RunBoardInner(
         auto scoredMoves = strategy.FindScoredMoves(tableau, ancestry, depth);
         if (!scoredMoves.empty())
         {
-            StrategyUtil::SortLocalMoves(scoredMoves);
+            StrategyUtil::ResortTiedBestMoves(scoredMoves, strategy, tableau);
             if (printting)
             {
                 OutputScoredMoves(tableau, scoredMoves);
             }
 
-            float score = scoredMoves[0].localScore;
-            MoveCombo move = scoredMoves[0].move;
+            float score = scoredMoves[0].GetScore();
+            MoveCombo move = scoredMoves[0].GetMove();
 
             moveCount += move.Count();
 
             if (printting)
             {
-                std::cout << "Move # " << moveCount << ": " << score << " = "
+                std::cout << "Move# " << moveCount << "\nMove: "
                     << SpiderPrint::PrintBookMove(tableau, move, DoTurnCard::Auto) << std::endl;
             }
 

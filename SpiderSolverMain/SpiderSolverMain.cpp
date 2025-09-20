@@ -32,6 +32,8 @@ std::vector<std::unique_ptr<Strategy>> GetStrategies(const CommandLineArguments&
     strats.emplace_back(move(strat));
     return strats;
 
+// ===============================================
+
     // Just return the above default strategy until
     // the command line processing of parameters is ready.
 
@@ -68,6 +70,9 @@ SeriesTotal RunASeriesOfGames(const CommandLineArguments& args, CsvTable& csv)
     int start = args.GetSeed();
     int count = args.GetCount();
     int maxDepth = args.GetTreeDepth();
+    int minDepth = maxDepth;
+    if (args.GetMultiDepth())
+        minDepth = 1;
 
     auto strategyList = GetStrategies(args);
     int stratCount = (int)strategyList.size();
@@ -80,10 +85,10 @@ SeriesTotal RunASeriesOfGames(const CommandLineArguments& args, CsvTable& csv)
         Strategy& strategy = *stratPtr.get();
         auto termValues = strategy.GetBoardScorer().GetModifiedTerms();
 
-        int totalCount = count * stratCount * maxDepth;
+        int totalCount = count * stratCount * (maxDepth - minDepth + 1);
         for (int seed = start; seed < start + count; ++seed)
         {
-            for (int depth = 1; depth <= maxDepth; depth++)
+            for (int depth = minDepth; depth <= maxDepth; depth++)
             {
                 csv.StartRow();
                 csv.AddValue(MyCsv::dateHeader, currentDate);

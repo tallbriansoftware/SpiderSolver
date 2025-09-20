@@ -60,7 +60,7 @@ std::vector<ScoredMove> Strategy::FindScoredMoves(
     Ancestry searchAncestry(ancestry);
     SearchContext ctx(depthLimit, ancestry);
 
-    auto scoredBoards = IterativelyDeepen(parentTableau, ctx);
+    auto scoredBoards = TreeSearch(parentTableau, ctx);
     return scoredBoards;
 }
 
@@ -91,7 +91,7 @@ namespace
 }
 
 
-std::vector<ScoredMove> Strategy::IterativelyDeepen(
+std::vector<ScoredMove> Strategy::TreeSearch(
     const SpiderTableau& parentTableau,
     SearchContext& ctx)
 {

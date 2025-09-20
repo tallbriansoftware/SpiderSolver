@@ -7,7 +7,7 @@
 class SpiderTableau;
 class TableauStats;
 class CommandLineArguments;
-struct ScoredMove;
+class ScoredMove;
 class Strategy;
 
 struct BoardResult

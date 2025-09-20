@@ -26,6 +26,9 @@ public:
     bool SetDealUp();
     bool GetDealUp() const;
 
+    bool SetMultiDepth();
+    bool GetMultiDepth() const;
+
 
 private:
     const std::vector<std::string> m_argv;
@@ -34,4 +37,5 @@ private:
     int m_treeDepth;
     bool m_display;
     bool m_dealup;
+    bool m_multiDepth;
 };

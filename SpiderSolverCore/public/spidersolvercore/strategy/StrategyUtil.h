@@ -5,20 +5,14 @@
 class Ancestry;
 class MoveSingle;
 class MoveCombo;
-struct ScoredMove;
+class ScoredMove;
 class SpiderTableau;
+class Strategy;
 
 namespace StrategyUtil
 {
-    void SortLocalMoves(std::vector<ScoredMove>& moves);
-
-    std::vector<MoveCombo> RemoveRepeats(
-        const std::vector<MoveCombo>& moves,
-        const SpiderTableau& parentTableau,
-        const Ancestry& ancestry);
-
-    std::vector<MoveSingle> RemoveRepeats(
-        const std::vector<MoveSingle>& moves,
-        const SpiderTableau& parentTableau,
-        const Ancestry& ancestry);
+    void ResortTiedBestMoves(
+        std::vector<ScoredMove>& moves,
+        const Strategy& strategy,
+        const SpiderTableau& tableau);
 }

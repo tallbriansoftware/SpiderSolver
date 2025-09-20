@@ -1,6 +1,7 @@
 #include "gtest/gtest.h"
 
 #include "spidersolvercore/strategy/Strategy.h"
+#include "spidersolvercore/strategy/BoardScorer.h"
 #include "spidersolvercore/logic/MoveFinderSimple.h"
 #include "spidersolvercore/Model/SpiderTableau.h"
 #include "spidersolvercore/utils/SpiderPrint.h"
@@ -48,6 +49,72 @@ namespace {
         EXPECT_EQ(expected.DestIndex(), actual.DestIndex());
         return true;
     }
+}
+
+
+TEST(BoardScoringTests, CountingHoles) {
+    SpiderTableau tableau;
+
+    auto& stacks = tableau.GetMutableStacks();
+
+    SetStack(stacks[1], { DAS(), DAS(), DAS(), DAS(), DAS(),
+        U8S(), U7H(), U6H(), U5S(), U4H(), U3H(), U2H(), UAH() });
+    SetStack(stacks[2], { DAS(), DAS(), DAS(), DAS(), DAS(),
+        UKS(), UQS() });
+    SetStack(stacks[3], { DAS(), DAS(), DAS(), DAS(), DAS(),
+        U2S(), UAS() });
+    SetStack(stacks[4], { DAS(), UTS(), U9H() });
+    SetStack(stacks[5], { DAS(), DAS(), DAS(), DAS(),
+        U7H(), U6H(), U5S(), U4H() });
+    SetStack(stacks[6], { DAS(), UTS() });
+
+    SetStack(stacks[8], { DAS(), DAS(), DAS(), DAS(),
+        UKH(), UQS() });
+    SetStack(stacks[9], { DAS(), DAS(), DAS(), DAS(),
+        UTS(), U9H(), U8H(), U7S() });
+
+    /* 0  1  2  3  4  5  6  7  8  9
+    0  - :: :: :: :: :: ::  - :: ::
+    1  - :: :: :: TS :: TS  - :: ::
+    2  - :: :: :: 9H ::  -  - :: ::
+    3  - :: :: ::  - ::  -  - :: ::
+    4  - :: :: ::  - 7H  -  - KH TS
+    5  - 8S KS 2S  - 6H  -  - QS 9H
+    6  - 7H QS AS  - 5S  -  -  - 8H
+    7  - 6H  -  -  - 4H  -  -  - 7S
+    8  - 5S  -  -  -  -  -  -  -  -
+    9  - 4H  -  -  -  -  -  -  -  -
+    10 - 3H  -  -  -  -  -  -  -  -
+    11 - 2H  -  -  -  -  -  -  -  -
+    12 - AH  -  -  -  -  -  -  -  -*/
+
+#ifdef _DEBUG
+    PrintTableau(tableau);
+#endif
+
+    BoardScorer scorer;
+    MoveCombo move1(MoveSingle(1, 9, 0, 0));
+    std::vector<MoveSingle> moveVec{
+        MoveSingle(9, 7, 0, 0),
+        MoveSingle(9, 5, 6, 2),
+        MoveSingle(0, 0, 6, 4) };
+    MoveCombo move2(moveVec);
+
+    float s1 = 0.0;
+    float s2 = 0.0;
+    {
+        SpiderTableau::SavePoint save(tableau);
+        tableau.DoMove(move1, DoTurnCard::No);
+        s1 = scorer.ComputeScore(tableau);
+    }
+    {
+        SpiderTableau::SavePoint save(tableau);
+        tableau.DoMove(move2, DoTurnCard::No);
+        s2 = scorer.ComputeScore(tableau);
+    }
+    // Move1 filled one of two holes.
+    // Move2 leaves both holes open.
+    EXPECT_GT(s2, s1);
 }
 
 

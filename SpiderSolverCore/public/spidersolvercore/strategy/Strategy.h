@@ -36,7 +36,7 @@ public:
 
 private:
 
-    std::vector<ScoredMove> IterativelyDeepen(
+    std::vector<ScoredMove> TreeSearch(
         const SpiderTableau& parentTableau,
         SearchContext& ctx);
 

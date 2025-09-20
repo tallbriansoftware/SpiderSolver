@@ -58,12 +58,19 @@ namespace
         return that.SetTreeDepth(depth);
     }
 
+    bool SetMultiDepthThunk(CommandLineArguments& that, int dummy1, std::string dummy2)
+    {
+        return that.SetMultiDepth();
+    }
+
     const std::vector<Option> OptionsTable = {
         { "-c", "--count", OptionType::Int, SetCountThunk },
         { "-s", "--seed", OptionType::Int, SetSeedThunk },
         { "-d", "--display", OptionType::Flag, SetDisplayThunk },
         { "-u", "--dealup", OptionType::Flag, SetDealUpThunk },
         { "-t", "--treeDepth", OptionType::Int, SetTreeDepthThunk },
+        { "-m", "--multiDepth", OptionType::Flag, SetMultiDepthThunk },
+
     };
 
     int FindLongNamedOption(std::string arg)
@@ -95,6 +102,7 @@ CommandLineArguments::CommandLineArguments(int argc, char** argv)
     , m_treeDepth(0)
     , m_display(false)
     , m_dealup(false)
+    , m_multiDepth(false)
 {
 }
 
@@ -232,3 +240,16 @@ int CommandLineArguments::GetTreeDepth() const
 {
     return m_treeDepth;
 }
+
+
+bool CommandLineArguments::SetMultiDepth()
+{
+    m_multiDepth = true;
+    return true;
+}
+
+bool CommandLineArguments::GetMultiDepth() const
+{
+    return m_multiDepth;
+}
+

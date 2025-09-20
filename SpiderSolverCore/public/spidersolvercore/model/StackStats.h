@@ -19,8 +19,6 @@ public:
     int NumberOfRunBreaks() const;
     int NumberOfRankBreaks() const;
 
-    bool HasFullPack() const;
-
 private:
     int m_numberOfDownCards;
     int m_numberOfUpCards;

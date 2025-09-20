@@ -71,7 +71,7 @@ int BoardStats::WinTurnedCardDepthScore()
     return TurnedCardsStackScore[0] * SpiderTableau::NUM_STACKS;
 }
 
-// --------- Hole Score 
+// --------- Hole Score
 
 int BoardStats::GetHoleScore() const
 {
