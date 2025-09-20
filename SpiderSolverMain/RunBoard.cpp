@@ -11,6 +11,7 @@
 #include "spidersolvercore/strategy/Strategy.h"
 #include "spidersolvercore/strategy/StrategyUtil.h"
 #include "spidersolvercore/utils/SpiderPrint.h"
+#include "spidersolvercore/logic/MoveFinder.h"
 
 #include <iostream>
 
@@ -68,7 +69,13 @@ BoardResult RunBoardInner(
             std::cout << "Board Score=" << currentScore << "/" << strategy.MaxScore() << std::endl;
         }
 
-        auto scoredMoves = strategy.FindScoredMoves(tableau, ancestry, depth);
+        auto moveFinderFunc = (tableau.FindFirstHoleIndex() < 0)
+            ? MoveFinder::Normal
+            : MoveFinder::NormalAndHoleFilling;
+
+        auto scoredMoves = strategy.FindScoredMoves(
+                moveFinderFunc, tableau, ancestry, depth);
+
         if (!scoredMoves.empty())
         {
             StrategyUtil::ResortTiedBestMoves(scoredMoves, strategy, tableau);

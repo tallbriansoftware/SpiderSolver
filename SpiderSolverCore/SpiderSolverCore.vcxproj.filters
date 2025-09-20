@@ -64,9 +64,6 @@
     <ClCompile Include="main\model\MoveCombo.cpp">
       <Filter>Main\Model</Filter>
     </ClCompile>
-    <ClCompile Include="public\spidersolvercore\model\Ancestry.cpp">
-      <Filter>Main\Model</Filter>
-    </ClCompile>
     <ClCompile Include="main\strategy\ScoredMove.cpp">
       <Filter>Main\Strategy</Filter>
     </ClCompile>
@@ -88,15 +85,6 @@
     <ClCompile Include="main\strategy\StrategyUtil.cpp">
       <Filter>Main\Strategy</Filter>
     </ClCompile>
-    <ClCompile Include="public\spidersolvercore\utils\SpiderPrint.cpp">
-      <Filter>Main\Utils</Filter>
-    </ClCompile>
-    <ClCompile Include="public\spidersolvercore\strategy\Strategy.cpp">
-      <Filter>Main\Strategy</Filter>
-    </ClCompile>
-    <ClCompile Include="public\spidersolvercore\strategy\BoardStats.cpp">
-      <Filter>Main\Strategy</Filter>
-    </ClCompile>
     <ClCompile Include="main\strategy\SearchContext.cpp">
       <Filter>Main\Strategy</Filter>
     </ClCompile>
@@ -114,6 +102,21 @@
     </ClCompile>
     <ClCompile Include="main\logic\MoveFinderSimple.cpp">
       <Filter>Main\Logic</Filter>
+    </ClCompile>
+    <ClCompile Include="main\logic\MoveFinder.cpp">
+      <Filter>Main\Logic</Filter>
+    </ClCompile>
+    <ClCompile Include="main\model\Ancestry.cpp">
+      <Filter>Main\Model</Filter>
+    </ClCompile>
+    <ClCompile Include="main\strategy\BoardStats.cpp">
+      <Filter>Main\Strategy</Filter>
+    </ClCompile>
+    <ClCompile Include="main\strategy\Strategy.cpp">
+      <Filter>Main\Strategy</Filter>
+    </ClCompile>
+    <ClCompile Include="main\utils\SpiderPrint.cpp">
+      <Filter>Main\Utils</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -190,16 +193,22 @@
     <ClInclude Include="public\spidersolvercore\logic\IsMoveLegal.h">
       <Filter>Public\Logic</Filter>
     </ClInclude>
-    <ClInclude Include="public\spidersolvercore\logic\MoveFinderWithHole.h">
-      <Filter>Public\Logic</Filter>
-    </ClInclude>
     <ClInclude Include="public\spidersolvercore\logic\FindStacks.h">
       <Filter>Public\Logic</Filter>
     </ClInclude>
     <ClInclude Include="public\spidersolvercore\strategy\TreeMove.h">
       <Filter>Public\Strategy</Filter>
     </ClInclude>
-    <ClInclude Include="public\spidersolvercore\logic\MoveFinderSimple.h">
+    <ClInclude Include="public\spidersolvercore\logic\MoveFinder.h">
+      <Filter>Public\Logic</Filter>
+    </ClInclude>
+    <ClInclude Include="main\logic\MoveFinderSimple.h">
+      <Filter>Main\Logic</Filter>
+    </ClInclude>
+    <ClInclude Include="main\logic\MoveFinderWithHole.h">
+      <Filter>Main\Logic</Filter>
+    </ClInclude>
+    <ClInclude Include="public\spidersolvercore\logic\MoveFinderFunc.h">
       <Filter>Public\Logic</Filter>
     </ClInclude>
   </ItemGroup>

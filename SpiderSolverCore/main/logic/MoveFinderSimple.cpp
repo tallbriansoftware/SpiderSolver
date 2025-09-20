@@ -1,4 +1,4 @@
-#include "spidersolvercore/Logic/MoveFinderSimple.h"
+#include "MoveFinderSimple.h"
 
 #include "spidersolvercore/model/MoveSingle.h"
 #include "spidersolvercore/model/MoveCombo.h"
@@ -218,31 +218,3 @@ int MoveFinderSimple::AddRunSplittingMoves(std::vector<MoveSingle>& moves, const
 {
     return ScanMoveTestFunc(moves, tableau, RunSplittingMove_TestFunc);
 }
-
-// SimpleMoves:  Find normal simple moves.
-// -- Excludes breaking suited run
-// -- should exclude hole filling moves when I get smarter
-//
-std::vector<MoveSingle> MoveFinderSimple::GetAllSimpleMoves(const SpiderTableau& tableau)
-{
-    std::vector<MoveSingle> moves;
-
-    AddSimpleMoves(moves, tableau);
-    AddColorUpMoves(moves, tableau);
-    AddHoleFillingMoves(moves, tableau);
-
-    return moves;
-}
-
-
-std::vector<MoveCombo> MoveFinderSimple::AllSimpleMoves(const SpiderTableau& tableau)
-{
-    std::vector<MoveSingle> smoves = GetAllSimpleMoves(tableau);
-    std::vector<MoveCombo> cmoves;
-    for (auto& move : smoves)
-        cmoves.push_back(MoveCombo(move));
-    return cmoves;
-}
-
-
-

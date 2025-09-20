@@ -9,6 +9,7 @@ class SpiderTableau;
 namespace MoveFinderWithHole
 {
     std::vector<MoveCombo> AllMoves(const SpiderTableau& tableau);
+    int AddAllMoves(std::vector<MoveCombo>& moves, const SpiderTableau& tableau);
 
     int AddMoveTwoRuns(std::vector<MoveCombo>& moves, const SpiderTableau& tableau);
     int AddFlipRuns(std::vector<MoveCombo>& moves, const SpiderTableau& tableau);

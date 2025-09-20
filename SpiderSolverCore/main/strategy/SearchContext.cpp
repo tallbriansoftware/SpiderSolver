@@ -1,11 +1,13 @@
 #include "spidersolvercore/strategy/SearchContext.h"
 
 #include "spidersolvercore/model/Ancestry.h"
+#include "spidersolvercore/model/MoveCombo.h"
 
 
-SearchContext::SearchContext(int maxDepth, const Ancestry& ancestry)
+SearchContext::SearchContext(int maxDepth, const Ancestry& ancestry, MoveFinderFunc func)
     : m_maxDepth(maxDepth)
     , m_parentList(std::make_unique<Ancestry>(ancestry))
+    , m_moveFinderFunc(func)
 { }
 
 
@@ -17,6 +19,13 @@ int SearchContext::GetMaxDepth() const
 {
     return m_maxDepth;
 }
+
+
+std::vector<MoveCombo> SearchContext::GetMoves(const SpiderTableau& tableau)
+{
+    return m_moveFinderFunc(tableau);
+}
+
 
 
 void SearchContext::AddParentPosition(const std::string& tabString)

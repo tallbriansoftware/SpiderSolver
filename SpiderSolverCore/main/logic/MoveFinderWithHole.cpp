@@ -1,4 +1,4 @@
-#include "spidersolvercore/logic/MoveFinderWithHole.h"
+#include "MoveFinderWithHole.h"
 
 #include "spidersolvercore/Model/MoveCombo.h"
 #include "spidersolvercore/Model/SpiderTableau.h"
@@ -21,18 +21,23 @@ std::vector<MoveCombo> MoveFinderWithHole::AllMoves(const SpiderTableau& tableau
         return {};
 
     std::vector<MoveCombo> allMoves;
-    std::vector<MoveCombo> moves;
+    AddAllMoves(allMoves, tableau);
+    return allMoves;
+}
+
+int MoveFinderWithHole::AddAllMoves(std::vector<MoveCombo>& moves, const SpiderTableau& tableau)
+{
     int moveCount = 0;
 
-    moveCount += AddMoveTwoRuns(allMoves, tableau);
-    moveCount += AddFlipRuns(allMoves, tableau);
-    moveCount += AddInsertRun(allMoves, tableau);
-    moveCount += AddRemoveMiddleRun(allMoves, tableau);
-    moveCount += AddTradeHolesA(allMoves, tableau);
-    moveCount += AddTradeHolesB(allMoves, tableau);
-    moveCount += AddSwapRuns(allMoves, tableau);
+    moveCount += AddMoveTwoRuns(moves, tableau);
+    moveCount += AddFlipRuns(moves, tableau);
+    moveCount += AddInsertRun(moves, tableau);
+    moveCount += AddRemoveMiddleRun(moves, tableau);
+    moveCount += AddTradeHolesA(moves, tableau);
+    moveCount += AddTradeHolesB(moves, tableau);
+    moveCount += AddSwapRuns(moves, tableau);
 
-    return allMoves;
+    return moveCount;
 }
 
 namespace

@@ -148,9 +148,11 @@
     <ClCompile Include="main\core\MoveSingle.cpp" />
     <ClCompile Include="main\core\SpiderException.cpp" />
     <ClCompile Include="main\logic\FindStacks.cpp" />
+    <ClCompile Include="main\logic\MoveFinder.cpp" />
     <ClCompile Include="main\logic\MoveFinderWithHole.cpp" />
     <ClCompile Include="main\logic\IsMoveLegal.cpp" />
     <ClCompile Include="main\logic\MoveFinderSimple.cpp" />
+    <ClCompile Include="main\model\Ancestry.cpp" />
     <ClCompile Include="main\model\Card.cpp" />
     <ClCompile Include="main\model\MoveCombo.cpp" />
     <ClCompile Include="main\model\MoveReversible.cpp" />
@@ -161,22 +163,23 @@
     <ClCompile Include="main\model\SpiderTableauFactory.cpp" />
     <ClCompile Include="main\model\StackStats.cpp" />
     <ClCompile Include="main\model\TableauStats.cpp" />
+    <ClCompile Include="main\strategy\BoardStats.cpp" />
     <ClCompile Include="main\strategy\ScoredMove.cpp" />
     <ClCompile Include="main\strategy\BoardScorer.cpp" />
     <ClCompile Include="main\strategy\SearchContext.cpp" />
+    <ClCompile Include="main\strategy\Strategy.cpp" />
     <ClCompile Include="main\strategy\StrategyUtil.cpp" />
     <ClCompile Include="main\strategy\TreeMove.cpp" />
-    <ClCompile Include="public\spidersolvercore\model\Ancestry.cpp" />
-    <ClCompile Include="public\spidersolvercore\strategy\BoardStats.cpp" />
-    <ClCompile Include="public\spidersolvercore\strategy\Strategy.cpp" />
-    <ClCompile Include="public\spidersolvercore\utils\SpiderPrint.cpp" />
+    <ClCompile Include="main\utils\SpiderPrint.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="main\logic\MoveFinderSimple.h" />
+    <ClInclude Include="main\logic\MoveFinderWithHole.h" />
     <ClInclude Include="public\spidersolvercore\core\SpiderException.h" />
     <ClInclude Include="public\spidersolvercore\logic\FindStacks.h" />
-    <ClInclude Include="public\spidersolvercore\logic\MoveFinderWithHole.h" />
+    <ClInclude Include="public\spidersolvercore\logic\MoveFinder.h" />
     <ClInclude Include="public\spidersolvercore\logic\IsMoveLegal.h" />
-    <ClInclude Include="public\spidersolvercore\logic\MoveFinderSimple.h" />
+    <ClInclude Include="public\spidersolvercore\logic\MoveFinderFunc.h" />
     <ClInclude Include="public\spidersolvercore\model\Ancestry.h" />
     <ClInclude Include="public\spidersolvercore\model\Card.h" />
     <ClInclude Include="public\spidersolvercore\model\CardEnums.h" />

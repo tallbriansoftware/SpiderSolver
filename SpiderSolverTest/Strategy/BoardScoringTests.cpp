@@ -1,8 +1,10 @@
 #include "gtest/gtest.h"
 
+#include "logic/MoveFinderSimple.h"
+
 #include "spidersolvercore/strategy/Strategy.h"
 #include "spidersolvercore/strategy/BoardScorer.h"
-#include "spidersolvercore/logic/MoveFinderSimple.h"
+#include "spidersolvercore/model/MoveCombo.h"
 #include "spidersolvercore/Model/SpiderTableau.h"
 #include "spidersolvercore/utils/SpiderPrint.h"
 

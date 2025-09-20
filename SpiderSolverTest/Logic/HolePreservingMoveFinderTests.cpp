@@ -1,7 +1,8 @@
 #include "gtest/gtest.h"
 
-#include "spidersolvercore/Logic/MoveFinderWithHole.h"
-#include "spidersolvercore/Model/SpiderTableau.h"
+#include "logic/MoveFinderWithHole.h"
+
+#include "spidersolvercore/model/SpiderTableau.h"
 #include "spidersolvercore/utils/SpiderPrint.h"
 
 #include "Helpers/DeckHelper.h"

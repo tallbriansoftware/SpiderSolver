@@ -1,7 +1,6 @@
 #include "spidersolvercore/strategy/Strategy.h"
 
-#include "spidersolvercore/logic/MoveFinderWithHole.h"
-#include "spidersolvercore/logic/MoveFinderSimple.h"
+#include "spidersolvercore/logic/MoveFinder.h"
 #include "spidersolvercore/model/Ancestry.h"
 #include "spidersolvercore/model/SpiderTableau.h"
 #include "spidersolvercore/strategy/BoardScorer.h"
@@ -51,35 +50,8 @@ float Strategy::ComputeScore(const SpiderTableau& tableau)
     return m_boardScorer->ComputeScore(tableau);
 }
 
-std::vector<ScoredMove> Strategy::FindScoredMoves(
-    const SpiderTableau& parentTableau,
-    const Ancestry& ancestry,
-    int depth)
-{
-    int depthLimit = depth;
-    Ancestry searchAncestry(ancestry);
-    SearchContext ctx(depthLimit, ancestry);
-
-    auto scoredBoards = TreeSearch(parentTableau, ctx);
-    return scoredBoards;
-}
-
-const BoardScorer& Strategy::GetBoardScorer() const
-{
-    return *m_boardScorer;
-}
-
-
 namespace
 {
-    std::vector<MoveCombo> GetMoves(const SpiderTableau& tableau)
-    {
-        auto moves = MoveFinderSimple::AllSimpleMoves(tableau);
-        auto holeMoves = MoveFinderWithHole::AllMoves(tableau);
-        moves.insert(moves.end(), holeMoves.begin(), holeMoves.end());
-        return moves;
-    }
-
     void SortTreeMoves(std::vector<TreeMove>& treeMoves)
     {
         // Sort the moves by score,  greatest to least.
@@ -88,6 +60,28 @@ namespace
                 return a.GetScore() > b.GetScore();
             });
     }
+}
+
+
+std::vector<ScoredMove> Strategy::FindScoredMoves(
+    MoveFinderFunc moveFinder,
+    const SpiderTableau& parentTableau,
+    const Ancestry& ancestry,
+    int depth)
+{
+    int depthLimit = depth;
+    Ancestry searchAncestry(ancestry);
+    // float parentScore = ComputeScore(parentTableau);
+    SearchContext ctx(depthLimit, ancestry, moveFinder);
+
+    auto scoredMoves = TreeSearch(parentTableau, ctx);
+    return scoredMoves;
+}
+
+
+const BoardScorer& Strategy::GetBoardScorer() const
+{
+    return *m_boardScorer;
 }
 
 
@@ -113,7 +107,7 @@ std::vector<TreeMove> Strategy::FindAndScoreToDepth(
     const SpiderTableau& parentTableau)
 {
     // Get the child moves
-    auto moves = GetMoves(parentTableau);
+    auto moves = ctx.GetMoves(parentTableau);
     if (moves.size() == 0)
         return {};
 

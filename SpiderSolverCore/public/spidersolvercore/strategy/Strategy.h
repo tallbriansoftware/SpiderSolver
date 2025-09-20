@@ -1,8 +1,11 @@
 #pragma once
 
-#include "spidersolvercore/strategy/ScoredMove.h"
+//#include "spidersolvercore/strategy/ScoredMove.h"
+#include "spidersolvercore/logic/MoveFinderFunc.h"
 
 #include <memory>
+#include <vector>
+#include <functional>
 
 class Ancestry;
 class SpiderTableau;
@@ -11,6 +14,7 @@ class SearchContext;
 class TreeMove;
 class TreeContext;
 class MoveCombo;
+class ScoredMove;
 
 
 class Strategy
@@ -28,6 +32,7 @@ public:
     float ComputeScore(const SpiderTableau& tableau);
 
     std::vector<ScoredMove> FindScoredMoves(
+        MoveFinderFunc moveFinder,
         const SpiderTableau& tableau,
         const Ancestry& ancestry,
         int depth);
