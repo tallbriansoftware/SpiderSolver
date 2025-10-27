@@ -2,6 +2,10 @@
 
 #include "spidersolvercore/model/Ancestry.h"
 #include "spidersolvercore/model/MoveCombo.h"
+#include "spidersolvercore/model/SpiderNode.h"
+
+#include <string>
+#include <assert.h>
 
 
 SearchContext::SearchContext(int maxDepth, const Ancestry& ancestry, MoveFinderFunc func)
@@ -27,7 +31,6 @@ std::vector<MoveCombo> SearchContext::GetMoves(const SpiderTableau& tableau)
 }
 
 
-
 void SearchContext::AddParentPosition(const std::string& tabString)
 {
     m_parentList->PushTableau(tabString);
@@ -44,3 +47,31 @@ bool SearchContext::IsAParentPosition(const std::string& tabString) const
 {
     return m_parentList->IsRepeat(tabString);
 }
+
+bool SearchContext::TryFindSpiderNode(
+    const std::string& tableauString,
+    SpiderNode& node)
+{
+    auto itr = m_nodeMap.find(tableauString);
+    if (itr != m_nodeMap.end())
+    {
+        node = itr->second;
+        return true;
+    }
+    return false;
+}
+
+void SearchContext::AddSpiderNode(const SpiderNode& node)
+{
+#ifdef _DEBUG
+    SpiderNode dummy;
+    assert(!TryFindSpiderNode(node.GetStringRep(), dummy));
+#endif
+    m_nodeMap[node.GetStringRep()] = node;
+}
+
+bool SearchContext::RemoveSpiderNode(const std::string& tableauString)
+{
+    return 0 != m_nodeMap.erase(tableauString);
+}
+

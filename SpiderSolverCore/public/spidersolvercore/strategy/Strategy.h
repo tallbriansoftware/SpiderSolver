@@ -1,6 +1,5 @@
 #pragma once
 
-//#include "spidersolvercore/strategy/ScoredMove.h"
 #include "spidersolvercore/logic/MoveFinderFunc.h"
 
 #include <memory>

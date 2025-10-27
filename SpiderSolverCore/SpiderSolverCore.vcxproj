@@ -157,6 +157,7 @@
     <ClCompile Include="main\model\MoveCombo.cpp" />
     <ClCompile Include="main\model\MoveReversible.cpp" />
     <ClCompile Include="main\model\SpiderDeckFactory.cpp" />
+    <ClCompile Include="main\model\SpiderNode.cpp" />
     <ClCompile Include="main\model\SpiderStack.cpp" />
     <ClCompile Include="main\model\SpiderString.cpp" />
     <ClCompile Include="main\model\SpiderTableau.cpp" />
@@ -189,6 +190,7 @@
     <ClInclude Include="public\spidersolvercore\model\MoveSingle.h" />
     <ClInclude Include="public\spidersolvercore\model\SpiderConstants.h" />
     <ClInclude Include="public\spidersolvercore\model\SpiderDeckFactory.h" />
+    <ClInclude Include="public\spidersolvercore\model\SpiderNode.h" />
     <ClInclude Include="public\spidersolvercore\model\SpiderStack.h" />
     <ClInclude Include="public\spidersolvercore\model\SpiderString.h" />
     <ClInclude Include="public\spidersolvercore\model\SpiderTableau.h" />

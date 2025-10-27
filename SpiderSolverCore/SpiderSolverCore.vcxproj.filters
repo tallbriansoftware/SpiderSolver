@@ -118,6 +118,9 @@
     <ClCompile Include="main\utils\SpiderPrint.cpp">
       <Filter>Main\Utils</Filter>
     </ClCompile>
+    <ClCompile Include="main\model\SpiderNode.cpp">
+      <Filter>Main\Model</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="simple.h" />
@@ -210,6 +213,9 @@
     </ClInclude>
     <ClInclude Include="public\spidersolvercore\logic\MoveFinderFunc.h">
       <Filter>Public\Logic</Filter>
+    </ClInclude>
+    <ClInclude Include="public\spidersolvercore\model\SpiderNode.h">
+      <Filter>Public\Model</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

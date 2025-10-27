@@ -2,6 +2,7 @@
 
 
 TreeMove::TreeMove()
+    : m_score(-1.0)
 { }
 
 

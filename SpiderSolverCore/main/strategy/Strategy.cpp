@@ -3,6 +3,7 @@
 #include "spidersolvercore/logic/MoveFinder.h"
 #include "spidersolvercore/model/Ancestry.h"
 #include "spidersolvercore/model/SpiderTableau.h"
+#include "spidersolvercore/model/SpiderNode.h"
 #include "spidersolvercore/strategy/BoardScorer.h"
 #include "spidersolvercore/strategy/ScoredMove.h"
 #include "spidersolvercore/strategy/SearchContext.h"
@@ -122,30 +123,60 @@ std::vector<TreeMove> Strategy::FindAndScoreToDepth(
     {
         SpiderTableau::SavePoint save(tableau);
         tableau.DoMove(move, DoTurnCard::No);
+
         std::string tabString = tableau.GetTableauString();
 
         // if we have seen this before as a parent, then skip it.
         if (ctx.IsAParentPosition(tabString))
             continue;
 
-        if (depth >= ctx.GetMaxDepth())
+        // If we have seen this position elsewhere in the search, but not
+        // a direct parent, then recapture the data we already know.
+        SpiderNode foundSpiderNode;
+        bool done = false;
+        if (ctx.TryFindSpiderNode(tabString, foundSpiderNode))
         {
-            float score = (float)ComputeScore(tableau);
-            treeMoves.push_back(TreeMove(score, move));
-        }
-        else
-        {
-            auto childTreeMoves = FindAndScoreToDepth(depth + 1, ctx, tableau);
-            if (childTreeMoves.size() == 0)
+            if (foundSpiderNode.GetDepth() <= depth)
             {
-                float score = (float)ComputeScore(tableau);
-                treeMoves.push_back(TreeMove(score, move));
+                treeMoves.push_back(TreeMove(foundSpiderNode.GetScore(), move));
+                done = true;
             }
             else
             {
-                auto& bestChild = childTreeMoves[0];
-                treeMoves.push_back(TreeMove(move, bestChild));
+                // We have a better candidate for this position
+                // because it is at a shallower depth.
+                ctx.RemoveSpiderNode(tabString);
             }
+        }
+        // This is not a previously seen position.
+        // Continue evaluating and store the positions.
+        if(!done)
+        {
+            float score = -1.0;
+
+            // Are we at maximum depth.  Don't go deeper.
+            if (depth >= ctx.GetMaxDepth())
+            {
+                score = (float)ComputeScore(tableau);
+            }
+            else
+            {
+                // Recurse deeper.
+                auto childTreeMoves = FindAndScoreToDepth(depth + 1, ctx, tableau);
+                // If there were no moves treat it as a leaf node.  (no best child)
+                if (childTreeMoves.size() == 0)
+                {
+                    score = (float)ComputeScore(tableau);
+                }
+                // On return note the move to the best child and best child's score.
+                else
+                {
+                    auto& bestChild = childTreeMoves[0];
+                    score = bestChild.GetScore();
+                }
+            }
+            treeMoves.push_back(TreeMove(score, move));
+            ctx.AddSpiderNode(SpiderNode(depth, tabString, score));
         }
     }
     SortTreeMoves(treeMoves);
