@@ -7,6 +7,7 @@
 #include "spidersolvercore/model/Ancestry.h"
 #include "spidersolvercore/model/TableauStats.h"
 #include "spidersolvercore/model/SpiderTableauFactory.h"
+#include "spidersolvercore/strategy/MoveChooser.h"
 #include "spidersolvercore/strategy/ScoredMove.h"
 #include "spidersolvercore/strategy/Strategy.h"
 #include "spidersolvercore/strategy/StrategyUtil.h"
@@ -51,73 +52,65 @@ BoardResult RunBoardInner(
 
     int suits = args.GetSuits();
 
-    auto sPtr_tableau = args.GetDealUp()
+    auto sharedTableau = args.GetDealUp()
         ? SpiderTableauFactory::CreateAllUp(suits, seed)
         : SpiderTableauFactory::Create(suits, seed);
 
     bool printting = args.GetDisplay();
-
-    SpiderTableau tableau = *sPtr_tableau;
-    Ancestry ancestry(tableau);
-
+    MoveChooser moveChooser(sharedTableau, strategy, depth);
+    std::shared_ptr<const SpiderTableau> tableauView = sharedTableau;
     int moveCount = 0;
 
     while (true)
     {
-        auto currentScore = strategy.ComputeScore(tableau);
+
+        auto currentScore = strategy.ComputeScore(*tableauView);
         if (printting)
         {
-            OutputBoard("     ", tableau, TableauStats(tableau));
+            OutputBoard("     ", *tableauView, TableauStats(*tableauView));
             std::cout << "Board Score=" << currentScore << "/" << strategy.MaxScore() << std::endl;
         }
 
-        auto moveFinderFunc = (tableau.FindFirstHoleIndex() < 0)
-            ? MoveFinder::Normal
-            : MoveFinder::NormalAndHoleFilling;
-
-        auto scoredMoves = strategy.FindScoredMoves(
-                moveFinderFunc, tableau, ancestry, depth);
-
-        if (!scoredMoves.empty())
+        MoveCombo move = moveChooser.ComputeBestMove();
+        if (move.IsValid())
         {
-            StrategyUtil::ResortTiedBestMoves(scoredMoves, strategy, tableau);
-            if (printting)
+            if (move.IsDeal())
             {
-                OutputScoredMoves(tableau, scoredMoves);
+                if (!tableauView->CanDeal())
+                    break;
+                if (printting)
+                    std::cout << "=----------------- Deal -----------------" << std::endl;
+
+                moveCount += 1;
+                moveChooser.CommitMove(move);
+
             }
-
-            float score = scoredMoves[0].GetScore();
-            MoveCombo move = scoredMoves[0].GetMove();
-
-            moveCount += move.Count();
-
-            if (printting)
+            else // normal move
             {
-                std::cout << "Move# " << moveCount << "\nMove: "
-                    << SpiderPrint::PrintBookMove(tableau, move, DoTurnCard::Auto) << std::endl;
-            }
+                if (printting)
+                {
+                    auto otherMoves = moveChooser.GetAllChoices();
+                    if (!otherMoves.empty())
+                    {
+                        OutputScoredMoves(*tableauView, otherMoves);
 
-            tableau.DoMove(move, DoTurnCard::Auto);
+                        std::cout << "Move# " << moveCount << "\nMove: "
+                            << SpiderPrint::PrintBookMove(*tableauView, move, DoTurnCard::Auto) << std::endl;
+                    }
+                }
+                moveCount += move.Count();
+                moveChooser.CommitMove(move);
+            }
         }
-
-        if (scoredMoves.empty())
+        else  // move is Invalid.  Game Over.
         {
-            if (!tableau.CanDeal())
-                break;
-            if (!tableau.DealTurn())
-                throw std::exception("can't deal as expected");
-
-            if (printting)
-                std::cout << "=----------------- Deal -----------------" << std::endl;
-
-            moveCount += 1;
+            throw std::exception("failed on an invalid move");
         }
-        ancestry.AddTableau(tableau);
     }
 
-    result.score = strategy.ComputeScore(tableau);
+    result.score = strategy.ComputeScore(*tableauView);
     result.searchDepth = depth;
-    result.won = tableau.IsWon();
+    result.won = tableauView->IsWon();
     result.moveCount = moveCount;
     result.evals = strategy.GetEvals();
     return result;

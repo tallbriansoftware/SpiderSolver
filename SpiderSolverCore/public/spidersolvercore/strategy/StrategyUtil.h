@@ -11,7 +11,7 @@ class Strategy;
 
 namespace StrategyUtil
 {
-    void ResortTiedBestMoves(
+    void SortTiedBestMoves(
         std::vector<ScoredMove>& moves,
         const Strategy& strategy,
         const SpiderTableau& tableau);

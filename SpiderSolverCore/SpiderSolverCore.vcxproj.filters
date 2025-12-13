@@ -121,6 +121,9 @@
     <ClCompile Include="main\model\SpiderNode.cpp">
       <Filter>Main\Model</Filter>
     </ClCompile>
+    <ClCompile Include="main\strategy\MoveChooser.cpp">
+      <Filter>Main\Strategy</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="simple.h" />
@@ -216,6 +219,9 @@
     </ClInclude>
     <ClInclude Include="public\spidersolvercore\model\SpiderNode.h">
       <Filter>Public\Model</Filter>
+    </ClInclude>
+    <ClInclude Include="public\spidersolvercore\strategy\MoveChooser.h">
+      <Filter>Public\Strategy</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

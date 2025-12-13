@@ -10,6 +10,7 @@ class BoardScorer
 {
 public:
     BoardScorer();
+    BoardScorer(const BoardScorer& bs) = default;
     float ComputeScore(const SpiderTableau& tableau) const;
     float MaxScore() const;
 

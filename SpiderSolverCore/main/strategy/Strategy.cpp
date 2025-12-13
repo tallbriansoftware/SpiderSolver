@@ -10,21 +10,27 @@
 #include "spidersolvercore/strategy/TreeMove.h"
 
 #include <algorithm>
+#include <memory>
 
 #include <assert.h>
 
 
 Strategy::Strategy()
-    : m_evals(0)
+    : m_boardScorer(std::make_unique<BoardScorer>())
+    , m_evals(0)
 {
-    m_boardScorer = std::make_unique<BoardScorer>();
 }
 
 Strategy::Strategy(const BoardScorer& boardScorer)
-    : m_evals(0)
+    : m_boardScorer(std::make_unique<BoardScorer>(boardScorer))
+    , m_evals(0)
 {
-    m_boardScorer = std::make_unique<BoardScorer>(boardScorer);
+}
 
+Strategy::Strategy(const Strategy& strategy)
+    : m_boardScorer(std::make_unique<BoardScorer>(*strategy.m_boardScorer))
+    , m_evals(strategy.m_evals)
+{
 }
 
 Strategy::~Strategy()  

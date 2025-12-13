@@ -20,6 +20,7 @@ class Strategy
 {
 public:
     Strategy();
+    Strategy(const Strategy& strategy);
     Strategy(const BoardScorer& boardScorer);
     ~Strategy();
 

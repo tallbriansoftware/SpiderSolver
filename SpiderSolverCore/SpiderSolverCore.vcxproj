@@ -165,6 +165,7 @@
     <ClCompile Include="main\model\StackStats.cpp" />
     <ClCompile Include="main\model\TableauStats.cpp" />
     <ClCompile Include="main\strategy\BoardStats.cpp" />
+    <ClCompile Include="main\strategy\MoveChooser.cpp" />
     <ClCompile Include="main\strategy\ScoredMove.cpp" />
     <ClCompile Include="main\strategy\BoardScorer.cpp" />
     <ClCompile Include="main\strategy\SearchContext.cpp" />
@@ -198,6 +199,7 @@
     <ClInclude Include="public\spidersolvercore\model\StackStats.h" />
     <ClInclude Include="public\spidersolvercore\model\TableauStats.h" />
     <ClInclude Include="public\spidersolvercore\strategy\BoardStats.h" />
+    <ClInclude Include="public\spidersolvercore\strategy\MoveChooser.h" />
     <ClInclude Include="public\spidersolvercore\strategy\ScoredMove.h" />
     <ClInclude Include="public\spidersolvercore\strategy\BoardScorer.h" />
     <ClInclude Include="public\spidersolvercore\strategy\SearchContext.h" />

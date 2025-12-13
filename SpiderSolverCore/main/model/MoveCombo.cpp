@@ -6,7 +6,11 @@
 #include <string>
 #include <vector>
 
-MoveCombo::MoveCombo() = default;
+
+MoveCombo::MoveCombo()
+    : m_type(ComboType::None)
+{
+}
 
 MoveCombo::MoveCombo(const MoveSingle& smove)
 {
@@ -14,10 +18,27 @@ MoveCombo::MoveCombo(const MoveSingle& smove)
     m_type = ComboType::None;
 }
 
+MoveCombo MoveCombo::Deal()
+{
+    MoveCombo deal;
+    deal.m_type = ComboType::Deal;
+    return deal;
+}
+
 MoveCombo::MoveCombo(const std::vector<MoveSingle>& moves)
     : m_moves(moves)
     , m_type(ComboType::None)
 {
+}
+
+bool MoveCombo::IsValid() const
+{
+    return (m_moves.size() != 0 || m_type == ComboType::Deal);
+}
+
+bool MoveCombo::IsDeal() const
+{
+    return (m_type == ComboType::Deal);
 }
 
 int MoveCombo::Count() const

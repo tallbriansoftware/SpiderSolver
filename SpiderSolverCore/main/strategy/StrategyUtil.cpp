@@ -10,7 +10,7 @@
 #include <assert.h>
 
 
-void StrategyUtil::ResortTiedBestMoves(
+void StrategyUtil::SortTiedBestMoves(
     std::vector<ScoredMove>& moves,
     const Strategy& strategy,
     const SpiderTableau& tableau)
