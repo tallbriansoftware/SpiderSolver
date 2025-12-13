@@ -14,8 +14,11 @@ public:
     bool SetCount(int count);
     int GetCount() const;
 
-    bool SetSeed(int seed);
-    int GetSeed() const;
+    bool SetRandomSeed(int seed);
+    int GetRandomSeed() const;
+
+    bool SetSuits(int suitNumber);
+    int GetSuits() const;
 
     bool SetDisplay();
     bool GetDisplay() const;
@@ -32,7 +35,8 @@ public:
 
 private:
     const std::vector<std::string> m_argv;
-    mutable int m_seed;
+    mutable int m_randomSeed;
+    int m_suits;
     int m_count;
     int m_treeDepth;
     bool m_display;

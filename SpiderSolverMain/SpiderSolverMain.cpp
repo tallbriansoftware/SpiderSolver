@@ -67,7 +67,7 @@ SeriesTotal RunASeriesOfGames(const CommandLineArguments& args, CsvTable& csv)
     ChronoTimer timer;
     std::string currentDate = GetCurrentDate();
 
-    int start = args.GetSeed();
+    int start = args.GetRandomSeed();
     int count = args.GetCount();
     int maxDepth = args.GetTreeDepth();
     int minDepth = maxDepth;

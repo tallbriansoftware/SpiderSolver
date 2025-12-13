@@ -112,8 +112,8 @@ std::vector<std::string> SpiderPrint::PrintTableau(const SpiderTableau& tableau)
         lines.push_back(buffer.str());
     }
     buffer.str("");
-    buffer << "Deals=" << tableau.GetDealsRemaining()
-        << ", Packs=" << tableau.GetPacksRemoved();
+    buffer << "Deals-Left=" << tableau.GetDealsRemaining()
+        << ", Packs-Off=" << tableau.GetPacksRemoved();
     lines.push_back(buffer.str());
     return lines;
 }
@@ -186,6 +186,8 @@ std::string SpiderPrint::PrintBookMove(const SpiderTableau& tableau, const MoveS
     {
         buffer << PrintSuitedRun(dest, dest.GetRunHead(0), targetIndex) << "}";
     }
+
+    buffer << "<-";
 
     int srcTailIndex = src.Count() - 1;
     Card srcHeadCard = tableau.GetStack(srcNo).GetCard(srcIndex);
@@ -268,7 +270,7 @@ namespace
             const MoveSingle& move1 = move.GetMove(1);
             const MoveSingle& move2 = move.GetMove(2);
 
-            // Exchanges look like  A<--B, B<--C, C<--A
+            // Exchanges look like  A<-B, B<-C, C<-A
             // B and C swap through A.  Where A is a hole
             if (move0.FromStack() != move1.DestStack())
                 return {};
@@ -287,7 +289,7 @@ namespace
             std::string second = PrintSuitedRun(src1, move1.FromIndex(), src1.Count() - 1);
 
             std::stringstream buffer;
-            buffer << move0.FromStack() << "{" + first + "}<=>"
+            buffer << move0.FromStack() << "{" + first + "} <=> "
                 << move1.FromStack() << "{" + second + "}";
             buffer << " " << ComboTypeString(move.GetComboType());
             return buffer.str();
@@ -328,7 +330,7 @@ namespace
             std::string srcString2 = PrintSuitedRun(src0, move0.FromIndex(), src0.Count() - 1);
 
             std::stringstream buffer;
-            buffer << move1.DestStack() << "{" << destString << "}"
+            buffer << move1.DestStack() << "{" << destString << "}<-"
                 << move0.FromStack() << "{" << srcString1 << "-" << srcString2 << "}";
             buffer << " " << ComboTypeString(move.GetComboType());
             return buffer.str();;

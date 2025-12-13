@@ -49,9 +49,11 @@ BoardResult RunBoardInner(
 {
     BoardResult result;
 
+    int suits = args.GetSuits();
+
     auto sPtr_tableau = args.GetDealUp()
-        ? SpiderTableauFactory::CreateAllUp(2, seed)
-        : SpiderTableauFactory::Create(2, seed);
+        ? SpiderTableauFactory::CreateAllUp(suits, seed)
+        : SpiderTableauFactory::Create(suits, seed);
 
     bool printting = args.GetDisplay();
 

@@ -38,9 +38,14 @@ namespace
         return that.SetCount(count);
     }
 
-    bool SetSeedThunk(CommandLineArguments& that, int seed, std::string dummy)
+    bool SetRandomSeedThunk(CommandLineArguments& that, int seed, std::string dummy)
     {
-        return that.SetSeed(seed);
+        return that.SetRandomSeed(seed);
+    }
+
+    bool SetSuitsThunk(CommandLineArguments& that, int seed, std::string dummy)
+    {
+        return that.SetSuits(seed);
     }
 
     bool SetDisplayThunk(CommandLineArguments& that, int dummy1, std::string dummy2)
@@ -65,12 +70,12 @@ namespace
 
     const std::vector<Option> OptionsTable = {
         { "-c", "--count", OptionType::Int, SetCountThunk },
-        { "-s", "--seed", OptionType::Int, SetSeedThunk },
+        { "-r", "--randomSeed", OptionType::Int, SetRandomSeedThunk },
+        { "-s", "--suits", OptionType::Int, SetSuitsThunk },
         { "-d", "--display", OptionType::Flag, SetDisplayThunk },
         { "-u", "--dealup", OptionType::Flag, SetDealUpThunk },
         { "-t", "--treeDepth", OptionType::Int, SetTreeDepthThunk },
         { "-m", "--multiDepth", OptionType::Flag, SetMultiDepthThunk },
-
     };
 
     int FindLongNamedOption(std::string arg)
@@ -94,10 +99,10 @@ namespace
     }
 }
 
-
 CommandLineArguments::CommandLineArguments(int argc, char** argv)
     : m_argv(ConvertToStrings(argc, argv))
-    , m_seed(-1)
+    , m_randomSeed(-1)
+    , m_suits(4)
     , m_count(1)
     , m_treeDepth(0)
     , m_display(false)
@@ -189,22 +194,37 @@ int CommandLineArguments::GetCount() const
     return m_count;
 }
 
-bool CommandLineArguments::SetSeed(int seed)
+bool CommandLineArguments::SetRandomSeed(int seed)
 {
-    m_seed = seed;
+    m_randomSeed = seed;
     return true;
 }
 
-int CommandLineArguments::GetSeed() const
+int CommandLineArguments::GetRandomSeed() const
 {
-    if (m_seed == -1)
+    if (m_randomSeed == -1)
     {
         time_t t = time(nullptr);
         srand((int)t);
-        m_seed = rand();
-        m_seed = rand();
+        m_randomSeed = rand();
+        m_randomSeed = rand();
     }
-    return m_seed;
+    return m_randomSeed;
+}
+
+bool CommandLineArguments::SetSuits(int suits)
+{
+    if (suits == 1 || suits == 2 || suits == 4)
+    {
+        m_suits = suits;
+        return true;
+    }
+    return false;
+}
+
+int CommandLineArguments::GetSuits() const
+{
+    return m_suits;
 }
 
 bool CommandLineArguments::SetDisplay()
