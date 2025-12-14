@@ -45,10 +45,14 @@ namespace {
 
     bool IsSameMove(const MoveSingle& expected, const MoveSingle& actual)
     {
-        EXPECT_EQ(expected.FromStack(), actual.FromStack());
-        EXPECT_EQ(expected.FromIndex(), actual.FromIndex());
-        EXPECT_EQ(expected.DestStack(), actual.DestStack());
-        EXPECT_EQ(expected.DestIndex(), actual.DestIndex());
+        if (expected.FromStack() != actual.FromStack())
+            return false;
+        if (expected.FromIndex() != actual.FromIndex())
+            return false;
+        if (expected.DestStack() != actual.DestStack())
+            return false;
+        if (expected.DestIndex() != actual.DestIndex())
+            return false;
         return true;
     }
 }
@@ -175,9 +179,9 @@ TEST(BoardScoringTests, VeryLongAndShort) {
     auto& stacks = tableau.GetMutableStacks();
 
     SetStack(stacks[3],
-        { UKS(), UQS(), UJS(), UTS(), U9S(), U8S(), U7S(), U6S(), U5S(), U4S(), U3S(), U2S()});
+        { UKS(), UQS(), UJS(), UTS(), U9S(), U8S(), U7S(), U6S(), U5S() });
     SetStack(stacks[4],
-        { U3S(), U2S(), UAS() });
+        { U6S(), U5S(), U4S() ,U3S(), U2S(), UAS() });
 
 #ifdef _DEBUG
     PrintTableau(tableau);
@@ -196,23 +200,20 @@ TEST(BoardScoringTests, VeryLongAndShort) {
 
 /*
    0  1  2  3  4  5  6  7  8  9
-0  -  -  - KS 3S  -  -  -  -  -
-1  -  -  - QS 2S  -  -  -  -  -
-2  -  -  - JS AS  -  -  -  -  -
-3  -  -  - TS  -  -  -  -  -  -
-4  -  -  - 9S  -  -  -  -  -  -
+0  -  -  - KS 6S  -  -  -  -  -
+1  -  -  - QS 5S  -  -  -  -  -
+2  -  -  - JS 4S  -  -  -  -  -
+3  -  -  - TS 3S  -  -  -  -  -
+4  -  -  - 9S 2S  -  -  -  -  -
 5  -  -  - 8S  -  -  -  -  -  -
 6  -  -  - 7S  -  -  -  -  -  -
 7  -  -  - 6S  -  -  -  -  -  -
 8  -  -  - 5S  -  -  -  -  -  -
-9  -  -  - 4S  -  -  -  -  -  -
-10 -  -  - 3S  -  -  -  -  -  -
-11 -  -  - 2S  -  -  -  -  -  -
 */
 
     EXPECT_EQ(moves.size(), 1);
     auto actual = moves[0];
-    MoveSingle expected(4, 2, 3, 12);
+    MoveSingle expected(4, 2, 3, 9);
     EXPECT_TRUE(IsSameMove(actual, expected));
 
     Strategy strat;
@@ -236,9 +237,9 @@ TEST(BoardScoringTests, TwoVeryLong) {
     auto& stacks = tableau.GetMutableStacks();
 
     SetStack(stacks[3],
-        { UKS(), UQS(), UJS(), UTS(), U9S(), U8S(), U7S(), U6S(), U5S(), U4S(), U3S(), U2S() });
+        { UKS(), UQS(), UJS(), UTS(), U9S(), U8S(), U7S(), U6S(), U5S(), U4S(), U3S() });
     SetStack(stacks[4],
-        { UQS(), UJS(), UTS(), U9S(), U8S(), U7S(), U6S(), U5S(), U4S(), U3S(), U2S(), UAS()});
+        { UQS(), UJS(), UTS(), U9S(), U8S(), U7S(), U6S(), U5S(), U4S(), U3S(), U2S()});
 
 #ifdef _DEBUG
     PrintTableau(tableau);
@@ -269,12 +270,12 @@ TEST(BoardScoringTests, TwoVeryLong) {
 8  -  -  - 5S 4S  -  -  -  -  -
 9  -  -  - 4S 3S  -  -  -  -  -
 10 -  -  - 3S 2S  -  -  -  -  -
-11 -  -  - 2S AS  -  -  -  -  -
+11 -  -  -  -  -  -  -  -  -  -
 */
 
     EXPECT_EQ(moves.size(), 1);
     auto actual = moves[0];
-    MoveSingle expected(4, 11, 3, 12);
+    MoveSingle expected(4, 10, 3, 11);
     EXPECT_TRUE(IsSameMove(actual, expected));
 
     Strategy strat;
