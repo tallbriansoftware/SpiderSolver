@@ -25,7 +25,7 @@ public:
 
 private:
     std::shared_ptr<SpiderTableau> m_tableau;
-    Strategy m_strategy;
+    Strategy& m_strategy;
     Ancestry m_ancestry;
     int m_depth;
 

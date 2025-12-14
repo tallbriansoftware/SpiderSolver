@@ -77,13 +77,13 @@ SeriesTotal RunASeriesOfGames(const CommandLineArguments& args, CsvTable& csv)
     auto strategyList = GetStrategies(args);
     int stratCount = (int)strategyList.size();
     SeriesTotal total = { 0, 0, 0, 0.0 };
-    auto termNames = strategyList[0]->GetBoardScorer().GetModifiedTermNames();
+    auto termNames = strategyList[0]->GetModifiedTermNames();
     AddFloatColumnsToCsv(csv, termNames);
 
     for (auto& stratPtr : strategyList)
     {
         Strategy& strategy = *stratPtr.get();
-        auto termValues = strategy.GetBoardScorer().GetModifiedTerms();
+        auto termValues = strategy.GetModifiedTerms();
 
         int totalCount = count * stratCount * (maxDepth - minDepth + 1);
         for (int seed = start; seed < start + count; ++seed)
@@ -94,6 +94,7 @@ SeriesTotal RunASeriesOfGames(const CommandLineArguments& args, CsvTable& csv)
                 csv.AddValue(MyCsv::dateHeader, currentDate);
                 csv.AddValue(MyCsv::seedHeader, seed);
 
+                strategy.ClearEvals();
                 BoardResult result = RunOneGameOuter(args, seed, strategy, depth);
 
                 csv.AddValue(MyCsv::movesHeader, result.moveCount);

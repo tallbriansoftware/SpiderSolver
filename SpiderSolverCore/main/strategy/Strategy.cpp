@@ -51,7 +51,7 @@ float Strategy::MaxScore() const
     return m_boardScorer->MaxScore();
 }
 
-float Strategy::ComputeScore(const SpiderTableau& tableau)
+float Strategy::ComputeScore(const SpiderTableau& tableau) const
 {
     m_evals += 1;
     return m_boardScorer->ComputeScore(tableau);
@@ -85,9 +85,14 @@ std::vector<ScoredMove> Strategy::FindScoredMoves(
 }
 
 
-const BoardScorer& Strategy::GetBoardScorer() const
+const std::vector<std::string> Strategy::GetModifiedTermNames() const
 {
-    return *m_boardScorer;
+    return m_boardScorer->GetModifiedTermNames();
+}
+
+const std::vector<float> Strategy::GetModifiedTerms() const
+{
+    return m_boardScorer->GetModifiedTerms();
 }
 
 
@@ -136,54 +141,49 @@ std::vector<TreeMove> Strategy::FindAndScoreToDepth(
         if (ctx.IsAParentPosition(tabString))
             continue;
 
-        // If we have seen this position elsewhere in the search, but not
-        // a direct parent, then recapture the data we already know.
+        // check if we have seen this know before in the search.
+        // [Direct parents are a special case addressed above.]
         SpiderNode foundSpiderNode;
-        bool done = false;
         if (ctx.TryFindSpiderNode(tabString, foundSpiderNode))
         {
             if (foundSpiderNode.GetDepth() <= depth)
             {
+                // If we have seen this position elsewhere in the search, but not
+                // a direct parent, then recapture the data we already know.
                 treeMoves.push_back(TreeMove(foundSpiderNode.GetScore(), move));
-                done = true;
+                continue;
             }
-            else
-            {
-                // We have a better candidate for this position
-                // because it is at a shallower depth.
-                ctx.RemoveSpiderNode(tabString);
-            }
+            // We have seen this node before, but... this is a better
+            // candidate for this position because it is at a shallower depth.
+            // so remove the deeper node and continue.
+            ctx.RemoveSpiderNode(tabString);
         }
-        // This is not a previously seen position.
-        // Continue evaluating and store the positions.
-        if(!done)
-        {
-            float score = -1.0;
+        float score = -1.0;
 
+        if (depth >= ctx.GetMaxDepth())
+        {
             // Are we at maximum depth.  Don't go deeper.
-            if (depth >= ctx.GetMaxDepth())
+            // Compute Score as a "leaf node"
+            score = (float)ComputeScore(tableau);
+        }
+        else
+        {
+            // Recurse deeper.
+            auto childTreeMoves = FindAndScoreToDepth(depth + 1, ctx, tableau);
+
+            // If there are children then this nodes score is the best of its children.
+            // If no children then this nodes score is its score.
+            if (childTreeMoves.size() == 0)
             {
                 score = (float)ComputeScore(tableau);
             }
             else
             {
-                // Recurse deeper.
-                auto childTreeMoves = FindAndScoreToDepth(depth + 1, ctx, tableau);
-                // If there were no moves treat it as a leaf node.  (no best child)
-                if (childTreeMoves.size() == 0)
-                {
-                    score = (float)ComputeScore(tableau);
-                }
-                // On return note the move to the best child and best child's score.
-                else
-                {
-                    auto& bestChild = childTreeMoves[0];
-                    score = bestChild.GetScore();
-                }
+                score = childTreeMoves[0].GetScore();
             }
-            treeMoves.push_back(TreeMove(score, move));
-            ctx.AddSpiderNode(SpiderNode(depth, tabString, score));
         }
+        treeMoves.push_back(TreeMove(score, move));
+        ctx.AddSpiderNode(SpiderNode(depth, tabString, score));
     }
     SortTreeMoves(treeMoves);
     ctx.RemoveParentPosition(parentTabString);

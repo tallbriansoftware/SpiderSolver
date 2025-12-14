@@ -69,8 +69,6 @@ BoardResult RunOneGame(
 
     while(move.IsValid())
     {
-        auto currentScore = strategy.ComputeScore(*tableauView);
-
         if (printting)
         {
             if (move.IsDeal())
@@ -87,11 +85,14 @@ BoardResult RunOneGame(
                     std::cout << "Move# " << moveCount << "\nMove: "
                         << SpiderPrint::PrintBookMove(*tableauView, move, DoTurnCard::Auto) << std::endl;
                 }
+                std::cout << "Evals = " << strategy.GetEvals() << std::endl;
             }
         }
 
         moveCount += move.Count();
         moveChooser.CommitMove(move);
+
+        auto currentScore = strategy.ComputeScore(*tableauView);
 
         if (printting)
         {
@@ -120,8 +121,6 @@ BoardResult RunOneGameOuter(
 {
     ChronoTimer timer;
     timer.Start();
-
-    strategy.ClearEvals();
 
     BoardResult result = RunOneGame(args, seed, strategy, depth);
 

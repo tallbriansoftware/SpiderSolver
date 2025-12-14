@@ -5,6 +5,7 @@
 #include <memory>
 #include <vector>
 #include <functional>
+#include <string>
 
 class Ancestry;
 class SpiderTableau;
@@ -29,7 +30,7 @@ public:
 
     float MaxScore() const;
 
-    float ComputeScore(const SpiderTableau& tableau);
+    float ComputeScore(const SpiderTableau& tableau) const;
 
     std::vector<ScoredMove> FindScoredMoves(
         MoveFinderFunc moveFinder,
@@ -37,7 +38,8 @@ public:
         const Ancestry& ancestry,
         int depth);
 
-    const BoardScorer& GetBoardScorer() const;
+    const std::vector<std::string> GetModifiedTermNames() const;
+    const std::vector<float> GetModifiedTerms() const;
 
 private:
 
@@ -52,5 +54,5 @@ private:
 
 private:
     std::unique_ptr<BoardScorer> m_boardScorer;
-    int m_evals;
+    mutable int m_evals;
 };

@@ -27,18 +27,15 @@ MoveCombo MoveChooser::ComputeBestMove()
     m_moveChoices = m_strategy.FindScoredMoves(
         moveFinderFunc, *m_tableau, m_ancestry, m_depth);
 
-    if (!m_moveChoices.empty())
+    if(m_moveChoices.empty())
     {
-        StrategyUtil::SortTiedBestMoves(m_moveChoices, m_strategy, *m_tableau);
-
-        return m_moveChoices[0].GetMove();
-    }
-    else   // if (m_moveChoices.empty())
-    {
-        if(m_tableau->CanDeal())
+        if (m_tableau->CanDeal())
             return MoveCombo::Deal();
         return MoveCombo::None();
     }
+
+    StrategyUtil::SortTiedBestMoves(m_moveChoices, m_strategy, *m_tableau);
+    return m_moveChoices[0].GetMove();
 }
 
 void MoveChooser::CommitMove(const MoveCombo& move)

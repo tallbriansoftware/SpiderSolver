@@ -34,6 +34,5 @@ void ScoredMove::SetLocalScore(
     SpiderTableau::SavePoint save(tableau);
     tableau.DoMove(m_move, DoTurnCard::No);
 
-    auto scorer = strategy.GetBoardScorer();
-    m_localScore = scorer.ComputeScore(tableau);
+    m_localScore = strategy.ComputeScore(tableau);
 }
