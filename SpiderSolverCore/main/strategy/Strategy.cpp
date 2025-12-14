@@ -171,15 +171,16 @@ std::vector<TreeMove> Strategy::FindAndScoreToDepth(
             // Recurse deeper.
             auto childTreeMoves = FindAndScoreToDepth(depth + 1, ctx, tableau);
 
-            // If there are children then this nodes score is the best of its children.
-            // If no children then this nodes score is its score.
-            if (childTreeMoves.size() == 0)
+            if (childTreeMoves.size() > 0)
             {
-                score = (float)ComputeScore(tableau);
+                // If there are children then score is the best of its children.
+                auto bestChild = childTreeMoves[0];
+                score = bestChild.GetScore();
             }
             else
             {
-                score = childTreeMoves[0].GetScore();
+                // If no children then this nodes score is its score.
+                score = (float)ComputeScore(tableau);
             }
         }
         treeMoves.push_back(TreeMove(score, move));
