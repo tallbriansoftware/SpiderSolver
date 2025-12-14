@@ -15,6 +15,7 @@ class MoveCombo
 {
 public:
     static MoveCombo Deal();
+    static MoveCombo None();
 
 public:
     MoveCombo();

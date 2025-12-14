@@ -35,7 +35,9 @@ MoveCombo MoveChooser::ComputeBestMove()
     }
     else   // if (m_moveChoices.empty())
     {
-        return MoveCombo::Deal();
+        if(m_tableau->CanDeal())
+            return MoveCombo::Deal();
+        return MoveCombo::None();
     }
 }
 

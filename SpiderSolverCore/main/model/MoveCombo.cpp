@@ -25,6 +25,13 @@ MoveCombo MoveCombo::Deal()
     return deal;
 }
 
+MoveCombo MoveCombo::None()
+{
+    MoveCombo deal;
+    deal.m_type = ComboType::None;
+    return deal;
+}
+
 MoveCombo::MoveCombo(const std::vector<MoveSingle>& moves)
     : m_moves(moves)
     , m_type(ComboType::None)
@@ -33,6 +40,7 @@ MoveCombo::MoveCombo(const std::vector<MoveSingle>& moves)
 
 bool MoveCombo::IsValid() const
 {
+    // type == None is not valid.
     return (m_moves.size() != 0 || m_type == ComboType::Deal);
 }
 
@@ -43,6 +51,8 @@ bool MoveCombo::IsDeal() const
 
 int MoveCombo::Count() const
 {
+    if (m_type == ComboType::Deal)
+        return 1;
     return (int)m_moves.size();
 }
 

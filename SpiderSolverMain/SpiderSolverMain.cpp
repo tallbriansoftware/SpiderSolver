@@ -94,7 +94,7 @@ SeriesTotal RunASeriesOfGames(const CommandLineArguments& args, CsvTable& csv)
                 csv.AddValue(MyCsv::dateHeader, currentDate);
                 csv.AddValue(MyCsv::seedHeader, seed);
 
-                BoardResult result = RunOneBoard(args, seed, strategy, depth);
+                BoardResult result = RunOneGameOuter(args, seed, strategy, depth);
 
                 csv.AddValue(MyCsv::movesHeader, result.moveCount);
                 csv.AddValue(MyCsv::scoreHeader, result.score);

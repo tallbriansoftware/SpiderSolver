@@ -38,7 +38,7 @@ void OutputScoredMoves(
     const SpiderTableau& tableau,
     const std::vector<ScoredMove>& scoredMoves);
 
-BoardResult RunOneBoard(
+BoardResult RunOneGameOuter(
     const CommandLineArguments& args,
     int seed,
     Strategy& strategy,

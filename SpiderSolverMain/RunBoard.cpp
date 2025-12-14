@@ -24,7 +24,7 @@ void OutputBoard(const std::string& leadPadding, const SpiderTableau& tableau, c
 
     std::cout << leadPadding << SpiderPrint::PrintTableauStatsHeaders() << std::endl;
     std::cout << leadPadding << SpiderPrint::PrintTableauStats(tStats) << std::endl;
-    std::cout << tableau.GetTableauString() << std::endl;
+    // std::cout << tableau.GetTableauString() << std::endl;
 }
 
 
@@ -42,7 +42,7 @@ void OutputScoredMoves(const SpiderTableau& tableau, const std::vector<ScoredMov
 }
 
 
-BoardResult RunBoardInner(
+BoardResult RunOneGame(
     const CommandLineArguments& args,
     int seed,
     Strategy& strategy,
@@ -61,52 +61,47 @@ BoardResult RunBoardInner(
     std::shared_ptr<const SpiderTableau> tableauView = sharedTableau;
     int moveCount = 0;
 
-    while (true)
+    if (printting)
     {
+        OutputBoard("     ", *tableauView, TableauStats(*tableauView));
+    }
+    MoveCombo move = moveChooser.ComputeBestMove();
 
+    while(move.IsValid())
+    {
         auto currentScore = strategy.ComputeScore(*tableauView);
+
+        if (printting)
+        {
+            if (move.IsDeal())
+            {
+                std::cout << "=----------------- Deal -----------------" << std::endl;
+            }
+            else // normal move
+            {
+                auto otherMoves = moveChooser.GetAllChoices();
+                if (!otherMoves.empty())
+                {
+                    OutputScoredMoves(*tableauView, otherMoves);
+
+                    std::cout << "Move# " << moveCount << "\nMove: "
+                        << SpiderPrint::PrintBookMove(*tableauView, move, DoTurnCard::Auto) << std::endl;
+                }
+            }
+        }
+
+        moveCount += move.Count();
+        moveChooser.CommitMove(move);
+
         if (printting)
         {
             OutputBoard("     ", *tableauView, TableauStats(*tableauView));
             std::cout << "Board Score=" << currentScore << "/" << strategy.MaxScore() << std::endl;
         }
 
-        MoveCombo move = moveChooser.ComputeBestMove();
-        if (move.IsValid())
-        {
-            if (move.IsDeal())
-            {
-                if (!tableauView->CanDeal())
-                    break;
-                if (printting)
-                    std::cout << "=----------------- Deal -----------------" << std::endl;
-
-                moveCount += 1;
-                moveChooser.CommitMove(move);
-
-            }
-            else // normal move
-            {
-                if (printting)
-                {
-                    auto otherMoves = moveChooser.GetAllChoices();
-                    if (!otherMoves.empty())
-                    {
-                        OutputScoredMoves(*tableauView, otherMoves);
-
-                        std::cout << "Move# " << moveCount << "\nMove: "
-                            << SpiderPrint::PrintBookMove(*tableauView, move, DoTurnCard::Auto) << std::endl;
-                    }
-                }
-                moveCount += move.Count();
-                moveChooser.CommitMove(move);
-            }
-        }
-        else  // move is Invalid.  Game Over.
-        {
-            throw std::exception("failed on an invalid move");
-        }
-    }
+        // collect moves for the next time around
+        move = moveChooser.ComputeBestMove();
+    } while (move.IsValid());
 
     result.score = strategy.ComputeScore(*tableauView);
     result.searchDepth = depth;
@@ -117,21 +112,18 @@ BoardResult RunBoardInner(
 }
 
 
-BoardResult RunOneBoard(
+BoardResult RunOneGameOuter(
     const CommandLineArguments& args,
     int seed,
     Strategy& strategy,
     int depth)
 {
     ChronoTimer timer;
-    int maxDepth = args.GetTreeDepth();
-
     timer.Start();
+
     strategy.ClearEvals();
 
-    BoardResult result;
-
-    result = RunBoardInner(args, seed, strategy, depth);
+    BoardResult result = RunOneGame(args, seed, strategy, depth);
 
     result.usecs = timer.ReadMicroseconds();
 
