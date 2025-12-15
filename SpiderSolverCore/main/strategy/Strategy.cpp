@@ -104,9 +104,12 @@ std::vector<ScoredMove> Strategy::TreeSearch(
 
     // convert to scored moves
     std::vector<ScoredMove> result;
-    for (auto& tm : treeMoves)
+    for (TreeMove& tm : treeMoves)
     {
-        result.push_back(ScoredMove(tm.GetScore(), tm.GetMove()));
+        auto pathDown = tm.GetPathDown();
+        // The stored path down is in backward order.
+        std::reverse(pathDown.begin(), pathDown.end());
+        result.push_back(ScoredMove(tm.GetScore(), tm.GetMove(), pathDown));
     }
     return result;
 }
@@ -150,7 +153,7 @@ std::vector<TreeMove> Strategy::FindAndScoreToDepth(
             {
                 // If we have seen this position elsewhere in the search, but not
                 // a direct parent, then recapture the data we already know.
-                treeMoves.push_back(TreeMove(foundSpiderNode.GetScore(), move));
+                treeMoves.push_back(TreeMove(foundSpiderNode.GetScore(), move, {}));
                 continue;
             }
             // We have seen this node before, but... this is a better
@@ -158,33 +161,33 @@ std::vector<TreeMove> Strategy::FindAndScoreToDepth(
             // so remove the deeper node and continue.
             ctx.RemoveSpiderNode(tabString);
         }
-        float score = -1.0;
+        TreeMove treeMove;
 
         if (depth >= ctx.GetMaxDepth())
         {
             // Are we at maximum depth.  Don't go deeper.
             // Compute Score as a "leaf node"
-            score = (float)ComputeScore(tableau);
+            float score = (float)ComputeScore(tableau);
+            treeMove = TreeMove(score, move, {});
         }
         else
         {
             // Recurse deeper.
             auto childTreeMoves = FindAndScoreToDepth(depth + 1, ctx, tableau);
-
             if (childTreeMoves.size() > 0)
             {
                 // If there are children then score is the best of its children.
-                auto bestChild = childTreeMoves[0];
-                score = bestChild.GetScore();
+                treeMove = TreeMove(childTreeMoves[0].GetScore(), move, childTreeMoves[0].GetPathDown());
             }
             else
             {
                 // If no children then this nodes score is its score.
-                score = (float)ComputeScore(tableau);
+                float score = (float)ComputeScore(tableau);
+                treeMove = TreeMove(score, move, {});
             }
         }
-        treeMoves.push_back(TreeMove(score, move));
-        ctx.AddSpiderNode(SpiderNode(depth, tabString, score));
+        treeMoves.push_back(treeMove);
+        ctx.AddSpiderNode(SpiderNode(depth, tabString, treeMove.GetScore()));
     }
     SortTreeMoves(treeMoves);
     ctx.RemoveParentPosition(parentTabString);

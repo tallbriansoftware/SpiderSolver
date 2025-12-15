@@ -9,14 +9,14 @@ class TreeMove
 {
 public:
     TreeMove();
-    TreeMove(float score, const MoveCombo& move);
-    TreeMove(const MoveCombo& move, const TreeMove& bestChild);
+    TreeMove(float score, const MoveCombo& move, const std::vector<MoveCombo> path);
+
     float GetScore() const;
     MoveCombo GetMove() const;
-    std::vector<MoveCombo> GetPathUp() const;
+    std::vector<MoveCombo> GetPathDown() const;
 
 private:
     float m_score;
     MoveCombo m_move;
-    std::vector<MoveCombo> m_pathUp;
+    std::vector<MoveCombo> m_pathDown;
 };

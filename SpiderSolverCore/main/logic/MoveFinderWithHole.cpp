@@ -143,8 +143,7 @@ int MoveFinderWithHole::AddMoveTwoRuns(
                 MoveSingle(holeNo, 0, destNo, destCount + sizeOfRun1)
             };
 
-            MoveCombo move(smoves);
-            move.SetComboType(ComboType::Move2Runs);
+            MoveCombo move(smoves, ComboType::Move2Runs);
             moves.push_back(move);
         }
     }
@@ -191,8 +190,7 @@ int MoveFinderWithHole::AddFlipRuns(
                 MoveSingle(srcNo, headIndex1, holeNo, sizeOfRun0),
             };
 
-            MoveCombo move(smoves);
-            move.SetComboType(ComboType::FlipRuns);
+            MoveCombo move(smoves, ComboType::FlipRuns);
             moves.push_back(move);
         }
     }
@@ -257,8 +255,7 @@ int MoveFinderWithHole::AddInsertRun(
                     MoveSingle(srcNo, srcHead, targetNo, headIndex0),
                     MoveSingle(holeNo, 0, targetNo, headIndex0 + sizeOfSrcRun)
                 };
-                MoveCombo move(smoves);
-                move.SetComboType(ComboType::InsertRun);
+                MoveCombo move(smoves, ComboType::InsertRun);
                 moves.push_back(move);
             }
         }
@@ -318,8 +315,7 @@ int MoveFinderWithHole::AddRemoveMiddleRun(
                 MoveSingle(holeNo, 0, srcNo, tailIndex2 + 1)
             };
 
-            MoveCombo move(smoves);
-            move.SetComboType(ComboType::RemoveMiddleRun);
+            MoveCombo move(smoves, ComboType::RemoveMiddleRun);
             moves.push_back(move);
         }
     }
@@ -363,8 +359,7 @@ int MoveFinderWithHole::AddTradeHolesA(
                     MoveSingle(destStkNo, multipleRunsHeadIndex, holeNo, 0),
                     MoveSingle(srcStkNo, 0, destStkNo, multipleRunsHeadIndex)
                 };
-                MoveCombo move(smoves);
-                move.SetComboType(ComboType::TradeHolesA);
+                MoveCombo move(smoves, ComboType::TradeHolesA);
                 moves.push_back(move);
             }
         }
@@ -405,8 +400,7 @@ int MoveFinderWithHole::AddTradeHolesB(
             MoveSingle(pair.src, srcRun0, holeNo, 0),
             MoveSingle(pair.src, srcRun1, pair.dest, destTail)
         };
-        MoveCombo move(smoves);
-        move.SetComboType(ComboType::TradeHolesB);
+        MoveCombo move(smoves, ComboType::TradeHolesB);
         moves.push_back(move);
     }
     return (int)moves.size() - startCount;
@@ -474,8 +468,7 @@ int MoveFinderWithHole::AddSwapRuns(
                 MoveSingle(stk2, idx2, stk1, idx1),
                 MoveSingle(holeNo, 0, stk2, idx2)
             };
-            MoveCombo move(smoves);
-            move.SetComboType(ComboType::SwapRuns);
+            MoveCombo move(smoves, ComboType::SwapRuns);
             moves.push_back(move);
         }
     }

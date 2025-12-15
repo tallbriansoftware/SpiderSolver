@@ -5,7 +5,7 @@
 #include <vector>
 
 enum class ComboType {
-    None, FlipRuns, Move2Runs, InsertRun,
+    None, Single, Multi, FlipRuns, Move2Runs, InsertRun,
     RemoveMiddleRun, TradeHolesA, TradeHolesB, SwapRuns,
     Deal
 };
@@ -21,6 +21,7 @@ public:
     MoveCombo();
     explicit MoveCombo(const MoveSingle& smove);
     MoveCombo(const std::vector<MoveSingle>& moveList);
+    MoveCombo(const std::vector<MoveSingle>& moveList, ComboType type);
 
 public:
     bool IsValid() const;
@@ -29,7 +30,6 @@ public:
     int Count() const;
 
     ComboType GetComboType() const;
-    void SetComboType(ComboType type);
 
     MoveCombo& AddMove(const MoveSingle& move);
     MoveCombo& AddMove(const MoveCombo& move);

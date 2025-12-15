@@ -15,7 +15,7 @@ MoveCombo::MoveCombo()
 MoveCombo::MoveCombo(const MoveSingle& smove)
 {
     m_moves.push_back(smove);
-    m_type = ComboType::None;
+    m_type = ComboType::Single;
 }
 
 MoveCombo MoveCombo::Deal()
@@ -32,9 +32,15 @@ MoveCombo MoveCombo::None()
     return deal;
 }
 
+MoveCombo::MoveCombo(const std::vector<MoveSingle>& moves, ComboType type)
+    : m_moves(moves)
+    , m_type(type)
+{
+}
+
 MoveCombo::MoveCombo(const std::vector<MoveSingle>& moves)
     : m_moves(moves)
-    , m_type(ComboType::None)
+    , m_type(ComboType::Multi)
 {
 }
 
@@ -61,10 +67,6 @@ ComboType MoveCombo::GetComboType() const
     return m_type;
 }
 
-void MoveCombo::SetComboType(ComboType type)
-{
-    m_type = type;
-}
 
 MoveCombo& MoveCombo::AddMove(const MoveSingle& smove)
 {

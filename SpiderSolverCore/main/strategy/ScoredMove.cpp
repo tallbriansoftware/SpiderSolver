@@ -5,10 +5,12 @@
 #include "spidersolvercore/model/SpiderTableau.h"
 
 
-ScoredMove::ScoredMove(float score, const MoveCombo& move)
+ScoredMove::ScoredMove(float score, const MoveCombo& move,
+                   std::vector<MoveCombo> pathDown)
     : m_score(score)
     , m_move(move)
     , m_localScore(-1.0)
+    , m_pathDown(pathDown)
 { }
 
 float ScoredMove::GetScore() const
@@ -24,6 +26,11 @@ float ScoredMove::GetLocalScore() const
 const MoveCombo& ScoredMove::GetMove() const
 {
     return m_move;
+}
+
+const std::vector<MoveCombo> ScoredMove::GetPath() const
+{
+    return m_pathDown;
 }
 
 void ScoredMove::SetLocalScore(
