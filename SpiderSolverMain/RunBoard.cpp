@@ -34,7 +34,11 @@ void OutputScoredMoves(const SpiderTableau& tableau, const std::vector<ScoredMov
     for (auto& scoredMove : scoredMoves)
     {
         // std::string moveString = SpiderPrint::PrintBookMove(tableau, scoredMove.GetMove(), DoTurnCard::No);
-        std::string pathString = SpiderPrint::PrintBookMoves(tableau, scoredMove.GetPath(), DoTurnCard::No);
+        std::string pathString = SpiderPrint::PrintBookMoves(
+            tableau,
+            scoredMove.GetPath().GetMoves(),
+            DoTurnCard::No);
+
         std::cout << scoredMove.GetScore();
         if (scoredMove.GetLocalScore() != -1.0)
             std::cout << "(" << scoredMove.GetLocalScore() << ")";
@@ -79,7 +83,7 @@ BoardResult RunOneGame(
             }
             else // normal move
             {
-                auto otherMoves = moveChooser.GetAllChoices();
+                const std::vector<ScoredMove>& otherMoves = moveChooser.GetAllChoices();
                 if (!otherMoves.empty())
                 {
                     OutputScoredMoves(*tableauView, otherMoves);

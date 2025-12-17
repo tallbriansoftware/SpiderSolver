@@ -6,7 +6,7 @@
 
 
 ScoredMove::ScoredMove(float score, const MoveCombo& move,
-                   std::vector<MoveCombo> pathDown)
+                   const MoveCombo& pathDown)
     : m_score(score)
     , m_move(move)
     , m_localScore(-1.0)
@@ -28,7 +28,7 @@ const MoveCombo& ScoredMove::GetMove() const
     return m_move;
 }
 
-const std::vector<MoveCombo> ScoredMove::GetPath() const
+const MoveCombo& ScoredMove::GetPath() const
 {
     return m_pathDown;
 }

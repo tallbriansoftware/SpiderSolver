@@ -50,6 +50,7 @@ private:
     std::vector<TreeMove> FindAndScoreToDepth(
         int depth,
         SearchContext& ctx,
+        std::vector<MoveCombo> movePath,
         const SpiderTableau& parentTableau);
 
 private:

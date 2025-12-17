@@ -6,12 +6,31 @@ TreeMove::TreeMove()
 { }
 
 
-TreeMove::TreeMove(float score, const MoveCombo& move, const std::vector<MoveCombo> path)
+TreeMove::TreeMove(
+    float score,
+    const MoveCombo& move,
+    const std::vector<MoveCombo>& path)
+    : m_score(score)
+    , m_move(move)
+{
+    for (MoveCombo cmove : path)
+    {
+        for (MoveSingle smove : cmove.GetMoves())
+        {
+            m_pathDown.AddMove(smove);
+        }
+
+    }
+}
+
+TreeMove::TreeMove(
+    float score,
+    const MoveCombo& move,
+    const MoveCombo& path)
     : m_score(score)
     , m_move(move)
     , m_pathDown(path)
 {
-    m_pathDown.push_back(move);
 }
 
 
@@ -27,7 +46,7 @@ MoveCombo TreeMove::GetMove() const
 }
 
 
-std::vector<MoveCombo> TreeMove::GetPathDown() const
+MoveCombo TreeMove::GetPathDown() const
 {
     return m_pathDown;
 }

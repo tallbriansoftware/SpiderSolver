@@ -100,16 +100,13 @@ std::vector<ScoredMove> Strategy::TreeSearch(
     const SpiderTableau& parentTableau,
     SearchContext& ctx)
 {
-    auto treeMoves = FindAndScoreToDepth(1, ctx, parentTableau);
+    auto treeMoves = FindAndScoreToDepth(1, ctx, {}, parentTableau);
 
     // convert to scored moves
     std::vector<ScoredMove> result;
     for (TreeMove& tm : treeMoves)
     {
-        auto pathDown = tm.GetPathDown();
-        // The stored path down is in backward order.
-        std::reverse(pathDown.begin(), pathDown.end());
-        result.push_back(ScoredMove(tm.GetScore(), tm.GetMove(), pathDown));
+        result.push_back(ScoredMove(tm.GetScore(), tm.GetMove(), tm.GetPathDown()));
     }
     return result;
 }
@@ -118,6 +115,7 @@ std::vector<ScoredMove> Strategy::TreeSearch(
 std::vector<TreeMove> Strategy::FindAndScoreToDepth(
     int depth,
     SearchContext& ctx,
+    std::vector<MoveCombo> pathDown,
     const SpiderTableau& parentTableau)
 {
     // Get the child moves
@@ -132,9 +130,13 @@ std::vector<TreeMove> Strategy::FindAndScoreToDepth(
     SpiderTableau tableau(parentTableau);
     std::vector<TreeMove> treeMoves;
 
+    pathDown.resize(depth);
+
     // If we are not at the leaf level, then just expand down.
     for (auto& move : moves)
     {
+        pathDown[depth-1] = move;
+
         SpiderTableau::SavePoint save(tableau);
         tableau.DoMove(move, DoTurnCard::No);
 
@@ -147,13 +149,16 @@ std::vector<TreeMove> Strategy::FindAndScoreToDepth(
         // check if we have seen this know before in the search.
         // [Direct parents are a special case addressed above.]
         SpiderNode foundSpiderNode;
+        TreeMove treeMove;
+
         if (ctx.TryFindSpiderNode(tabString, foundSpiderNode))
         {
             if (foundSpiderNode.GetDepth() <= depth)
             {
                 // If we have seen this position elsewhere in the search, but not
                 // a direct parent, then recapture the data we already know.
-                treeMoves.push_back(TreeMove(foundSpiderNode.GetScore(), move, {}));
+                treeMove = TreeMove(foundSpiderNode.GetScore(), move, pathDown);
+                treeMoves.push_back(treeMove);
                 continue;
             }
             // We have seen this node before, but... this is a better
@@ -161,33 +166,33 @@ std::vector<TreeMove> Strategy::FindAndScoreToDepth(
             // so remove the deeper node and continue.
             ctx.RemoveSpiderNode(tabString);
         }
-        TreeMove treeMove;
 
         if (depth >= ctx.GetMaxDepth())
         {
             // Are we at maximum depth.  Don't go deeper.
             // Compute Score as a "leaf node"
             float score = (float)ComputeScore(tableau);
-            treeMove = TreeMove(score, move, {});
+            treeMove = TreeMove(score, move, pathDown);
         }
         else
         {
             // Recurse deeper.
-            auto childTreeMoves = FindAndScoreToDepth(depth + 1, ctx, tableau);
+            std::vector<TreeMove> childTreeMoves = FindAndScoreToDepth(depth + 1, ctx, pathDown, tableau);
             if (childTreeMoves.size() > 0)
             {
                 // If there are children then score is the best of its children.
-                treeMove = TreeMove(childTreeMoves[0].GetScore(), move, childTreeMoves[0].GetPathDown());
+                TreeMove bestMove = childTreeMoves[0];
+                treeMove = TreeMove(bestMove.GetScore(), move, bestMove.GetPathDown());
             }
             else
             {
                 // If no children then this nodes score is its score.
                 float score = (float)ComputeScore(tableau);
-                treeMove = TreeMove(score, move, {});
+                treeMove = TreeMove(score, move, pathDown);
             }
         }
         treeMoves.push_back(treeMove);
-        ctx.AddSpiderNode(SpiderNode(depth, tabString, treeMove.GetScore()));
+        ctx.AddSpiderNode(SpiderNode(depth, tabString, treeMove));
     }
     SortTreeMoves(treeMoves);
     ctx.RemoveParentPosition(parentTabString);

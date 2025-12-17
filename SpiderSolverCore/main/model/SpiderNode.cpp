@@ -7,14 +7,16 @@
 
 SpiderNode::SpiderNode()
     : m_depth(-1)
-    , m_score(-1)
 { }
 
 
-SpiderNode::SpiderNode(int depth, const std::string& tableauString, float score)
+SpiderNode::SpiderNode(
+    int depth,
+    const std::string& tableauString,
+    const TreeMove& treeMove)
     : m_depth(depth)
     , m_stringRep(tableauString)
-    , m_score(score)
+    , m_treeMove(treeMove)
 { }
 
 int SpiderNode::GetDepth() const
@@ -24,10 +26,15 @@ int SpiderNode::GetDepth() const
 
 float SpiderNode::GetScore() const
 {
-    return m_score;
+    return m_treeMove.GetScore();
 }
 
 const std::string& SpiderNode::GetStringRep() const
 {
     return m_stringRep;
+}
+
+MoveCombo SpiderNode::GetPathDown() const
+{
+    return m_treeMove.GetPathDown();
 }

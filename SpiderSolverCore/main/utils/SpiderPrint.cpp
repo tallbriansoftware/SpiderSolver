@@ -205,7 +205,7 @@ std::string SpiderPrint::PrintBookMove(const SpiderTableau& tableau, const MoveS
         if (!prevCard.IsFaceUp())
         {
             if (turn == DoTurnCard::No)
-                buffer << "=??";
+                buffer << "=?";
             else
             {
                 Card tmp = prevCard;
