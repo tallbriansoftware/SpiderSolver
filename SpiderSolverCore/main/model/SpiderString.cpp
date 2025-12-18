@@ -16,6 +16,8 @@ std::string SpiderString::Create(const SpiderStack& stack)
     const std::string alphNum("0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ");
 
     std::string result(ColumnCode);
+    result.reserve(32);
+
     int downCount = 0;
     for (auto& card : stack.GetCards())
     {
@@ -65,7 +67,8 @@ std::string SpiderString::Create(const SpiderTableau& tableau)
         size += (int)stackString->size();
 
     std::string result;
-    result.reserve(size);
+    result.reserve(size + 16);
+
     for (auto stackString : spiderStrings)
         result += *stackString;
 
