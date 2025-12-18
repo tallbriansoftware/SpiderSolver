@@ -1,52 +1,39 @@
 #include "spidersolvercore/strategy/TreeMove.h"
 
+std::vector<MoveSingle> SinglesVecFromCombosVec(const std::vector<MoveCombo>& moves)
+{
+    std::vector<MoveSingle> result;
 
-TreeMove::TreeMove()
+    for (MoveCombo cmove : moves)
+    {
+        for (MoveSingle smove : cmove.GetMoves())
+        {
+            result.push_back(smove);
+        }
+    }
+    return result;
+}
+
+
+TreeNode::TreeNode()
     : m_score(-1.0)
 { }
 
 
-TreeMove::TreeMove(
+TreeNode::TreeNode(
     float score,
-    const MoveCombo& move,
-    const std::vector<MoveCombo>& path)
+    const MoveCombo& move)
     : m_score(score)
     , m_move(move)
 {
-    for (MoveCombo cmove : path)
-    {
-        for (MoveSingle smove : cmove.GetMoves())
-        {
-            m_pathDown.AddMove(smove);
-        }
-
-    }
 }
 
-TreeMove::TreeMove(
-    float score,
-    const MoveCombo& move,
-    const MoveCombo& path)
-    : m_score(score)
-    , m_move(move)
-    , m_pathDown(path)
-{
-}
-
-
-float TreeMove::GetScore() const
+float TreeNode::GetScore() const
 {
     return m_score;
 }
 
-
-MoveCombo TreeMove::GetMove() const
+MoveCombo TreeNode::GetMove() const
 {
     return m_move;
-}
-
-
-MoveCombo TreeMove::GetPathDown() const
-{
-    return m_pathDown;
 }

@@ -27,23 +27,20 @@ void OutputBoard(const std::string& leadPadding, const SpiderTableau& tableau, c
     // std::cout << tableau.GetTableauString() << std::endl;
 }
 
-
 void OutputScoredMoves(const SpiderTableau& tableau, const std::vector<ScoredMove>& scoredMoves)
 {
     // output moves with scores
     for (auto& scoredMove : scoredMoves)
     {
-        // std::string moveString = SpiderPrint::PrintBookMove(tableau, scoredMove.GetMove(), DoTurnCard::No);
-        std::string pathString = SpiderPrint::PrintBookMoves(
-            tableau,
-            scoredMove.GetPath().GetMoves(),
-            DoTurnCard::No);
+         std::string moveString = SpiderPrint::PrintBookMove(
+         tableau,
+         scoredMove.GetMove(),
+         DoTurnCard::No);
 
         std::cout << scoredMove.GetScore();
         if (scoredMove.GetLocalScore() != -1.0)
             std::cout << "(" << scoredMove.GetLocalScore() << ")";
-        // std::cout << "   " << moveString;
-        std::cout << "   " << pathString << std::endl;
+        std::cout << "   " << moveString << std::endl;;
     }
 }
 

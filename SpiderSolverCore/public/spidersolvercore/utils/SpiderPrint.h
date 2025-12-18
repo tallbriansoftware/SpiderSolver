@@ -28,6 +28,7 @@ namespace SpiderPrint
 
     std::string PrintBookMove(const SpiderTableau& tableau, const MoveSingle& move, DoTurnCard turn);
     std::string PrintBookMove(const SpiderTableau& tableau, const MoveCombo& move, DoTurnCard turn);
+
     std::string PrintBookMoves(const SpiderTableau& tableau, const std::vector<MoveSingle>& move, DoTurnCard turn);
     std::string PrintBookMoves(const SpiderTableau& tableau, const std::vector<MoveCombo>& move, DoTurnCard turn);
 

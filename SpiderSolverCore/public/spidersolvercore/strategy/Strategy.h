@@ -11,7 +11,7 @@ class Ancestry;
 class SpiderTableau;
 class BoardScorer;
 class SearchContext;
-class TreeMove;
+class TreeNode;
 class TreeContext;
 class MoveCombo;
 class ScoredMove;
@@ -47,7 +47,7 @@ private:
         const SpiderTableau& parentTableau,
         SearchContext& ctx);
 
-    std::vector<TreeMove> FindAndScoreToDepth(
+    std::vector<TreeNode> FindAndScoreToDepth(
         int depth,
         SearchContext& ctx,
         std::vector<MoveCombo> movePath,

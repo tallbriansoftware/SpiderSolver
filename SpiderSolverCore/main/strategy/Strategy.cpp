@@ -59,10 +59,10 @@ float Strategy::ComputeScore(const SpiderTableau& tableau) const
 
 namespace
 {
-    void SortTreeMoves(std::vector<TreeMove>& treeMoves)
+    void SortTreeNodes(std::vector<TreeNode>& treeNodes)
     {
         // Sort the moves by score,  greatest to least.
-        std::sort(begin(treeMoves), end(treeMoves), [](TreeMove& a, TreeMove& b)
+        std::sort(begin(treeNodes), end(treeNodes), [](TreeNode& a, TreeNode& b)
             {
                 return a.GetScore() > b.GetScore();
             });
@@ -100,22 +100,22 @@ std::vector<ScoredMove> Strategy::TreeSearch(
     const SpiderTableau& parentTableau,
     SearchContext& ctx)
 {
-    auto treeMoves = FindAndScoreToDepth(1, ctx, {}, parentTableau);
+    auto treeNodes = FindAndScoreToDepth(1, ctx, {}, parentTableau);
 
     // convert to scored moves
     std::vector<ScoredMove> result;
-    for (TreeMove& tm : treeMoves)
+    for (TreeNode& tn : treeNodes)
     {
-        result.push_back(ScoredMove(tm.GetScore(), tm.GetMove(), tm.GetPathDown()));
+        result.push_back(ScoredMove(tn.GetScore(), tn.GetMove()));
     }
     return result;
 }
 
 
-std::vector<TreeMove> Strategy::FindAndScoreToDepth(
+std::vector<TreeNode> Strategy::FindAndScoreToDepth(
     int depth,
     SearchContext& ctx,
-    std::vector<MoveCombo> pathDown,
+    std::vector<MoveCombo> pathToHere,
     const SpiderTableau& parentTableau)
 {
     // Get the child moves
@@ -128,14 +128,14 @@ std::vector<TreeMove> Strategy::FindAndScoreToDepth(
     ctx.AddParentPosition(parentTabString);
 
     SpiderTableau tableau(parentTableau);
-    std::vector<TreeMove> treeMoves;
+    std::vector<TreeNode> treeNodes;
 
-    pathDown.resize(depth);
+    pathToHere.resize(depth);
 
     // If we are not at the leaf level, then just expand down.
     for (auto& move : moves)
     {
-        pathDown[depth-1] = move;
+        pathToHere[depth-1] = move;
 
         SpiderTableau::SavePoint save(tableau);
         tableau.DoMove(move, DoTurnCard::No);
@@ -149,21 +149,24 @@ std::vector<TreeMove> Strategy::FindAndScoreToDepth(
         // check if we have seen this know before in the search.
         // [Direct parents are a special case addressed above.]
         SpiderNode foundSpiderNode;
-        TreeMove treeMove;
+        TreeNode treeNode;
 
         if (ctx.TryFindSpiderNode(tabString, foundSpiderNode))
         {
+            // We have seen this exact Spider Position before.
+            // So the previous analysis that looked below this can be reused.
+            // Unless we are at a lesser depth that the previous analysis.
+            // Then we can go deeper outselves.
             if (foundSpiderNode.GetDepth() <= depth)
             {
-                // If we have seen this position elsewhere in the search, but not
-                // a direct parent, then recapture the data we already know.
-                treeMove = TreeMove(foundSpiderNode.GetScore(), move, pathDown);
-                treeMoves.push_back(treeMove);
+                // If we have seen this position elsewhere in the search (but not
+                // a direct parent)  then recapture the data we already know.
+                treeNode = TreeNode(foundSpiderNode.GetScore(), move);
+                treeNodes.push_back(treeNode);
                 continue;
             }
-            // We have seen this node before, but... this is a better
-            // candidate for this position because it is at a shallower depth.
-            // so remove the deeper node and continue.
+            // We have seen this node before, but we have deep analysis.
+            // Then remove the old one and continue.
             ctx.RemoveSpiderNode(tabString);
         }
 
@@ -172,30 +175,28 @@ std::vector<TreeMove> Strategy::FindAndScoreToDepth(
             // Are we at maximum depth.  Don't go deeper.
             // Compute Score as a "leaf node"
             float score = (float)ComputeScore(tableau);
-            treeMove = TreeMove(score, move, pathDown);
+            treeNode = TreeNode(score, move);
         }
         else
         {
             // Recurse deeper.
-            std::vector<TreeMove> childTreeMoves = FindAndScoreToDepth(depth + 1, ctx, pathDown, tableau);
-            if (childTreeMoves.size() > 0)
+            std::vector<TreeNode> childTreeNodes = FindAndScoreToDepth(depth + 1, ctx, pathToHere, tableau);
+            if (childTreeNodes.size() > 0)
             {
                 // If there are children then score is the best of its children.
-                TreeMove bestMove = childTreeMoves[0];
-                treeMove = TreeMove(bestMove.GetScore(), move, bestMove.GetPathDown());
+                treeNode = TreeNode(childTreeNodes[0].GetScore(), move);
             }
             else
             {
                 // If no children then this nodes score is its score.
                 float score = (float)ComputeScore(tableau);
-                treeMove = TreeMove(score, move, pathDown);
+                treeNode = TreeNode(score, move);
             }
         }
-        treeMoves.push_back(treeMove);
-        ctx.AddSpiderNode(SpiderNode(depth, tabString, treeMove));
+        treeNodes.push_back(treeNode);
+        ctx.AddSpiderNode(SpiderNode(depth, tabString, treeNode.GetScore()));
     }
-    SortTreeMoves(treeMoves);
+    SortTreeNodes(treeNodes);
     ctx.RemoveParentPosition(parentTabString);
-    return treeMoves;
+    return treeNodes;
 }
-

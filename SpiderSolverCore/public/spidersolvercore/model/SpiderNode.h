@@ -12,15 +12,14 @@ class SpiderNode
 {
 public:
     SpiderNode();
-    SpiderNode(int depth, const std::string& tableauString, const TreeMove& treeMove);
+    SpiderNode(int depth, const std::string& tableauString, float score);
 
     int GetDepth() const;
     const std::string& GetStringRep() const;
     float GetScore() const;
-    MoveCombo GetPathDown() const;
 
 private:
     int m_depth;
+    float m_score;
     std::string m_stringRep;
-    TreeMove m_treeMove;
 };

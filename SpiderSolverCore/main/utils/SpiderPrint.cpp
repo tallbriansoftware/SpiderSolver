@@ -376,7 +376,7 @@ std::string SpiderPrint::PrintBookMove(
 std::string SpiderPrint::PrintBookMoves(const SpiderTableau& tableau, const std::vector<MoveSingle>& moves, DoTurnCard turn)
 {
     MoveCombo cmove(moves);
-    return PrintBookMove(tableau, cmove, DoTurnCard::No);
+    return PrintBookMove(tableau, cmove, turn);
 }
 
 std::string SpiderPrint::PrintBookMoves(const SpiderTableau& tableau, const std::vector<MoveCombo>& moves, DoTurnCard turn)
@@ -386,7 +386,7 @@ std::string SpiderPrint::PrintBookMoves(const SpiderTableau& tableau, const std:
     {
         megaCombo.AddMove(cmove);
     }
-    return PrintBookMove(tableau, megaCombo, DoTurnCard::No);
+    return PrintBookMove(tableau, megaCombo, turn);
 }
 
 
