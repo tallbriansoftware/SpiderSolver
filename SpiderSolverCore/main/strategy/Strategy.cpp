@@ -11,6 +11,7 @@
 
 #include <algorithm>
 #include <memory>
+#include <iostream>
 
 #include <assert.h>
 
@@ -67,22 +68,70 @@ namespace
                 return a.GetScore() > b.GetScore();
             });
     }
+
+    void SortScoredMoves(std::vector<ScoredMove>& scoredMoves)
+    {
+        // Sort the moves by score,  greatest to least.
+        std::sort(begin(scoredMoves), end(scoredMoves), [](ScoredMove& a, ScoredMove& b)
+            {
+                return a.GetScore() > b.GetScore();
+            });
+    }
 }
 
 
 std::vector<ScoredMove> Strategy::FindScoredMoves(
     MoveFinderFunc moveFinder,
+    std::vector<MoveCombo>& disregardedMoves,
     const SpiderTableau& parentTableau,
     const Ancestry& ancestry,
-    int depth)
+    int depthLimit)
 {
-    int depthLimit = depth;
+    disregardedMoves.clear();
     Ancestry searchAncestry(ancestry);
-    SearchContext ctx(depthLimit, ancestry, moveFinder);
+    SearchContext ctx(depthLimit, searchAncestry, moveFinder);
 
-    auto scoredMoves = TreeSearch(parentTableau, ctx);
+    auto scoredMoves = TreeSearch(parentTableau, disregardedMoves, ctx);
     return scoredMoves;
 }
+
+std::vector<ScoredMove> Strategy::FindScoredMoves(
+    const std::vector<MoveCombo>& firstMoves,
+    std::vector<MoveCombo>& disregardedMoves,
+    MoveFinderFunc moveFinder,
+    const SpiderTableau& parentTableau,
+    const Ancestry& ancestry,
+    int depthLimit)
+{
+    disregardedMoves.clear();
+    Ancestry searchAncestry(ancestry);
+    SearchContext ctx(depthLimit, searchAncestry, moveFinder);
+
+    SpiderTableau tableau(parentTableau);
+    // Put the current position in the history (prevent search loops)
+    std::string parentTabString = parentTableau.GetTableauString();
+    ctx.AddParentPosition(parentTabString);
+
+    std::vector<ScoredMove> scoredMoves;
+    for (auto move : firstMoves)
+    {
+        SpiderTableau::SavePoint save(tableau);
+        tableau.DoMove(move, DoTurnCard::No);
+
+        std::string tabString = tableau.GetTableauString();
+        if (ctx.IsAParentPosition(tabString))
+        {
+            disregardedMoves.push_back(move);
+            continue;
+        }
+
+        float score = ComputeScore(tableau);
+        scoredMoves.push_back(ScoredMove(score, move));
+    }
+    SortScoredMoves(scoredMoves);
+    return scoredMoves;
+}
+
 
 
 const std::vector<std::string> Strategy::GetModifiedTermNames() const
@@ -98,9 +147,14 @@ const std::vector<float> Strategy::GetModifiedTerms() const
 
 std::vector<ScoredMove> Strategy::TreeSearch(
     const SpiderTableau& parentTableau,
+    std::vector<MoveCombo>& disregardedMoves,
     SearchContext& ctx)
 {
+    m_topLevelDisregardedMoves.clear();
+
     auto treeNodes = FindAndScoreToDepth(1, ctx, {}, parentTableau);
+
+    disregardedMoves = m_topLevelDisregardedMoves;
 
     // convert to scored moves
     std::vector<ScoredMove> result;
@@ -144,7 +198,11 @@ std::vector<TreeNode> Strategy::FindAndScoreToDepth(
 
         // if we have seen this before as a parent, then skip it.
         if (ctx.IsAParentPosition(tabString))
+        {
+            if (depth == 1)
+                m_topLevelDisregardedMoves.push_back(move);
             continue;
+        }
 
         // check if we have seen this know before in the search.
         // [Direct parents are a special case addressed above.]

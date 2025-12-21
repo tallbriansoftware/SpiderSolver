@@ -34,6 +34,15 @@ public:
 
     std::vector<ScoredMove> FindScoredMoves(
         MoveFinderFunc moveFinder,
+        std::vector<MoveCombo>& disregardedMoves,
+        const SpiderTableau& tableau,
+        const Ancestry& ancestry,
+        int depth);
+
+    std::vector<ScoredMove> FindScoredMoves(
+        const std::vector<MoveCombo>& firstMoves,
+        std::vector<MoveCombo>& disregardedMoves,
+        MoveFinderFunc moveFinder,
         const SpiderTableau& tableau,
         const Ancestry& ancestry,
         int depth);
@@ -45,6 +54,7 @@ private:
 
     std::vector<ScoredMove> TreeSearch(
         const SpiderTableau& parentTableau,
+        std::vector<MoveCombo>& disregardedMoves,
         SearchContext& ctx);
 
     std::vector<TreeNode> FindAndScoreToDepth(
@@ -55,5 +65,6 @@ private:
 
 private:
     std::unique_ptr<BoardScorer> m_boardScorer;
+    mutable std::vector<MoveCombo> m_topLevelDisregardedMoves;
     mutable int m_evals;
 };

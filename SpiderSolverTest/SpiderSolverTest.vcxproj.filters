@@ -13,6 +13,9 @@
     <ClCompile Include="Logic\FindStacksTest.cpp">
       <Filter>LogicTest</Filter>
     </ClCompile>
+    <ClCompile Include="HoleUsingMoveFinding.cpp">
+      <Filter>StrategyTest</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Helpers\DeckHelper.h">

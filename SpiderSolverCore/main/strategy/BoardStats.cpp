@@ -46,6 +46,8 @@ float BoardStats::WinSuitedRunsScore()
 
 namespace
 {
+    // int TurnedCardsStackScore[] = { 13, 9, 6, 4, 3, 2 };
+
     int TurnedCardsStackScore[] = { 15, 10, 6, 3, 1, 0 };
     int HoleCountScores[] = { 0, 5, 7, 9, 10, 10, 10, 10, 10, 10, 10 };
 }

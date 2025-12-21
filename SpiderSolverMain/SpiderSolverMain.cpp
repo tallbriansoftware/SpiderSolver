@@ -111,8 +111,8 @@ SeriesTotal RunASeriesOfGames(const CommandLineArguments& args, CsvTable& csv)
                 total.completed += 1;
                 std::cerr << (total.completed * 100) / totalCount << "% complete(" << total.completed
                     << " of " << totalCount << ")   " << total.wins << " Wins("
-                    << (total.wins * 100) / total.completed << "%) " << " (seed: "
-                    << seed << ")               \r";
+                    << (total.wins * 100) / total.completed << "%) " << " Last completed seed: "
+                    << seed << "               \r";
 
                 csv.EndRow();
             }

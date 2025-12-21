@@ -15,17 +15,12 @@ MoveChooser::MoveChooser(
     , m_ancestry(*tableau)
     , m_depth(depth)
 {
-
 }
 
 MoveCombo MoveChooser::ComputeBestMove()
 {
-    auto moveFinderFunc = (m_tableau->FindFirstHoleIndex() < 0)
-        ? MoveFinder::Normal
-        : MoveFinder::NormalAndHoleFilling;
-
     m_moveChoices = m_strategy.FindScoredMoves(
-        moveFinderFunc, *m_tableau, m_ancestry, m_depth);
+        MoveFinder::Normal, m_disregardedChoices, *m_tableau, m_ancestry, m_depth);
 
     if(m_moveChoices.empty())
     {
@@ -35,6 +30,20 @@ MoveCombo MoveChooser::ComputeBestMove()
     }
 
     StrategyUtil::SortTiedBestMoves(m_moveChoices, m_strategy, *m_tableau);
+
+    float boardScore = m_strategy.ComputeScore(*m_tableau);
+    if (m_tableau->GetHoleCount() > 0 && m_moveChoices[0].GetScore() <= boardScore)
+    {
+        auto holeFillingMoves = MoveFinder::JustHoleFilling(*m_tableau);
+        m_moveChoices = m_strategy.FindScoredMoves(
+            holeFillingMoves,
+            m_disregardedChoices,
+            MoveFinder::Normal,
+            *m_tableau,
+            m_ancestry,
+            m_depth);
+    }
+
     return m_moveChoices[0].GetMove();
 }
 
@@ -52,7 +61,18 @@ void MoveChooser::CommitMove(const MoveCombo& move)
     m_ancestry.AddTableau(*m_tableau);
 }
 
-const std::vector<ScoredMove>& MoveChooser::GetAllChoices()
+const std::vector<ScoredMove>& MoveChooser::GetAllChoices() const
 {
     return m_moveChoices;
+}
+
+
+const std::vector<MoveCombo>& MoveChooser::GetDisregardedChoices() const
+{
+    return m_disregardedChoices;
+}
+
+int MoveChooser::GetMoveNumber() const
+{
+    return m_ancestry.GetLength();
 }
