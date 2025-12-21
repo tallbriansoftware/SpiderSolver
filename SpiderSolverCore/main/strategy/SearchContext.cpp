@@ -6,7 +6,6 @@
 
 #include <string>
 #include <assert.h>
-#include <iostream>
 
 
 SearchContext::SearchContext(int maxDepth, const Ancestry& ancestry, MoveFinderFunc func)
@@ -34,13 +33,13 @@ std::vector<MoveCombo> SearchContext::GetMoves(const SpiderTableau& tableau)
 
 void SearchContext::AddParentPosition(const std::string& tabString)
 {
-    auto count = m_parentList->PushTableau(tabString);
+    m_parentList->PushTableau(tabString);
 }
 
 
 void SearchContext::RemoveParentPosition(const std::string& tabString)
 {
-    auto listHeadString = m_parentList->PopTableau();
+    m_parentList->PopTableau();
 }
 
 bool SearchContext::IsAParentPosition(const std::string& tabString) const
@@ -65,8 +64,7 @@ void SearchContext::AddSpiderNode(const SpiderNode& node)
 {
 #ifdef _DEBUG
     SpiderNode dummy;
-    bool val = TryFindSpiderNode(node.GetStringRep(), dummy);
-    assert(!val);
+    assert(!TryFindSpiderNode(node.GetStringRep(), dummy));
 #endif
     m_nodeMap[node.GetStringRep()] = node;
 }
