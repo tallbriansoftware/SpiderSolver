@@ -42,7 +42,6 @@ void SearchContext::RemoveParentPosition(const std::string& tabString)
     m_parentList->PopTableau();
 }
 
-
 bool SearchContext::IsAParentPosition(const std::string& tabString) const
 {
     return (m_parentList->FindRepeatIndex(tabString) > 0);

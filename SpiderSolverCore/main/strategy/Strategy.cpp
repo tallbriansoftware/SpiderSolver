@@ -75,11 +75,11 @@ std::vector<ScoredMove> Strategy::FindScoredMoves(
     std::vector<MoveCombo>& disregardedMoves,
     const SpiderTableau& parentTableau,
     const Ancestry& ancestry,
-    int depth)
+    int depthLimit)
 {
-    int depthLimit = depth;
+    disregardedMoves.clear();
     Ancestry searchAncestry(ancestry);
-    SearchContext ctx(depthLimit, ancestry, moveFinder);
+    SearchContext ctx(depthLimit, searchAncestry, moveFinder);
 
     auto scoredMoves = TreeSearch(parentTableau, disregardedMoves, ctx);
     return scoredMoves;

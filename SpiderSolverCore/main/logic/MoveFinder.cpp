@@ -60,3 +60,4 @@ std::vector<MoveCombo> MoveFinder::ConvertSingleMovesToComboMoves(
         cmoves.push_back(MoveCombo(move));
     return cmoves;
 }
+
