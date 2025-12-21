@@ -2,6 +2,8 @@
 
 #include "spidersolvercore/model/Ancestry.h"
 #include "spidersolvercore/strategy/Strategy.h"
+#include "spidersolvercore/strategy/ScoredMove.h"
+
 #include <vector>
 #include <memory>
 
@@ -20,8 +22,10 @@ public:
 
     MoveCombo ComputeBestMove();
     void CommitMove(const MoveCombo& move);
+    int GetMoveNumber() const;
 
-    const std::vector<ScoredMove>& GetAllChoices();
+    const std::vector<ScoredMove>& GetAllChoices() const;
+    const std::vector<MoveCombo>& GetDisregardedChoices() const;
 
 private:
     std::shared_ptr<SpiderTableau> m_tableau;
@@ -31,4 +35,5 @@ private:
 
     // caching fields
     std::vector<ScoredMove> m_moveChoices;
+    std::vector<MoveCombo> m_disregardedChoices;
 };

@@ -12,6 +12,7 @@ namespace MoveFinder
 {
     std::vector<MoveCombo> Normal(const SpiderTableau& tableau);
     std::vector<MoveCombo> NormalAndHoleFilling(const SpiderTableau& tableau);
+    std::vector<MoveCombo> JustHoleFilling(const SpiderTableau& tableau);
 
 
     // Some Helpers that might be of public usefullness
@@ -19,7 +20,4 @@ namespace MoveFinder
     std::vector<MoveCombo> ConvertSingleMovesToComboMoves(
         const std::vector<MoveSingle>& smoves);
 
-    //std::vector<MoveCombo> AppendMoveVecs(
-    //    const std::vector<MoveCombo>& a,
-    //    const std::vector<MoveCombo>& b);
 };

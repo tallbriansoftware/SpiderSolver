@@ -27,7 +27,9 @@ void OutputBoard(const std::string& leadPadding, const SpiderTableau& tableau, c
     // std::cout << tableau.GetTableauString() << std::endl;
 }
 
-void OutputScoredMoves(const SpiderTableau& tableau, const std::vector<ScoredMove>& scoredMoves)
+void OutputScoredMoves(
+    const SpiderTableau& tableau,
+    const std::vector<ScoredMove>& scoredMoves)
 {
     // output moves with scores
     for (auto& scoredMove : scoredMoves)
@@ -40,10 +42,82 @@ void OutputScoredMoves(const SpiderTableau& tableau, const std::vector<ScoredMov
         std::cout << scoredMove.GetScore();
         if (scoredMove.GetLocalScore() != -1.0)
             std::cout << "(" << scoredMove.GetLocalScore() << ")";
-        std::cout << "   " << moveString << std::endl;;
+        std::cout << "   " << moveString << std::endl;
     }
 }
 
+void OutputSkippedMoves(
+    const SpiderTableau& tableau,
+    const std::vector<MoveCombo>& skippedMoves)
+{
+    for (auto skipMove : skippedMoves)
+    {
+        std::string moveString = SpiderPrint::PrintBookMove(tableau, skipMove, DoTurnCard::No);
+        std::cout << "(*) " << moveString << std::endl;
+    }
+}
+
+void Pr_ShowMoves(
+    const CommandLineArguments& args,
+    const MoveCombo& move,
+    const SpiderTableau& tableauView,
+    const MoveChooser& moveChooser
+)
+{
+    bool printting = args.GetDisplay();
+    if (printting)
+    {
+        if (!move.IsDeal())
+        {
+            const std::vector<ScoredMove>& otherMoves = moveChooser.GetAllChoices();
+            if (!otherMoves.empty())
+            {
+                OutputScoredMoves(tableauView, otherMoves);
+            }
+
+            const std::vector<MoveCombo>& skippedMoves = moveChooser.GetDisregardedChoices();
+            if (!skippedMoves.empty())
+            {
+                OutputSkippedMoves(tableauView, skippedMoves);
+            }
+        }
+    }
+}
+
+void Pr_ShowTurnStats(
+    const CommandLineArguments& args,
+    const MoveCombo& move,
+    const SpiderTableau& tableauView,
+    const MoveChooser& moveChooser,
+    const Strategy& strategy)
+{
+    bool printting = args.GetDisplay();
+    if (printting)
+    {
+        std::cout << "Move# " << moveChooser.GetMoveNumber() << ": ";
+
+        if (move.IsDeal())
+            std::cout << "--- Deal --- " << std::endl;
+        else
+            std::cout << SpiderPrint::PrintBookMove(tableauView, move, DoTurnCard::Auto) << std::endl;
+
+        std::cout << "Evals = " << strategy.GetEvals() << std::endl;
+    }
+}
+
+void Pr_OutputBoard(
+    const CommandLineArguments& args,
+    const SpiderTableau& tableauView,
+    const Strategy& strategy)
+{
+    bool printting = args.GetDisplay();
+    if (printting)
+    {
+        auto currentScore = strategy.ComputeScore(tableauView);
+        OutputBoard("     ", tableauView, TableauStats(tableauView));
+        std::cout << "Board Score=" << currentScore << "/" << strategy.MaxScore() << std::endl;
+    }
+}
 
 BoardResult RunOneGame(
     const CommandLineArguments& args,
@@ -59,58 +133,27 @@ BoardResult RunOneGame(
         ? SpiderTableauFactory::CreateAllUp(suits, seed)
         : SpiderTableauFactory::Create(suits, seed);
 
-    bool printting = args.GetDisplay();
     MoveChooser moveChooser(sharedTableau, strategy, depth);
     std::shared_ptr<const SpiderTableau> tableauView = sharedTableau;
-    int moveCount = 0;
 
-    if (printting)
-    {
-        OutputBoard("     ", *tableauView, TableauStats(*tableauView));
-    }
+    Pr_OutputBoard(args, *tableauView, strategy);
     MoveCombo move = moveChooser.ComputeBestMove();
 
     while(move.IsValid())
     {
-        if (printting)
-        {
-            if (move.IsDeal())
-            {
-                std::cout << "=----------------- Deal -----------------" << std::endl;
-            }
-            else // normal move
-            {
-                const std::vector<ScoredMove>& otherMoves = moveChooser.GetAllChoices();
-                if (!otherMoves.empty())
-                {
-                    OutputScoredMoves(*tableauView, otherMoves);
+        Pr_ShowMoves(args, move, *tableauView, moveChooser);
+        Pr_ShowTurnStats(args, move, *tableauView, moveChooser, strategy);
 
-                    std::cout << "Move# " << moveCount << "\nMove: "
-                        << SpiderPrint::PrintBookMove(*tableauView, move, DoTurnCard::Auto) << std::endl;
-                }
-                std::cout << "Evals = " << strategy.GetEvals() << std::endl;
-            }
-        }
-
-        moveCount += move.Count();
         moveChooser.CommitMove(move);
 
-        auto currentScore = strategy.ComputeScore(*tableauView);
-
-        if (printting)
-        {
-            OutputBoard("     ", *tableauView, TableauStats(*tableauView));
-            std::cout << "Board Score=" << currentScore << "/" << strategy.MaxScore() << std::endl;
-        }
-
-        // collect moves for the next time around
+        Pr_OutputBoard(args, *tableauView, strategy);
         move = moveChooser.ComputeBestMove();
-    } while (move.IsValid());
+    }
 
     result.score = strategy.ComputeScore(*tableauView);
     result.searchDepth = depth;
     result.won = tableauView->IsWon();
-    result.moveCount = moveCount;
+    result.moveCount = moveChooser.GetMoveNumber();
     result.evals = strategy.GetEvals();
     return result;
 }

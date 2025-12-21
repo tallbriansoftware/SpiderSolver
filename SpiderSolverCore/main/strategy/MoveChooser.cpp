@@ -15,7 +15,6 @@ MoveChooser::MoveChooser(
     , m_ancestry(*tableau)
     , m_depth(depth)
 {
-
 }
 
 MoveCombo MoveChooser::ComputeBestMove()
@@ -52,7 +51,18 @@ void MoveChooser::CommitMove(const MoveCombo& move)
     m_ancestry.AddTableau(*m_tableau);
 }
 
-const std::vector<ScoredMove>& MoveChooser::GetAllChoices()
+const std::vector<ScoredMove>& MoveChooser::GetAllChoices() const
 {
     return m_moveChoices;
+}
+
+
+const std::vector<MoveCombo>& MoveChooser::GetDisregardedChoices() const
+{
+    return m_disregardedChoices;
+}
+
+int MoveChooser::GetMoveNumber() const
+{
+    return m_ancestry.GetLength();
 }

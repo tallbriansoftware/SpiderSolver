@@ -50,6 +50,11 @@ void Ancestry::PopTableau()
     m_stringHistory.resize(size - 1);
 }
 
+int Ancestry::GetLength() const
+{
+    int parentLength = (m_parent == nullptr) ? 0 : m_parent->GetLength();
+    return (int)m_stringHistory.size() + parentLength;
+}
 
 bool Ancestry::IsRepeat(const std::string& tableauString) const
 {

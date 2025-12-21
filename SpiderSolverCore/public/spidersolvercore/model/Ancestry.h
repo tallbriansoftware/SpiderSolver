@@ -17,6 +17,8 @@ public:
     void PushTableau(const std::string& tabString);
     void PopTableau();
 
+    int GetLength() const;
+
     // Check the History for a matching Spider Tableau
     bool IsRepeat(const std::string& tableauString) const;
 
