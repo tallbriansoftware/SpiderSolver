@@ -24,7 +24,7 @@ MoveCombo MoveChooser::ComputeBestMove()
         : MoveFinder::NormalAndHoleFilling;
 
     m_moveChoices = m_strategy.FindScoredMoves(
-        moveFinderFunc, *m_tableau, m_ancestry, m_depth);
+        moveFinderFunc, m_disregardedChoices, *m_tableau, m_ancestry, m_depth);
 
     if(m_moveChoices.empty())
     {

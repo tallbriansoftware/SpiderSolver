@@ -72,6 +72,7 @@ namespace
 
 std::vector<ScoredMove> Strategy::FindScoredMoves(
     MoveFinderFunc moveFinder,
+    std::vector<MoveCombo>& disregardedMoves,
     const SpiderTableau& parentTableau,
     const Ancestry& ancestry,
     int depth)
@@ -80,7 +81,7 @@ std::vector<ScoredMove> Strategy::FindScoredMoves(
     Ancestry searchAncestry(ancestry);
     SearchContext ctx(depthLimit, ancestry, moveFinder);
 
-    auto scoredMoves = TreeSearch(parentTableau, ctx);
+    auto scoredMoves = TreeSearch(parentTableau, disregardedMoves, ctx);
     return scoredMoves;
 }
 
@@ -98,9 +99,14 @@ const std::vector<float> Strategy::GetModifiedTerms() const
 
 std::vector<ScoredMove> Strategy::TreeSearch(
     const SpiderTableau& parentTableau,
+    std::vector<MoveCombo>& disregardedMoves,
     SearchContext& ctx)
 {
+    m_topLevelDisregardedMoves.clear();
+
     auto treeNodes = FindAndScoreToDepth(1, ctx, {}, parentTableau);
+
+    disregardedMoves = m_topLevelDisregardedMoves;
 
     // convert to scored moves
     std::vector<ScoredMove> result;
@@ -144,7 +150,11 @@ std::vector<TreeNode> Strategy::FindAndScoreToDepth(
 
         // if we have seen this before as a parent, then skip it.
         if (ctx.IsAParentPosition(tabString))
+        {
+            if (depth == 1)
+                m_topLevelDisregardedMoves.push_back(move);
             continue;
+        }
 
         // check if we have seen this know before in the search.
         // [Direct parents are a special case addressed above.]
