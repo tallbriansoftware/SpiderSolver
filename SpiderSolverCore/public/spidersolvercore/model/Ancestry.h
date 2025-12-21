@@ -12,19 +12,21 @@ public:
     Ancestry(const Ancestry& ancestry);
 public:
     // Add a Spider Tableau to the ancestry
-    void AddTableau(const SpiderTableau& tableau);
+    int AddTableau(const SpiderTableau& tableau);
 
-    void PushTableau(const std::string& tabString);
-    void PopTableau();
+    int PushTableau(const std::string& tabString);
+    std::string PopTableau();
 
     int GetLength() const;
 
     // Check the History for a matching Spider Tableau
-    bool IsRepeat(const std::string& tableauString) const;
-
-    std::vector<std::string> GetStringHistory() const;
+    // Return the move number that is repeated.
+    int FindRepeatIndex(const std::string& tableauString) const;
 
 private:
-    std::vector<std::string> m_stringHistory;
+    std::vector<std::string> GetHistory() const;
+
+private:
     const Ancestry* m_parent;
+    std::vector<std::string> m_history;
 };

@@ -45,7 +45,7 @@ void SearchContext::RemoveParentPosition(const std::string& tabString)
 
 bool SearchContext::IsAParentPosition(const std::string& tabString) const
 {
-    return m_parentList->IsRepeat(tabString);
+    return (m_parentList->FindRepeatIndex(tabString) > 0);
 }
 
 bool SearchContext::TryFindSpiderNode(
