@@ -19,7 +19,7 @@ MoveChooser::MoveChooser(
 
 MoveCombo MoveChooser::ComputeBestMove()
 {
-    auto moveFinderFunc = (m_tableau->FindFirstHoleIndex() < 0)
+    auto moveFinderFunc = (m_tableau->GetHoleCount() == 0)
         ? MoveFinder::Normal
         : MoveFinder::NormalAndHoleFilling;
 
