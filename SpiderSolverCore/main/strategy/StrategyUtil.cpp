@@ -31,11 +31,9 @@ void StrategyUtil::SortTiedBestMoves(
 
     // Scan for the first run of equal scored moves.
     auto one = moves.begin();
-    auto next = one;
-    for (next++; next != moves.end(); next++, one++)
+    auto next = one + 1;
+    for(; next != moves.end(); next++)
     {
-        intptr_t one_n = one - moves.begin();
-        intptr_t next_n = next - moves.begin();
         if (one->GetScore() != next->GetScore())
             break;
     }
@@ -45,16 +43,12 @@ void StrategyUtil::SortTiedBestMoves(
     std::sort(begin(moves), next,
         [&strategy, &tableau](ScoredMove& lhs, ScoredMove& rhs)
         {
-            if (lhs.GetScore() == rhs.GetScore())
-            {
-                if(lhs.GetLocalScore() == -1.0)
-                    lhs.SetLocalScore(strategy, tableau);
-                if (rhs.GetLocalScore() == -1.0)
-                    rhs.SetLocalScore(strategy, tableau);
+            if(lhs.GetLocalScore() == -1.0)
+                lhs.SetLocalScore(strategy, tableau);
+            if (rhs.GetLocalScore() == -1.0)
+                rhs.SetLocalScore(strategy, tableau);
 
-                return lhs.GetLocalScore() > rhs.GetLocalScore();
-            }
-            return lhs.GetScore() > rhs.GetScore();
+            return lhs.GetLocalScore() > rhs.GetLocalScore();
         });
 }
 
