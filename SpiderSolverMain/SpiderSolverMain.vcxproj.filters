@@ -31,6 +31,9 @@
     <ClCompile Include="RunBoard.cpp">
       <Filter>Main</Filter>
     </ClCompile>
+    <ClCompile Include="Utils\GameTimeLimiter.cpp">
+      <Filter>Main\Utils</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CommandLineArguments.h">
@@ -53,6 +56,9 @@
     </ClInclude>
     <ClInclude Include="RunBoard.h">
       <Filter>Main</Filter>
+    </ClInclude>
+    <ClInclude Include="Utils\GameTimeLimiter.h">
+      <Filter>Main\Utils</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

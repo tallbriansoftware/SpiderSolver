@@ -29,8 +29,8 @@ public:
     bool SetDealUp();
     bool GetDealUp() const;
 
-    bool SetMultiDepth();
-    bool GetMultiDepth() const;
+    bool SetLimitSeconds(int seconds);
+    int GetLimitSeconds() const;
 
 
 private:
@@ -41,5 +41,5 @@ private:
     int m_treeDepth;
     bool m_display;
     bool m_dealup;
-    bool m_multiDepth;
+    int m_limitSeconds;
 };

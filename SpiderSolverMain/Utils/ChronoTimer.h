@@ -10,8 +10,9 @@ public:
     void Stop();
     void Reset();
     void Restart();
-    int64_t ReadMicroseconds();
     int64_t ReadNanoseconds();
+    int64_t ReadMicroseconds();
+    int64_t ReadMilliseconds();
 
 private:
     std::chrono::time_point<std::chrono::system_clock> m_start;

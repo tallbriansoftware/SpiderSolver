@@ -49,7 +49,6 @@ void CsvTable::StartRow()
 
 void CsvTable::EndRow()
 {
-
 }
 
 int CsvTable::GetColumnIndex(const std::string& header)

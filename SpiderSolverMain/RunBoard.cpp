@@ -3,6 +3,7 @@
 #include "CommandLineArguments.h"
 
 #include "Utils/ChronoTimer.h"
+#include "Utils/GameTimeLimiter.h"
 
 #include "spidersolvercore/model/Ancestry.h"
 #include "spidersolvercore/model/TableauStats.h"
@@ -136,6 +137,9 @@ BoardResult RunOneGame(
     MoveChooser moveChooser(sharedTableau, strategy, depth);
     std::shared_ptr<const SpiderTableau> tableauView = sharedTableau;
 
+    GameTimeLimiter gameTimer(args);
+    bool timedOut = false;
+
     Pr_OutputBoard(args, *tableauView, strategy);
     MoveCombo move = moveChooser.ComputeBestMove();
 
@@ -148,10 +152,14 @@ BoardResult RunOneGame(
 
         Pr_OutputBoard(args, *tableauView, strategy);
         move = moveChooser.ComputeBestMove();
+        if (gameTimer.TimeIsUp())
+        {
+            timedOut = true;
+            break;
+        }
     }
-
+    result.timedOut = timedOut;
     result.score = strategy.ComputeScore(*tableauView);
-    result.searchDepth = depth;
     result.won = tableauView->IsWon();
     result.moveCount = moveChooser.GetMoveNumber();
     result.evals = strategy.GetEvals();

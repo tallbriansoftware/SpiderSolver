@@ -23,7 +23,7 @@ namespace
         return true;
     }
 
-    enum class OptionType { Flag, Int, Other };
+    enum class OptionType { Flag, Int, String };
     struct Option
     {
         const char* shortName;
@@ -43,9 +43,9 @@ namespace
         return that.SetRandomSeed(seed);
     }
 
-    bool SetSuitsThunk(CommandLineArguments& that, int seed, std::string dummy)
+    bool SetSuitsThunk(CommandLineArguments& that, int suits, std::string dummy)
     {
-        return that.SetSuits(seed);
+        return that.SetSuits(suits);
     }
 
     bool SetDisplayThunk(CommandLineArguments& that, int dummy1, std::string dummy2)
@@ -63,9 +63,9 @@ namespace
         return that.SetTreeDepth(depth);
     }
 
-    bool SetMultiDepthThunk(CommandLineArguments& that, int dummy1, std::string dummy2)
+    bool SetLimitSecondsThunk(CommandLineArguments& that, int seconds, std::string dummy)
     {
-        return that.SetMultiDepth();
+        return that.SetLimitSeconds(seconds);
     }
 
     const std::vector<Option> OptionsTable = {
@@ -75,7 +75,8 @@ namespace
         { "-d", "--display", OptionType::Flag, SetDisplayThunk },
         { "-u", "--dealup", OptionType::Flag, SetDealUpThunk },
         { "-t", "--treeDepth", OptionType::Int, SetTreeDepthThunk },
-        { "-m", "--multiDepth", OptionType::Flag, SetMultiDepthThunk },
+        { "-l", "--limitSeconds", OptionType::Int, SetLimitSecondsThunk },
+
     };
 
     int FindLongNamedOption(std::string arg)
@@ -107,7 +108,7 @@ CommandLineArguments::CommandLineArguments(int argc, char** argv)
     , m_treeDepth(0)
     , m_display(false)
     , m_dealup(false)
-    , m_multiDepth(false)
+    , m_limitSeconds(0)
 {
 }
 
@@ -119,7 +120,7 @@ void CommandLineArguments::Usage()
         std::cerr << "\t" << opt.shortName << " or " << opt.longName;
         if (opt.optType == OptionType::Int)
             std::cerr << " <int-arg>";
-        else if (opt.optType == OptionType::Other)
+        else if (opt.optType == OptionType::String)
             std::cerr << " <arg>";
         std::cerr << std::endl;
     }
@@ -131,15 +132,15 @@ bool CommandLineArguments::Parse()
     for (int argIndex = 1; argIndex < argc; ++argIndex)
     {
         int index = -1;
-        std::string arg = m_argv[argIndex];
-        if (StartsWith("--", arg))
-            index = FindLongNamedOption(arg);
-        else if (StartsWith("-", arg))
-            index = FindShortNamedOption(arg);
+        std::string flag = m_argv[argIndex];
+        if (StartsWith("--", flag))
+            index = FindLongNamedOption(flag);
+        else if (StartsWith("-", flag))
+            index = FindShortNamedOption(flag);
 
         if (index < 0)
         {
-            std::cerr << "Unknown Option: '" << arg << "'" << std::endl;
+            std::cerr << "Unknown Option: '" << flag << "'" << std::endl;
             return false;;
         }
         const Option& option = OptionsTable[index];
@@ -152,30 +153,31 @@ bool CommandLineArguments::Parse()
         {
             if (argIndex + 1 >= argc)
             {
-                std::cerr << "Missing Argument to Option: '" << arg << "'" << std::endl;
+                std::cerr << "Missing Argument to Option: '" << flag << "'" << std::endl;
                 return false;
             }
             argIndex += 1;  // Modifing the look varaible;
-            const std::string& arg2 = m_argv[argIndex];
+            const std::string& stringArg = m_argv[argIndex];
 
             bool isValid = false;
             if (option.optType == OptionType::Int)
             {
                 size_t parseIndex = 0;
-                int value = std::stoi(arg2, &parseIndex);
-                if (parseIndex != arg2.size())
+                int intArg = std::stoi(stringArg, &parseIndex);
+                if (parseIndex != stringArg.size())
                     std::cerr << "Argument not an integer.  ";
                 else
-                    isValid = arg_proc(*this, value, arg2);
+                    isValid = arg_proc(*this, intArg, stringArg);
             }
-            else if (option.optType == OptionType::Other)
+            else if (option.optType == OptionType::String)
             {
-                isValid = arg_proc(*this, 0, arg2);
+                isValid = arg_proc(*this, 0, stringArg);
             }
 
             if (!isValid)
             {
-                std::cerr << "Bad Argument '" << arg2 << "' to Option: '" << arg << "'" << std::endl;
+                std::cerr << "Bad Argument '" << stringArg << "' to Option: '"
+                          << flag << "'" << std::endl;
                 return false;
             }
         }
@@ -261,15 +263,13 @@ int CommandLineArguments::GetTreeDepth() const
     return m_treeDepth;
 }
 
-
-bool CommandLineArguments::SetMultiDepth()
+bool CommandLineArguments::SetLimitSeconds(int seconds)
 {
-    m_multiDepth = true;
+    m_limitSeconds = seconds;
     return true;
 }
 
-bool CommandLineArguments::GetMultiDepth() const
+int CommandLineArguments::GetLimitSeconds() const
 {
-    return m_multiDepth;
+    return m_limitSeconds;
 }
-

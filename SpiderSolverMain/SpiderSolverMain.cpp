@@ -69,10 +69,7 @@ SeriesTotal RunASeriesOfGames(const CommandLineArguments& args, CsvTable& csv)
 
     int start = args.GetRandomSeed();
     int count = args.GetCount();
-    int maxDepth = args.GetTreeDepth();
-    int minDepth = maxDepth;
-    if (args.GetMultiDepth())
-        minDepth = 1;
+    int depth = args.GetTreeDepth();
 
     auto strategyList = GetStrategies(args);
     int stratCount = (int)strategyList.size();
@@ -85,37 +82,41 @@ SeriesTotal RunASeriesOfGames(const CommandLineArguments& args, CsvTable& csv)
         Strategy& strategy = *stratPtr.get();
         auto termValues = strategy.GetModifiedTerms();
 
-        int totalCount = count * stratCount * (maxDepth - minDepth + 1);
+        int suits = args.GetSuits();
+        bool dealUp = args.GetDealUp();
+
+        int totalCount = count * stratCount;
         for (int seed = start; seed < start + count; ++seed)
         {
-            for (int depth = minDepth; depth <= maxDepth; depth++)
-            {
-                csv.StartRow();
-                csv.AddValue(MyCsv::dateHeader, currentDate);
-                csv.AddValue(MyCsv::seedHeader, seed);
+            csv.StartRow();
+            csv.AddValue(MyCsv::dateHeader, currentDate);
+            csv.AddValue(MyCsv::seedHeader, seed);
+            csv.AddValue(MyCsv::depthHeader, depth);
+            csv.AddValue(MyCsv::numSuitsHeader, suits);
+            csv.AddValue(MyCsv::dealtUpHeader, dealUp);
 
-                strategy.ClearEvals();
-                BoardResult result = RunOneGameOuter(args, seed, strategy, depth);
+            strategy.ClearEvals();
+            BoardResult result = RunOneGameOuter(args, seed, strategy, depth);
 
-                csv.AddValue(MyCsv::movesHeader, result.moveCount);
-                csv.AddValue(MyCsv::scoreHeader, result.score);
-                csv.AddValue(MyCsv::evalsHeader, result.evals);
-                csv.AddValue(MyCsv::usecsHeader, result.usecs);
-                csv.AddValue(MyCsv::winHeader, result.won);
-                csv.AddValue(MyCsv::searchDepth, result.searchDepth);
+            csv.AddValue(MyCsv::movesHeader, result.moveCount);
+            csv.AddValue(MyCsv::scoreHeader, result.score);
+            csv.AddValue(MyCsv::evalsHeader, result.evals);
+            csv.AddValue(MyCsv::nanosecsHeader, result.usecs);
+            csv.AddValue(MyCsv::timedOutHeader, result.timedOut);
+            csv.AddValue(MyCsv::winHeader, result.won);
 
-                for (int i = 0; i < (int)termNames.size(); i++)
-                    csv.AddValue(termNames[i], termValues[i]);
 
-                CollectTotals(result, total);
-                total.completed += 1;
-                std::cerr << (total.completed * 100) / totalCount << "% complete(" << total.completed
-                    << " of " << totalCount << ")   " << total.wins << " Wins("
-                    << (total.wins * 100) / total.completed << "%) " << " Last completed seed: "
-                    << seed << "               \r";
+            for (int i = 0; i < (int)termNames.size(); i++)
+                csv.AddValue(termNames[i], termValues[i]);
 
-                csv.EndRow();
-            }
+            CollectTotals(result, total);
+            total.completed += 1;
+            std::cerr << (total.completed * 100) / totalCount << "% complete(" << total.completed
+                << " of " << totalCount << ")   " << total.wins << " Wins("
+                << (total.wins * 100) / total.completed << "%) " << " Last completed seed: "
+                << seed << "               \r";
+
+            csv.EndRow();
         }
         std::cerr << std::endl;
 
@@ -146,12 +147,16 @@ int main(int argc, char* argv[])
     std::vector<CsvTable::Column> columns = {
         {MyCsv::dateHeader, CsvTable::typeString},
         {MyCsv::seedHeader, CsvTable::typeInt},
+        {MyCsv::numSuitsHeader, CsvTable::typeInt},
+        {MyCsv::dealtUpHeader, CsvTable::typeBool},
+
         {MyCsv::movesHeader, CsvTable::typeInt},
         {MyCsv::scoreHeader, CsvTable::typeFloat},
         {MyCsv::evalsHeader, CsvTable::typeInt},
-        {MyCsv::usecsHeader, CsvTable::typeInt64},
+        {MyCsv::nanosecsHeader, CsvTable::typeInt64},
+        {MyCsv::depthHeader, CsvTable::typeInt},
+        {MyCsv::timedOutHeader, CsvTable::typeBool},
         {MyCsv::winHeader, CsvTable::typeBool},
-        {MyCsv::searchDepth, CsvTable::typeInt}
     };
 
     CsvTable csv(columns);

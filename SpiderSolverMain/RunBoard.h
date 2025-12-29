@@ -14,17 +14,17 @@ struct BoardResult
 {
     int moveCount;
     float score;
-    int searchDepth;
     int evals;
     int64_t usecs;
+    bool timedOut;
     bool won;
 
     BoardResult()
         : moveCount(0)
         , score(0.0)
-        , searchDepth(0)
         , evals(0)
         , usecs(0)
+        , timedOut(false)
         , won(false)
     { }
 };

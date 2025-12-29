@@ -36,14 +36,20 @@ void ChronoTimer::Restart()
 }
 
 
+int64_t ChronoTimer::ReadNanoseconds()
+{
+    auto end = (m_running) ? std::chrono::system_clock::now() : m_end;
+    return std::chrono::duration_cast<std::chrono::nanoseconds>(end - m_start).count();
+}
+
+
 int64_t ChronoTimer::ReadMicroseconds()
 {
     return ReadNanoseconds() / 1000;
 }
 
 
-int64_t ChronoTimer::ReadNanoseconds()
+int64_t ChronoTimer::ReadMilliseconds()
 {
-    auto end = (m_running) ? std::chrono::system_clock::now() : m_end;
-    return std::chrono::duration_cast<std::chrono::nanoseconds>(end - m_start).count();
+    return ReadMicroseconds() / 1000;
 }
