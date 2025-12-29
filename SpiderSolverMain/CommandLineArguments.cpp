@@ -2,6 +2,8 @@
 
 #include <functional>
 #include <iostream>
+#include <sstream>
+#include <string>
 
 namespace
 {
@@ -30,17 +32,14 @@ namespace
         const char* longName;
         OptionType optType;
 
-        std::function<bool(CommandLineArguments& args, int value, const std::string strArg)> process;
+        std::function<bool(CommandLineArguments& args,
+            int value, const std::string strArg)> process;
     };
 
-    bool SetCountThunk(CommandLineArguments& that, int count, std::string dummy)
-    {
-        return that.SetCount(count);
-    }
 
-    bool SetRandomSeedThunk(CommandLineArguments& that, int seed, std::string dummy)
+    bool SetRandomSeedThunk(CommandLineArguments& that, int seed, std::string seedRanges)
     {
-        return that.SetRandomSeed(seed);
+        return that.SetRandomSeeds(seedRanges);
     }
 
     bool SetSuitsThunk(CommandLineArguments& that, int suits, std::string dummy)
@@ -69,8 +68,7 @@ namespace
     }
 
     const std::vector<Option> OptionsTable = {
-        { "-c", "--count", OptionType::Int, SetCountThunk },
-        { "-r", "--randomSeed", OptionType::Int, SetRandomSeedThunk },
+        { "-r", "--randomSeeds", OptionType::String, SetRandomSeedThunk },
         { "-s", "--suits", OptionType::Int, SetSuitsThunk },
         { "-d", "--display", OptionType::Flag, SetDisplayThunk },
         { "-u", "--dealup", OptionType::Flag, SetDealUpThunk },
@@ -98,11 +96,49 @@ namespace
         }
         return -1;
     }
+
+    std::vector<int> ParseRanges(std::string stringRanges)
+    {
+        std::stringstream ss(stringRanges);
+        std::string subString;
+        std::vector<std::string> majorSections;
+
+        while (std::getline(ss, subString, ','))
+            majorSections.push_back(subString);
+
+        std::vector<int> values;
+        for (auto section : majorSections)
+        {
+            size_t idx = 0;
+            int val0 = std::stoi(section, &idx);
+            if (idx == section.size())
+            {
+                values.push_back(val0);
+                continue;
+            }
+            if(section[idx] = '-')
+            {
+                std::string backHalf = section.substr(idx + 1);
+                int val1 = std::stoi(backHalf, &idx);
+                if (idx == backHalf.size())
+                {
+                    for (int v = val0; v <= val1; v++)
+                        values.push_back(v);
+                    continue;
+                }
+                values.clear();
+                return values;  // clear the list and return on error
+            }
+            values.clear();
+            return values;  // clear the list and return on error
+        }
+        return values;  // clear the list and return on error
+    }
 }
 
 CommandLineArguments::CommandLineArguments(int argc, char** argv)
     : m_argv(ConvertToStrings(argc, argv))
-    , m_randomSeed(-1)
+    , m_seeds()
     , m_suits(4)
     , m_count(1)
     , m_treeDepth(0)
@@ -185,33 +221,28 @@ bool CommandLineArguments::Parse()
     return true;
 }
 
-bool CommandLineArguments::SetCount(int count)
-{
-    m_count = count;
-    return true;
-}
-
 int CommandLineArguments::GetCount() const
 {
-    return m_count;
+    return (int)m_seeds.size();
+    //return m_count;
 }
 
-bool CommandLineArguments::SetRandomSeed(int seed)
+bool CommandLineArguments::SetRandomSeeds(std::string seedRanges)
 {
-    m_randomSeed = seed;
-    return true;
+    m_seeds = ParseRanges(seedRanges);
+    return (m_seeds.size() != 0);
 }
 
-int CommandLineArguments::GetRandomSeed() const
+std::vector<int> CommandLineArguments::GetRandomSeeds() const
 {
-    if (m_randomSeed == -1)
+    if (m_seeds.size() == 0)
     {
         time_t t = time(nullptr);
         srand((int)t);
-        m_randomSeed = rand();
-        m_randomSeed = rand();
+        int dummy = rand();
+        m_seeds.push_back(rand());
     }
-    return m_randomSeed;
+    return m_seeds;
 }
 
 bool CommandLineArguments::SetSuits(int suits)

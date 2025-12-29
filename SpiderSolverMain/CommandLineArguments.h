@@ -11,11 +11,10 @@ public:
 
     void Usage();
 
-    bool SetCount(int count);
     int GetCount() const;
 
-    bool SetRandomSeed(int seed);
-    int GetRandomSeed() const;
+    bool SetRandomSeeds(std::string seedRanges);
+    std::vector<int> GetRandomSeeds() const;
 
     bool SetSuits(int suitNumber);
     int GetSuits() const;
@@ -35,7 +34,7 @@ public:
 
 private:
     const std::vector<std::string> m_argv;
-    mutable int m_randomSeed;
+    mutable std::vector<int> m_seeds;
     int m_suits;
     int m_count;
     int m_treeDepth;

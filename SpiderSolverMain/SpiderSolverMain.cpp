@@ -67,7 +67,7 @@ SeriesTotal RunASeriesOfGames(const CommandLineArguments& args, CsvTable& csv)
     ChronoTimer timer;
     std::string currentDate = GetCurrentDate();
 
-    int start = args.GetRandomSeed();
+    const std::vector<int>& seeds = args.GetRandomSeeds();
     int count = args.GetCount();
     int depth = args.GetTreeDepth();
 
@@ -86,7 +86,7 @@ SeriesTotal RunASeriesOfGames(const CommandLineArguments& args, CsvTable& csv)
         bool dealUp = args.GetDealUp();
 
         int totalCount = count * stratCount;
-        for (int seed = start; seed < start + count; ++seed)
+        for(auto seed: seeds)
         {
             csv.StartRow();
             csv.AddValue(MyCsv::dateHeader, currentDate);
