@@ -39,9 +39,6 @@
     <ClInclude Include="CommandLineArguments.h">
       <Filter>Main</Filter>
     </ClInclude>
-    <ClInclude Include="SeriesTotal.h">
-      <Filter>Main</Filter>
-    </ClInclude>
     <ClInclude Include="Utils\ChronoTimer.h">
       <Filter>Main\Utils</Filter>
     </ClInclude>

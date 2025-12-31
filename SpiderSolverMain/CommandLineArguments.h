@@ -11,8 +11,6 @@ public:
 
     void Usage();
 
-    int GetCount() const;
-
     bool SetRandomSeeds(std::string seedRanges);
     std::vector<int> GetRandomSeeds() const;
 
@@ -22,8 +20,8 @@ public:
     bool SetDisplay();
     bool GetDisplay() const;
 
-    bool SetTreeDepth(int depth);
-    int GetTreeDepth() const;
+    bool SetTreeDepths(std::string depthRanges);
+    std::vector<int> GetTreeDepths() const;
 
     bool SetDealUp();
     bool GetDealUp() const;
@@ -35,9 +33,8 @@ public:
 private:
     const std::vector<std::string> m_argv;
     mutable std::vector<int> m_seeds;
+    mutable std::vector<int> m_treeDepths;
     int m_suits;
-    int m_count;
-    int m_treeDepth;
     bool m_display;
     bool m_dealup;
     int m_limitSeconds;

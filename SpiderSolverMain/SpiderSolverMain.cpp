@@ -16,15 +16,6 @@
 #include <vector>
 
 
-void  CollectTotals(const BoardResult& result, SeriesTotal& totals)
-{
-    totals.time += result.usecs;
-    if (result.won)
-        totals.wins += 1;
-    else
-        totals.losingScore += result.score;
-}
-
 std::vector<std::unique_ptr<Strategy>> GetStrategies(const CommandLineArguments& args)
 {
     std::vector<std::unique_ptr<Strategy>> strats;
@@ -62,18 +53,23 @@ void AddFloatColumnsToCsv(CsvTable& csv, std::vector<std::string>& names)
     }
 }
 
-SeriesTotal RunASeriesOfGames(const CommandLineArguments& args, CsvTable& csv)
+void RunASeriesOfGames(const CommandLineArguments& args, CsvTable& csv)
 {
     ChronoTimer timer;
     std::string currentDate = GetCurrentDate();
 
-    const std::vector<int>& seeds = args.GetRandomSeeds();
-    int count = args.GetCount();
-    int depth = args.GetTreeDepth();
+    const std::vector<int> seeds = args.GetRandomSeeds();
+    const std::vector<int> depths = args.GetTreeDepths();
+    //int depth = args.GetTreeDepth();
 
     auto strategyList = GetStrategies(args);
     int stratCount = (int)strategyList.size();
-    SeriesTotal total = { 0, 0, 0, 0.0 };
+    //SeriesTotal total = { 0, 0, 0, 0.0 };
+
+    int completed = 0;
+    int64_t totalTime = 0;
+    int totalWins = 0;
+
     auto termNames = strategyList[0]->GetModifiedTermNames();
     AddFloatColumnsToCsv(csv, termNames);
 
@@ -85,54 +81,48 @@ SeriesTotal RunASeriesOfGames(const CommandLineArguments& args, CsvTable& csv)
         int suits = args.GetSuits();
         bool dealUp = args.GetDealUp();
 
-        int totalCount = count * stratCount;
-        for(auto seed: seeds)
+        int totalCount = (int)seeds.size() * stratCount * (int)depths.size();
+        for (auto depth : depths)
         {
-            csv.StartRow();
-            csv.AddValue(MyCsv::dateHeader, currentDate);
-            csv.AddValue(MyCsv::seedHeader, seed);
-            csv.AddValue(MyCsv::depthHeader, depth);
-            csv.AddValue(MyCsv::numSuitsHeader, suits);
-            csv.AddValue(MyCsv::dealtUpHeader, dealUp);
+            for (auto seed : seeds)
+            {
+                csv.StartRow();
+                csv.AddValue(MyCsv::dateHeader, currentDate);
+                csv.AddValue(MyCsv::seedHeader, seed);
+                csv.AddValue(MyCsv::depthHeader, depth);
+                csv.AddValue(MyCsv::numSuitsHeader, suits);
+                csv.AddValue(MyCsv::dealtUpHeader, dealUp);
 
-            strategy.ClearEvals();
-            BoardResult result = RunOneGameOuter(args, seed, strategy, depth);
+                strategy.ClearEvals();
+                BoardResult result = RunOneGameOuter(args, seed, strategy, depth);
 
-            csv.AddValue(MyCsv::movesHeader, result.moveCount);
-            csv.AddValue(MyCsv::scoreHeader, result.score);
-            csv.AddValue(MyCsv::evalsHeader, result.evals);
-            csv.AddValue(MyCsv::nanosecsHeader, result.usecs);
-            csv.AddValue(MyCsv::timedOutHeader, result.timedOut);
-            csv.AddValue(MyCsv::winHeader, result.won);
+                csv.AddValue(MyCsv::movesHeader, result.moveCount);
+                csv.AddValue(MyCsv::scoreHeader, result.score);
+                csv.AddValue(MyCsv::evalsHeader, result.evals);
+                csv.AddValue(MyCsv::microsecsHeader, result.usecs);
+                csv.AddValue(MyCsv::timedOutHeader, result.timedOut);
+                csv.AddValue(MyCsv::winHeader, result.won);
 
 
-            for (int i = 0; i < (int)termNames.size(); i++)
-                csv.AddValue(termNames[i], termValues[i]);
+                for (int i = 0; i < (int)termNames.size(); i++)
+                    csv.AddValue(termNames[i], termValues[i]);
 
-            CollectTotals(result, total);
-            total.completed += 1;
-            std::cerr << (total.completed * 100) / totalCount << "% complete(" << total.completed
-                << " of " << totalCount << ")   " << total.wins << " Wins("
-                << (total.wins * 100) / total.completed << "%) " << " Last completed seed: "
-                << seed << "               \r";
+                //CollectTotals(result, total);
+                totalTime += result.usecs;
+                completed += 1;
+                if (result.won)
+                    totalWins += 1;
 
-            csv.EndRow();
+                std::cerr << "Depth: " << depth << ". ";
+                std::cerr << (completed * 100) / totalCount
+                    << "% complete(" << completed << " of " << totalCount << ")   "
+                    << totalWins << " Wins(" << (totalWins * 100) / completed << "%) "
+                    << " Last completed seed: " << seed << "               \r";
+                csv.EndRow();
+            }
+            std::cerr << std::endl;
         }
-        std::cerr << std::endl;
-
     }
-    return total;
-}
-
-void OutputSeriesTotals(int count, const SeriesTotal& totals)
-{
-    std::cerr
-        << totals.wins << " Wins " << totals.completed << " Total.  "
-        << (totals.wins * 100) / totals.completed << "% win rate."
-        << "  Avg losing score " << totals.losingScore / ((int64_t)totals.completed - totals.wins)
-        << "  Total Time " << totals.time / 1000000.0
-        << " (" << totals.time / (float)(totals.completed * 1000000) << " secs avg)."
-        << std::endl;
 }
 
 int main(int argc, char* argv[])
@@ -153,15 +143,14 @@ int main(int argc, char* argv[])
         {MyCsv::movesHeader, CsvTable::typeInt},
         {MyCsv::scoreHeader, CsvTable::typeFloat},
         {MyCsv::evalsHeader, CsvTable::typeInt},
-        {MyCsv::nanosecsHeader, CsvTable::typeInt64},
+        {MyCsv::microsecsHeader, CsvTable::typeInt64},
         {MyCsv::depthHeader, CsvTable::typeInt},
         {MyCsv::timedOutHeader, CsvTable::typeBool},
         {MyCsv::winHeader, CsvTable::typeBool},
     };
 
     CsvTable csv(columns);
-    SeriesTotal total = RunASeriesOfGames(args, csv);
+    RunASeriesOfGames(args, csv);
     csv.PrintTable();
-
-    OutputSeriesTotals(args.GetCount(), total);
 }
+

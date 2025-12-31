@@ -57,9 +57,9 @@ namespace
         return that.SetDealUp();
     }
 
-    bool SetTreeDepthThunk(CommandLineArguments& that, int depth, std::string dummy)
+    bool SetTreeDepthThunk(CommandLineArguments& that, int depth, std::string depthRanges)
     {
-        return that.SetTreeDepth(depth);
+        return that.SetTreeDepths(depthRanges);
     }
 
     bool SetLimitSecondsThunk(CommandLineArguments& that, int seconds, std::string dummy)
@@ -72,7 +72,7 @@ namespace
         { "-s", "--suits", OptionType::Int, SetSuitsThunk },
         { "-d", "--display", OptionType::Flag, SetDisplayThunk },
         { "-u", "--dealup", OptionType::Flag, SetDealUpThunk },
-        { "-t", "--treeDepth", OptionType::Int, SetTreeDepthThunk },
+        { "-t", "--treeDepths", OptionType::String, SetTreeDepthThunk },
         { "-l", "--limitSeconds", OptionType::Int, SetLimitSecondsThunk },
 
     };
@@ -139,9 +139,8 @@ namespace
 CommandLineArguments::CommandLineArguments(int argc, char** argv)
     : m_argv(ConvertToStrings(argc, argv))
     , m_seeds()
+    , m_treeDepths()
     , m_suits(4)
-    , m_count(1)
-    , m_treeDepth(0)
     , m_display(false)
     , m_dealup(false)
     , m_limitSeconds(0)
@@ -221,12 +220,6 @@ bool CommandLineArguments::Parse()
     return true;
 }
 
-int CommandLineArguments::GetCount() const
-{
-    return (int)m_seeds.size();
-    //return m_count;
-}
-
 bool CommandLineArguments::SetRandomSeeds(std::string seedRanges)
 {
     m_seeds = ParseRanges(seedRanges);
@@ -283,15 +276,17 @@ bool CommandLineArguments::GetDealUp() const
     return m_dealup;
 }
 
-bool CommandLineArguments::SetTreeDepth(int depth)
+bool CommandLineArguments::SetTreeDepths(std::string depthRanges)
 {
-    m_treeDepth = depth;
-    return true;
+    m_treeDepths = ParseRanges(depthRanges);
+    return (m_seeds.size() != 0);
 }
 
-int CommandLineArguments::GetTreeDepth() const
+std::vector<int> CommandLineArguments::GetTreeDepths() const
 {
-    return m_treeDepth;
+    if (m_treeDepths.size() == 0)
+        m_treeDepths.push_back(0);
+    return m_treeDepths;
 }
 
 bool CommandLineArguments::SetLimitSeconds(int seconds)

@@ -146,7 +146,6 @@
     <ClInclude Include="CommandLineArguments.h" />
     <ClInclude Include="MyCsv.h" />
     <ClInclude Include="RunBoard.h" />
-    <ClInclude Include="SeriesTotal.h" />
     <ClInclude Include="Utils\ChronoTimer.h" />
     <ClInclude Include="Utils\CsvTable.h" />
     <ClInclude Include="Utils\DateTime.h" />

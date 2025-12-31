@@ -13,7 +13,7 @@ namespace MyCsv
     const std::string movesHeader = "moves";
     const std::string scoreHeader = "score";
     const std::string evalsHeader = "evals";
-    const std::string nanosecsHeader = "nanosecs";
+    const std::string microsecsHeader = "microsecs";
     const std::string depthHeader = "depth";
     const std::string timedOutHeader = "timedOut";
     const std::string winHeader = "win";
