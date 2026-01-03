@@ -6,51 +6,7 @@
 #include "spidersolvercore/utils/SpiderPrint.h"
 
 #include "Helpers/DeckHelper.h"
-
-namespace
-{
-    void PrintTableau(const SpiderTableau& tableau)
-    {
-        for (auto& line : SpiderPrint::PrintTableau(tableau))
-            std::cout << line << std::endl;
-    }
-
-    void PrintMoves(const SpiderTableau& tableau, const std::vector<MoveCombo>& moves)
-    {
-        // output moves with scores
-        for (auto& move : moves)
-        {
-            std::string moveString = SpiderPrint::PrintBookMove(tableau, move, DoTurnCard::No);
-            std::cout << moveString << std::endl;
-        }
-    }
-
-
-    void SetStack(SpiderStack& stack, std::vector<Card> cards)
-    {
-        for (auto card : cards)
-            stack.AddNewCard(card);
-    }
-
-    bool IsSameMove(const MoveSingle& expected, const MoveSingle& actual)
-    {
-        EXPECT_EQ(expected.FromStack(), actual.FromStack());
-        EXPECT_EQ(expected.FromIndex(), actual.FromIndex());
-        EXPECT_EQ(expected.DestStack(), actual.DestStack());
-        EXPECT_EQ(expected.DestIndex(), actual.DestIndex());
-        return true;
-    }
-
-    bool IsSameMove(std::vector<MoveSingle> expected, std::vector<MoveSingle> actual)
-    {
-        EXPECT_EQ(expected.size(), actual.size());
-        if (expected.size() != actual.size())
-            return false;
-        for (int i = 0; i < actual.size(); i++)
-            IsSameMove(expected[i], actual[i]);
-        return true;
-    }
-}
+#include "Helpers/TestHelpers.h"
 
 using namespace Cards;
 
@@ -166,7 +122,6 @@ TEST(HolePreservingMoveFinderTests, FlipRuns) {
 
     EXPECT_EQ(moves.size(), 1);
     EXPECT_EQ(count, 1);
-    auto actual = moves[0].GetMoves();
 
     std::vector<MoveSingle> expected =
     {
@@ -174,7 +129,8 @@ TEST(HolePreservingMoveFinderTests, FlipRuns) {
         MoveSingle(2, 0, 5, 2)
     };
 
-    EXPECT_TRUE(IsSameMove(actual, expected));
+    auto actual = moves[0].GetMoves();
+    EXPECT_TRUE(IsSameMoves(actual, expected));
 }
 
 TEST(HolePreservingMoveFinderTests, TradeHolesA) {
@@ -219,7 +175,6 @@ TEST(HolePreservingMoveFinderTests, TradeHolesA) {
 
     EXPECT_EQ(moves.size(), 1);
     EXPECT_EQ(count, 1);
-    auto actual = moves[0].GetMoves();
 
     std::vector<MoveSingle> expected =
     {
@@ -227,7 +182,8 @@ TEST(HolePreservingMoveFinderTests, TradeHolesA) {
         MoveSingle(4, 0, 2, 3)
     };
 
-    EXPECT_TRUE(IsSameMove(actual, expected));
+    auto actual = moves[0].GetMoves();
+    EXPECT_TRUE(IsSameMoves(actual, expected));
 }
 
 TEST(HolePreservingMoveFinderTests, TradeHolesB) {
@@ -274,15 +230,14 @@ TEST(HolePreservingMoveFinderTests, TradeHolesB) {
     EXPECT_EQ(count, 1);
     if (moves.size() > 0)
     {
-        auto actual = moves[0].GetMoves();
-
         std::vector<MoveSingle> expected =
         {
             MoveSingle(2, 3, 5, 0),
             MoveSingle(2, 0, 9, 2)
         };
 
-        EXPECT_TRUE(IsSameMove(actual, expected));
+        auto actual = moves[0].GetMoves();
+        EXPECT_TRUE(IsSameMoves(actual, expected));
     }
 }
 
@@ -328,7 +283,6 @@ TEST(HolePreservingMoveFinderTests, SwapRuns) {
 
     EXPECT_EQ(moves.size(), 1);
     EXPECT_EQ(count, 1);
-    auto actual = moves[0].GetMoves();
 
     std::vector<MoveSingle> expected =
     {
@@ -337,7 +291,8 @@ TEST(HolePreservingMoveFinderTests, SwapRuns) {
         MoveSingle(5, 0, 4, 2)
     };
 
-    EXPECT_TRUE(IsSameMove(actual, expected));
+    auto actual = moves[0].GetMoves();
+    EXPECT_TRUE(IsSameMoves(actual, expected));
 }
 
 TEST(HolePreservingMoveFinderTests, MoveTwoSequentialRuns) {
@@ -384,8 +339,6 @@ TEST(HolePreservingMoveFinderTests, MoveTwoSequentialRuns) {
 
     EXPECT_EQ(count, 1);
     EXPECT_EQ(moves.size(), 1);
-    auto actual = moves[0].GetMoves();
-
     std::vector<MoveSingle> expected =
     {
         MoveSingle(4, 4, 5, 0),
@@ -393,7 +346,8 @@ TEST(HolePreservingMoveFinderTests, MoveTwoSequentialRuns) {
         MoveSingle(5, 0, 2, 6)
     };
 
-    EXPECT_TRUE(IsSameMove(actual, expected));
+    auto actual = moves[0].GetMoves();
+    EXPECT_TRUE(IsSameMoves(actual, expected));
 }
 
 
@@ -443,14 +397,15 @@ TEST(HolePreservingMoveFinderTests, RemoveMiddleRun) {
     EXPECT_EQ(moves.size(), 1);
     EXPECT_EQ(count, 1);
 
-    auto actual = moves[0].GetMoves();
     std::vector<MoveSingle> expected =
     {
         MoveSingle(2, 6, 5, 0),
         MoveSingle(2, 4, 4, 5),
         MoveSingle(5, 0, 2, 4)
     };
-    EXPECT_TRUE(IsSameMove(actual, expected));
+
+    auto actual = moves[0].GetMoves();
+    EXPECT_TRUE(IsSameMoves(actual, expected));
 }
 
 
@@ -498,12 +453,13 @@ TEST(HolePreservingMoveFinderTests, InsertRunIntoStack) {
     EXPECT_EQ(moves.size(), 1);
     EXPECT_EQ(count, 1);
 
-    auto actual = moves[0].GetMoves();
     std::vector<MoveSingle> expected =
     {
         MoveSingle(2, 4, 5, 0),
         MoveSingle(4, 2, 2, 4),
         MoveSingle(5, 0, 2, 7)
     };
-    EXPECT_TRUE(IsSameMove(actual, expected));
+
+    auto actual = moves[0].GetMoves();
+    EXPECT_TRUE(IsSameMoves(actual, expected));
 }

@@ -9,54 +9,9 @@
 #include "spidersolvercore/utils/SpiderPrint.h"
 
 #include "Helpers/DeckHelper.h"
+#include "Helpers/TestHelpers.h"
+
 using namespace Cards;
-
-namespace {
-    void PrintTableau(const SpiderTableau& tableau)
-    {
-        for (auto& line : SpiderPrint::PrintTableau(tableau))
-            std::cout << line << std::endl;
-    }
-
-    void PrintMoves(const SpiderTableau& tableau, const std::vector<MoveCombo>& moves)
-    {
-        // output moves with scores
-        for (auto& move : moves)
-        {
-            std::string moveString = SpiderPrint::PrintBookMove(tableau, move, DoTurnCard::No);
-            std::cout << moveString << std::endl;
-        }
-    }
-
-    void PrintMoves(const SpiderTableau& tableau, const std::vector<MoveSingle>& moves)
-    {
-        for (auto& move : moves)
-        {
-            std::string moveString = SpiderPrint::PrintPlainMove(move);
-            std::cout << moveString << std::endl;
-        }
-    }
-
-    void SetStack(SpiderStack& stack, std::vector<Card> cards)
-    {
-        for (auto card : cards)
-            stack.AddNewCard(card);
-    }
-
-    bool IsSameMove(const MoveSingle& expected, const MoveSingle& actual)
-    {
-        if (expected.FromStack() != actual.FromStack())
-            return false;
-        if (expected.FromIndex() != actual.FromIndex())
-            return false;
-        if (expected.DestStack() != actual.DestStack())
-            return false;
-        if (expected.DestIndex() != actual.DestIndex())
-            return false;
-        return true;
-    }
-}
-
 
 TEST(BoardScoringTests, CountingHoles) {
     SpiderTableau tableau;
@@ -147,11 +102,9 @@ TEST(BoardScoringTests, twoLongs) {
 
     std::vector<MoveSingle> moves;
     MoveFinderSimple::AddColorUpMoves(moves, tableau);
-    EXPECT_EQ(moves.size(), 1);
 
-/*
-    3<-4(2)
-*/
+    // 3<-4(2)
+    //
 #ifdef _DEBUG
     PrintMoves(tableau, moves);
 #endif
@@ -298,7 +251,7 @@ TEST(BoardScoringTests, ShortAndLong) {
     auto& stacks = tableau.GetMutableStacks();
 
     SetStack(stacks[3],
-        { UKS(), UQS() });
+        { UKS(), UQS(), UJS(), UTS() });
     SetStack(stacks[4],
         { UQS(), UJS(), UTS(), U9S(), U8S(), U7S(), U6S(), U5S(), U4S(), U3S(), U2S(), UAS() });
 
@@ -311,7 +264,7 @@ TEST(BoardScoringTests, ShortAndLong) {
     EXPECT_EQ(moves.size(), 1);
 
 /*
-    3<-4(1)
+    3<-4(3)
 */
 
 #ifdef _DEBUG
@@ -322,8 +275,8 @@ TEST(BoardScoringTests, ShortAndLong) {
    0  1  2  3  4  5  6  7  8  9
 0  -  -  - KS QS  -  -  -  -  -
 1  -  -  - QS JS  -  -  -  -  -
-2  -  -  -  - TS  -  -  -  -  -
-3  -  -  -  - 9S  -  -  -  -  -
+2  -  -  - JS TS  -  -  -  -  -
+3  -  -  - TS 9S  -  -  -  -  -
 4  -  -  -  - 8S  -  -  -  -  -
 5  -  -  -  - 7S  -  -  -  -  -
 6  -  -  -  - 6S  -  -  -  -  -
@@ -336,7 +289,7 @@ TEST(BoardScoringTests, ShortAndLong) {
 
     EXPECT_EQ(moves.size(), 1);
     auto actual = moves[0];
-    MoveSingle expected(4, 1, 3, 2);
+    MoveSingle expected(4, 3, 3, 4);
     EXPECT_TRUE(IsSameMove(actual, expected));
 
     Strategy strat;
@@ -352,4 +305,3 @@ TEST(BoardScoringTests, ShortAndLong) {
 #endif
     EXPECT_GT(after, before);
 }
-

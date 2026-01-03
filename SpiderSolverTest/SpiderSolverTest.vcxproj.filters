@@ -13,12 +13,18 @@
     <ClCompile Include="Logic\FindStacksTest.cpp">
       <Filter>LogicTest</Filter>
     </ClCompile>
-    <ClCompile Include="HoleUsingMoveFinding.cpp">
-      <Filter>StrategyTest</Filter>
+    <ClCompile Include="RunSplitingTests.cpp">
+      <Filter>LogicTest</Filter>
+    </ClCompile>
+    <ClCompile Include="Helpers\TestHelpers.cpp">
+      <Filter>Helpers</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Helpers\DeckHelper.h">
+      <Filter>Helpers</Filter>
+    </ClInclude>
+    <ClInclude Include="Helpers\TestHelpers.h">
       <Filter>Helpers</Filter>
     </ClInclude>
   </ItemGroup>

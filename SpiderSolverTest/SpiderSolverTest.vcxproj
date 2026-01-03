@@ -103,12 +103,14 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="Helpers\DeckHelper.h" />
+    <ClInclude Include="Helpers\TestHelpers.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Helpers\DeckHelper.cpp" />
-    <ClCompile Include="HoleUsingMoveFinding.cpp" />
+    <ClCompile Include="Helpers\TestHelpers.cpp" />
     <ClCompile Include="Logic\FindStacksTest.cpp" />
     <ClCompile Include="Logic\HolePreservingMoveFinderTests.cpp" />
+    <ClCompile Include="RunSplitingTests.cpp" />
     <ClCompile Include="Strategy\BoardScoringTests.cpp" />
   </ItemGroup>
   <ItemGroup>

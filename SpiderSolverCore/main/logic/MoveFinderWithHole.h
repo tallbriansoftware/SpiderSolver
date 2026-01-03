@@ -18,4 +18,6 @@ namespace MoveFinderWithHole
     int AddTradeHolesA(std::vector<MoveCombo>& moves, const SpiderTableau& tableau);
     int AddTradeHolesB(std::vector<MoveCombo>& moves, const SpiderTableau& tableau);
     int AddSwapRuns(std::vector<MoveCombo>& moves, const SpiderTableau& tableau);
+
+    int AddSplitRun(std::vector<MoveCombo>& moves, const SpiderTableau& tableau);
 }

@@ -56,20 +56,23 @@ namespace {
         if (srcTailCard.getSuit() != destTailCard.getSuit())
             return -1;
 
-        // The dest-tail rank must be between the src-head and src-tail ranks.
-        // otherwise there is nothing to move.
-        if (srcTailCard.getRank() >= destTailCard.getRank())
-            return -1;
+        Rank srcTailRank = srcTailCard.getRank();
+        Rank srcHeadRank = srcHeadCard.getRank();
+        Rank destTailRank = destTailCard.getRank();
 
-        // if it is exactly 1 less then it is a normal suited move (covered elsewhere)
-        // if it is more than 1 less than it is not a legal move.
-        if (srcHeadCard.getRank() < destTailCard.getRank())
+        // if source is 6-5-4-3 and dest is 8-7-6-5 then
+        // Dest Tail(5) must fall between src head(6) and src Tail(3).
+        // SrcHead can be Greater-or-equal, SrcTail must be less-than.
+
+        if (srcTailRank >= destTailRank)
+            return -1;
+        if (srcHeadRank < destTailRank)
             return -1;
 
         // lastly chech that the dest result is a longer run than source
         int srcRunLength = srcTailIndex - srcHeadIndex + 1;
         int destRunLength = destTailIndex - destHeadIndex + 1;
-        int countToMove = (int)destTailCard.getRank() - (int)srcTailCard.getRank();
+        int countToMove = (int)destTailRank - (int)srcTailRank;
         if (destRunLength + countToMove <= srcRunLength)
             return -1;
 
@@ -89,7 +92,8 @@ namespace {
     }
 
     // This is like "ColorUp" but the dest does not have to be the same suit.
-    // Not generally usefull except when clearing stacks.
+    // And the result does not need to be longer.
+    // Not generally usefull except when used by "splitRun" moves through a hole.
     //
     int RunSplittingMove_TestFunc(const SpiderStack& src, const SpiderStack& dest)
     {
@@ -108,23 +112,19 @@ namespace {
         const Card& srcTailCard = src.GetCard(srcTailIndex);
         const Card& destTailCard = dest.GetCard(destTailIndex);
 
-        // They must be different suits.
-        if (srcTailCard.getSuit() == destTailCard.getSuit())
+        Rank srcTailRank = srcTailCard.getRank();
+        Rank srcHeadRank = srcHeadCard.getRank();
+        Rank destTailRank = destTailCard.getRank();
+
+        // if source is 6-5-4-3 and dest is 8-7-6-5 then
+        // Dest Tail(5) must fall between src head(6) and src Tail(3).
+        // SrcHead can be Greater-or-equal, SrcTail must be less-than.
+        if (srcTailRank >= destTailRank)
+            return -1;
+        if (srcHeadRank < destTailRank)
             return -1;
 
-        // The dest-tail rank must be between the src-head and src-tail ranks.
-        // otherwise there is nothing to move.
-        if (srcTailCard.getRank() >= destTailCard.getRank())
-            return -1;
-
-        // if it is exactly 1 less then it is a normal move, not a splitter.
-        // It is covered elsewhere.
-        // if it is more than 1 less than it is not a legal move.
-        if ((int)srcHeadCard.getRank() < (int)destTailCard.getRank())
-            return -1;
-
-        int countToMove = (int)destTailCard.getRank() - (int)srcTailCard.getRank();
-
+        int countToMove = (int)destTailRank - (int)srcTailRank;
         return srcTailIndex - countToMove + 1;
     }
 

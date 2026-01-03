@@ -106,7 +106,8 @@ namespace
 // |B|          A->C       |A| 
 //             @B->A       |B|
 //
-// Check that C-A and A-B   dest.0 - src.1  and  src.1 -> src.0 
+// Check that C-A and A-B are sequential.
+// dest.0 - src.1  and  src.1 -> src.0
 //
 int MoveFinderWithHole::AddMoveTwoRuns(
     std::vector<MoveCombo>& moves,
@@ -117,7 +118,7 @@ int MoveFinderWithHole::AddMoveTwoRuns(
         return 0;
 
     int startCount = (int)moves.size();
-    std::vector<int> srcStackNos = FindStacks::RunPattern(tableau, 2, Exactly::No, Sequential::Yes);
+    std::vector<int> srcStackNos = FindStacks::RunPattern(tableau, 2, Exactly::EqualOrGreator, Sequential::Yes);
 
     for (int srcNo : srcStackNos)
     {
@@ -155,7 +156,7 @@ int MoveFinderWithHole::AddMoveTwoRuns(
 // |A|     B->X      |B|
 // |B|    @A->B      |A|
 //
-// Check that B-A
+// Check that B-A are sequential.
 //
 int MoveFinderWithHole::AddFlipRuns(
     std::vector<MoveCombo>& moves,
@@ -166,7 +167,7 @@ int MoveFinderWithHole::AddFlipRuns(
         return 0;
 
     int startCount = (int)moves.size();
-    std::vector<int> srcStackNos = FindStacks::RunPattern(tableau, 2, Exactly::Yes);
+    std::vector<int> srcStackNos = FindStacks::RunPattern(tableau, 2, Exactly::Equal);
 
     for (int srcNo : srcStackNos)
     {
@@ -203,7 +204,7 @@ int MoveFinderWithHole::AddFlipRuns(
 // |B|          C->A  |C|
 //             @B->C  |B|
 //
-// Check that A-C and C-B  ie.  dest.1 - src.0  and src.0 - dest.0
+// Check that A-C and C-B are sequential.
 //
 int MoveFinderWithHole::AddInsertRun(
     std::vector<MoveCombo>& moves,
@@ -269,7 +270,7 @@ int MoveFinderWithHole::AddInsertRun(
 // |B|          B->D   |C| |B| 
 // |C|         @C->A
 //
-// Check that A-C and D-B  ie  src.2 - src.0  and dest.0 - src.1
+// Check that A-C and D-B are sequential.
 //
 int MoveFinderWithHole::AddRemoveMiddleRun(
     std::vector<MoveCombo>& moves,
@@ -327,7 +328,7 @@ int MoveFinderWithHole::AddRemoveMiddleRun(
 //  |A| |B|     C->X      |B| |C|
 //      |C|    @A->B      |A|
 //
-// Check that B-A  ie.  dest.1 - src.0
+// Check that B-A are sequential.
 //
 int MoveFinderWithHole::AddTradeHolesA(
     std::vector<MoveCombo>& moves, 
@@ -338,7 +339,7 @@ int MoveFinderWithHole::AddTradeHolesA(
         return 0;
 
     int startCount = (int)moves.size();
-    std::vector<int> srcStackNos = FindStacks::RunPattern(tableau, 1, Exactly::Yes);
+    std::vector<int> srcStackNos = FindStacks::RunPattern(tableau, 1, Exactly::Equal);
     std::vector<int> destStackNos = FindStacks::RunPattern(tableau, 2);
 
     for (int srcStkNo : srcStackNos)
@@ -372,7 +373,7 @@ int MoveFinderWithHole::AddTradeHolesA(
 //  |A| |C|     B->X      |C| |B|
 //  |B|        @A->C      |A|
 //
-// Check that C-A  ie.  dest.0 - src.1
+// Check that C-A are sequential.
 //
 int MoveFinderWithHole::AddTradeHolesB(
     std::vector<MoveCombo>& moves, 
@@ -383,7 +384,7 @@ int MoveFinderWithHole::AddTradeHolesB(
         return 0;
 
     int startCount = (int)moves.size();
-    std::vector<int> srcStackNos = FindStacks::RunPattern(tableau, 2, Exactly::Yes);
+    std::vector<int> srcStackNos = FindStacks::RunPattern(tableau, 2, Exactly::Equal);
     std::vector<int> destStackNos = FindStacks::RunPattern(tableau, 1);
     auto stkMoves = FindFits(tableau, srcStackNos, destStackNos, 1, 0);
 
@@ -411,7 +412,8 @@ int MoveFinderWithHole::AddTradeHolesB(
 // |A| |C|      B->C  |A| |C|
 // |B| |D|     @D->A  |D| |B|
 // 
-// check that A-D and C-B and at least one is suited.
+// check that A-D and C-B are sequential.
+// And at least one is suited.
 //
 int MoveFinderWithHole::AddSwapRuns(
     std::vector<MoveCombo>& moves,
@@ -474,3 +476,59 @@ int MoveFinderWithHole::AddSwapRuns(
     }
     return (int)moves.size() - startCount;
 }
+
+// 8. Splitrun: Move one and one-half runs:
+// | ?|  | ?| |X |            | ?| | ?| |X |
+// |A0|  |C |      B->X       |A0| |C |
+// |A1|           A1->C            |A1|
+// |B |           @B->A1           |B |
+//
+// A0-A1 is a suited sequential run.  (that is split here)
+// Check that C-A1 and A1-B are sequential.
+// Also check that A0 coudl not go anywhere, Otherwise it 
+// would be better to just move all of A with C.
+//
+int AddSplitRun(std::vector<MoveCombo>& moves, const SpiderTableau& tableau)
+{
+    int holeNo = tableau.FindFirstHoleIndex();
+    if (holeNo == -1)
+        return 0;
+
+    int startCount = (int)moves.size();
+    std::vector<int> srcStackNos = FindStacks::RunPattern(tableau, 2, Exactly::EqualOrGreator, Sequential::Yes);
+
+    for (int srcNo : srcStackNos)
+    {
+        auto& src = tableau.GetStack(srcNo);
+        int headIndex0 = src.GetRunHead(0);
+        int headIndex1 = src.GetRunHead(1);
+        int tailIndex1 = src.GetRunTail(1);
+        assert(headIndex1 != -1);
+
+        Rank srcTail1Rank = src.GetCard(tailIndex1).getRank();
+        Rank srcHead1Rank = src.GetCard(headIndex1).getRank();
+        std::vector<int> destStackNos
+            = FindStacks::ThatWillRecieveRankInRange(srcHead1Rank, srcTail1Rank, tableau);
+
+        for (int destNo : destStackNos)
+        {
+            if (srcNo == destNo)
+                continue;
+
+            int destCount = tableau.GetStack(destNo).Count();
+            int sizeOfRun1 = headIndex0 - headIndex1;
+
+            std::vector<MoveSingle> smoves =
+            {
+                MoveSingle(srcNo, headIndex0, holeNo, 0),
+                MoveSingle(srcNo, headIndex1, destNo, destCount),
+                MoveSingle(holeNo, 0, destNo, destCount + sizeOfRun1)
+            };
+
+            MoveCombo move(smoves, ComboType::Move2Runs);
+            moves.push_back(move);
+        }
+    }
+    return (int)moves.size() - startCount;
+}
+
