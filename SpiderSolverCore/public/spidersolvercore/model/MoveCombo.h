@@ -7,6 +7,7 @@
 enum class ComboType {
     None, Single, Multi, FlipRuns, Move2Runs, InsertRun,
     RemoveMiddleRun, TradeHolesA, TradeHolesB, SwapRuns,
+    SplitRun, 
     Deal
 };
 

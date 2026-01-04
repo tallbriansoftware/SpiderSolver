@@ -21,27 +21,28 @@ std::vector<int> FindStacks::ThatWillRecieveRank(Rank rank, const SpiderTableau&
 }
 
 // Find stacks that you can play a range of "ranks" cards on.
-
 std::vector<int> FindStacks::ThatWillRecieveRankInRange(
     Rank rankLower,
     Rank rankUpper,
     const SpiderTableau& tableau)
 {
-    std::vector<int> destStackNos;
-    for (auto& stack : tableau.GetStacks())
+    std::vector<int> destStkNos;
+    for (auto& dest : tableau.GetStacks())
     {
-        if (stack.IsEmptyOrTopCardNotFaceUp())
+        if (dest.IsEmptyOrTopCardNotFaceUp())
             continue;
 
-        Rank topRank = stack.PeekTopCard().getRank();
+        Rank destTopRank = dest.PeekTopCard().getRank();
 
-        // if the range is 6-9 then topRank must be 6, 7, or 8
-        // so that some of the range can be placed on topRank.
-        // we don't want a topRank of 5 because that is an ordinary good move.
-        if ((int)rankLower >= (int)topRank && (int)topRank < (int)rankUpper)
-            destStackNos.push_back(tableau.IndexOf(stack));
+        // if the destTopRank is 9 then the range has to be 9 or greater to below 9.
+        // If the range is 9-5 then the dest top Rank needs to greater than 5, and 9 or less.
+        // so that some of the range can be placed on destTopRank.
+        // We don't want a destTopRank of Ten(T) because that is an ordinary good move (handled elsewhere).
+        //
+        if ((int)destTopRank > (int)rankLower && (int)destTopRank <= (int)rankUpper)
+            destStkNos.push_back(tableau.IndexOf(dest));
     }
-    return destStackNos;
+    return destStkNos;
 }
 
 

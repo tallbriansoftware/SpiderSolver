@@ -39,6 +39,7 @@ int MoveFinderWithHole::AddAllOneHoleMoves(std::vector<MoveCombo>& moves, const 
     moveCount += AddTradeHolesA(moves, tableau);
     moveCount += AddTradeHolesB(moves, tableau);
     moveCount += AddSwapRuns(moves, tableau);
+    // moveCount += AddSplitRun(moves, tableau);
 
     return moveCount;
 }
@@ -488,44 +489,50 @@ int MoveFinderWithHole::AddSwapRuns(
 // Also check that A0 coudl not go anywhere, Otherwise it 
 // would be better to just move all of A with C.
 //
-int AddSplitRun(std::vector<MoveCombo>& moves, const SpiderTableau& tableau)
+int MoveFinderWithHole::AddSplitRun(std::vector<MoveCombo>& moves, const SpiderTableau& tableau)
 {
     int holeNo = tableau.FindFirstHoleIndex();
     if (holeNo == -1)
         return 0;
 
     int startCount = (int)moves.size();
+
+    // Find Sources:  find two suited runs to act as a source.
     std::vector<int> srcStackNos = FindStacks::RunPattern(tableau, 2, Exactly::EqualOrGreator, Sequential::Yes);
 
-    for (int srcNo : srcStackNos)
+    for (int srcStkNo : srcStackNos)
     {
-        auto& src = tableau.GetStack(srcNo);
-        int headIndex0 = src.GetRunHead(0);
-        int headIndex1 = src.GetRunHead(1);
-        int tailIndex1 = src.GetRunTail(1);
-        assert(headIndex1 != -1);
+        auto& src = tableau.GetStack(srcStkNo);
+        int srcHead0Index = src.GetRunHead(0);
+        int srcHead1Index = src.GetRunHead(1);
+        int srcTail1Index = src.GetRunTail(1);
+        assert(srcHead1Index != -1);
+        Rank srcHead1Rank = src.GetCard(srcHead1Index).getRank();
+        Rank srcTail1Rank = src.GetCard(srcTail1Index).getRank();
 
-        Rank srcTail1Rank = src.GetCard(tailIndex1).getRank();
-        Rank srcHead1Rank = src.GetCard(headIndex1).getRank();
-        std::vector<int> destStackNos
-            = FindStacks::ThatWillRecieveRankInRange(srcHead1Rank, srcTail1Rank, tableau);
+        // Find Destinations:  Find someplace to split src.run(1) onto.
+        std::vector<int> destStkNos
+            = FindStacks::ThatWillRecieveRankInRange(srcTail1Rank, srcHead1Rank, tableau);
 
-        for (int destNo : destStackNos)
+        // For each Destination
+        for (int destStkNo : destStkNos)
         {
-            if (srcNo == destNo)
-                continue;
+            assert(srcStkNo != destStkNo);
 
-            int destCount = tableau.GetStack(destNo).Count();
-            int sizeOfRun1 = headIndex0 - headIndex1;
+            auto& dest = tableau.GetStack(destStkNo);
+            Rank destTopRank = dest.PeekTopCard().getRank();
+            auto sizeOfMovedSplit = (int)destTopRank - (int)srcTail1Rank;
+            auto srcSplitIndex = srcHead0Index - sizeOfMovedSplit;
+            int destCount = dest.Count();
 
             std::vector<MoveSingle> smoves =
             {
-                MoveSingle(srcNo, headIndex0, holeNo, 0),
-                MoveSingle(srcNo, headIndex1, destNo, destCount),
-                MoveSingle(holeNo, 0, destNo, destCount + sizeOfRun1)
+                MoveSingle(srcStkNo, srcHead0Index, holeNo, 0),
+                MoveSingle(srcStkNo, srcSplitIndex, destStkNo, destCount),
+                MoveSingle(holeNo, 0, destStkNo, destCount + sizeOfMovedSplit)
             };
 
-            MoveCombo move(smoves, ComboType::Move2Runs);
+            MoveCombo move(smoves, ComboType::SplitRun);
             moves.push_back(move);
         }
     }

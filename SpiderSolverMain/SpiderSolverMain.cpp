@@ -1,7 +1,6 @@
 #include "CommandLineArguments.h"
 #include "MyCsv.h"
 #include "RunBoard.h"
-#include "SeriesTotal.h"
 
 #include "Utils/ChronoTimer.h"
 #include "Utils/CsvTable.h"

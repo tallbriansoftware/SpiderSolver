@@ -254,6 +254,7 @@ namespace
         case ComboType::SwapRuns: return "swap-runs"; break;
         case ComboType::RemoveMiddleRun: return "remove-middle-run"; break;
         case ComboType::InsertRun: return "insert-run"; break;
+        case ComboType::SplitRun: return "split-run"; break;
 
         default: return "missing"; break;
         }
