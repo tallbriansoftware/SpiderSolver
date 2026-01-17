@@ -8,7 +8,7 @@ class MoveCombo;
 class SpiderTableau;
 class SpiderStack;
 
-namespace MoveFinder
+namespace MoveFindingFunc
 {
     std::vector<MoveCombo> Normal(const SpiderTableau& tableau);
     std::vector<MoveCombo> NormalAndHoleFilling(const SpiderTableau& tableau);

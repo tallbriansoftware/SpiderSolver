@@ -24,8 +24,10 @@ public:
     void CommitMove(const MoveCombo& move);
     int GetMoveNumber() const;
 
-    const std::vector<ScoredMove>& GetAllChoices() const;
-    const std::vector<MoveCombo>& GetDisregardedChoices() const;
+    const std::vector<ScoredMove> GetAllChoices() const;
+    const std::vector<MoveCombo> GetDisregardedChoices() const;
+
+    // std::vector<MoveCombo> GetCardTurningPath();
 
 private:
     std::shared_ptr<SpiderTableau> m_tableau;

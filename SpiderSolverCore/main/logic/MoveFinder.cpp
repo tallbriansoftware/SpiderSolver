@@ -9,7 +9,7 @@
 #include <vector>
 
 
-std::vector<MoveCombo> MoveFinder::Normal(const SpiderTableau& tableau)
+std::vector<MoveCombo> MoveFindingFunc::Normal(const SpiderTableau& tableau)
 {
     std::vector<MoveSingle> moves;
 
@@ -24,7 +24,7 @@ std::vector<MoveCombo> MoveFinder::Normal(const SpiderTableau& tableau)
 }
 
 
-std::vector<MoveCombo> MoveFinder::NormalAndHoleFilling(const SpiderTableau& tableau)
+std::vector<MoveCombo> MoveFindingFunc::NormalAndHoleFilling(const SpiderTableau& tableau)
 {
     std::vector<MoveSingle> moves;
 
@@ -39,7 +39,7 @@ std::vector<MoveCombo> MoveFinder::NormalAndHoleFilling(const SpiderTableau& tab
     return comboMoves;
 }
 
-std::vector<MoveCombo> MoveFinder::JustHoleFilling(const SpiderTableau& tableau)
+std::vector<MoveCombo> MoveFindingFunc::JustHoleFilling(const SpiderTableau& tableau)
 {
     std::vector<MoveSingle> moves;
 
@@ -52,7 +52,7 @@ std::vector<MoveCombo> MoveFinder::JustHoleFilling(const SpiderTableau& tableau)
 
 
 
-std::vector<MoveCombo> MoveFinder::ConvertSingleMovesToComboMoves(
+std::vector<MoveCombo> MoveFindingFunc::ConvertSingleMovesToComboMoves(
     const std::vector<MoveSingle>& smoves)
 {
     std::vector<MoveCombo> cmoves;

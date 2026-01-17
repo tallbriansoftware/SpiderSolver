@@ -19,20 +19,23 @@ MoveChooser::MoveChooser(
 
 MoveCombo MoveChooser::ComputeBestMove()
 {
-    auto moveFinderFunc = MoveFinder::NormalAndHoleFilling;
+    auto moveFinderFunc = MoveFindingFunc::NormalAndHoleFilling;
+    float boardScore = m_strategy.ComputeScore(*m_tableau);
 
     m_moveChoices = m_strategy.FindScoredMoves(
         moveFinderFunc, m_disregardedChoices, *m_tableau, m_ancestry, m_depth);
 
     if(m_moveChoices.empty())
-    {
-        if (m_tableau->CanDeal())
-            return MoveCombo::Deal();
         return MoveCombo::None();
-    }
 
     StrategyUtil::SortTiedBestMoves(m_moveChoices, m_strategy, *m_tableau);
-    return m_moveChoices[0].GetMove();
+    ScoredMove bestMove = m_moveChoices[0];
+#ifdef FONLY
+    if (bestMove.GetScore() <= boardScore)
+        return MoveCombo::None();
+#endif
+
+    return bestMove.GetMove();
 }
 
 void MoveChooser::CommitMove(const MoveCombo& move)
@@ -49,13 +52,12 @@ void MoveChooser::CommitMove(const MoveCombo& move)
     m_ancestry.AddTableau(*m_tableau);
 }
 
-const std::vector<ScoredMove>& MoveChooser::GetAllChoices() const
+const std::vector<ScoredMove> MoveChooser::GetAllChoices() const
 {
     return m_moveChoices;
 }
 
-
-const std::vector<MoveCombo>& MoveChooser::GetDisregardedChoices() const
+const std::vector<MoveCombo> MoveChooser::GetDisregardedChoices() const
 {
     return m_disregardedChoices;
 }
