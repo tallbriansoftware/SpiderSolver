@@ -21,7 +21,7 @@ namespace
     }
 }
 
-std::vector<MoveCombo> MoveFindingFunc::Normal(const SpiderTableau& tableau)
+std::vector<MoveCombo> MoveFinder::Normal(const SpiderTableau& tableau)
 {
     std::vector<MoveSingle> moves;
 
@@ -36,7 +36,7 @@ std::vector<MoveCombo> MoveFindingFunc::Normal(const SpiderTableau& tableau)
 }
 
 
-std::vector<MoveCombo> MoveFindingFunc::Any(const SpiderTableau& tableau)
+std::vector<MoveCombo> MoveFinder::Any(const SpiderTableau& tableau)
 {
     std::vector<MoveSingle> moves;
 
@@ -51,7 +51,7 @@ std::vector<MoveCombo> MoveFindingFunc::Any(const SpiderTableau& tableau)
 
     return comboMoves;
 }
-std::vector<MoveCombo> MoveFindingFunc::JustHoleFilling(const SpiderTableau& tableau)
+std::vector<MoveCombo> MoveFinder::JustHoleFilling(const SpiderTableau& tableau)
 {
     std::vector<MoveSingle> moves;
 

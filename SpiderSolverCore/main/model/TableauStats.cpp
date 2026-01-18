@@ -22,6 +22,7 @@ TableauStats::TableauStats(const SpiderTableau& tableau)
 
     m_numberOfHoles = ComputeNumberOfHoles();
     m_numberOfTurnedCards = ComputeNumberOfTurnedCards();
+    m_runLengthCounts = ComputeRunLengthCounts();
 }
 
 int TableauStats::GetNumberOfCompletedPacks() const
@@ -80,4 +81,25 @@ int TableauStats::GetNumberOfTurnedCards() const
 int TableauStats::WinNumberOfTurnedCards()
 {
     return NumDealtDownCards;
+}
+
+// -- Runs
+
+std::array<int, TableauStats::SuitLength> TableauStats::ComputeRunLengthCounts()
+{
+    std::array<int, SuitLength> runLengths{};
+
+    for (auto& stat : m_stackStats)
+    {
+        for (int len : stat.SuitedRunLengths())
+        {
+            runLengths[len] += 1;
+        }
+    }
+    return runLengths;
+}
+
+const std::array<int, NUM_RANKS> TableauStats::GetRunLengthCounts() const
+{
+    return m_runLengthCounts;
 }

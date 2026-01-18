@@ -21,18 +21,6 @@ Strategy::Strategy()
 {
 }
 
-Strategy::Strategy(const BoardScorer& boardScorer)
-    : m_boardScorer(std::make_unique<BoardScorer>(boardScorer))
-    , m_evals(0)
-{
-}
-
-Strategy::Strategy(const Strategy& strategy)
-    : m_boardScorer(std::make_unique<BoardScorer>(*strategy.m_boardScorer))
-    , m_evals(strategy.m_evals)
-{
-}
-
 Strategy::~Strategy()  
 { }
 
@@ -83,17 +71,6 @@ std::vector<ScoredMove> Strategy::FindScoredMoves(
 
     auto scoredMoves = TreeSearch(parentTableau, disregardedMoves, ctx);
     return scoredMoves;
-}
-
-
-const std::vector<std::string> Strategy::GetModifiedTermNames() const
-{
-    return m_boardScorer->GetModifiedTermNames();
-}
-
-const std::vector<float> Strategy::GetModifiedTerms() const
-{
-    return m_boardScorer->GetModifiedTerms();
 }
 
 

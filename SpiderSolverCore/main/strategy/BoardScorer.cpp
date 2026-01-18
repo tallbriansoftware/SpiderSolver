@@ -18,14 +18,14 @@ BoardScorer::BoardScorer()
 
 float BoardScorer::ComputeScore(const SpiderTableau& tableau) const
 {
-    BoardStats tscore(tableau);
+    BoardStats bscore(tableau);
 
     float total = 0.0;
 
-    total += m_suitedRunTerm * tscore.GetSuitedRunsScore();
-    total += m_holesTerm * tscore.GetHoleScore();
-    total += m_turnedCardsTerm * tscore.GetTurnedCardDepthScore();
-    total += m_fullPackTerm * tscore.GetNumberOfCompletedPacks();
+    total += m_suitedRunTerm * bscore.GetSuitedRunsScore();
+    total += m_holesTerm * bscore.GetHoleScore();
+    total += m_turnedCardsTerm * bscore.GetTurnedCardDepthScore();
+    total += m_fullPackTerm * bscore.GetNumberOfCompletedPacks();
 
     return total;
 }
@@ -40,45 +40,4 @@ float BoardScorer::MaxScore() const
     total += m_fullPackTerm * BoardStats::WinNumberOfCompletedPacks();
 
     return total;
-}
-
-void BoardScorer::SetHolesTerm(float term)
-{
-    m_setTerms |= HolesTerm;
-    m_holesTerm = term;
-}
-
-void BoardScorer::SetTurnedCardsTerm(float term)
-{
-    m_setTerms |= TurnedCardsTerm;
-    m_turnedCardsTerm = term;
-}
-
-
-std::vector<std::string> BoardScorer::GetModifiedTermNames() const
-{
-    std::vector<std::string> list;
-    
-    if (m_setTerms & HolesTerm)
-        list.push_back("HolesTerm");
-    if (m_setTerms & TurnedCardsTerm)
-        list.push_back("TurnedCardsTerm");
-    if (m_setTerms & FullPackTerm)
-        list.push_back("FullPackTerm");
-
-    return list;
-}
-
-std::vector<float> BoardScorer::GetModifiedTerms() const
-{
-    std::vector<float> list;
-
-    if (m_setTerms & HolesTerm)
-        list.push_back(m_holesTerm);
-    if (m_setTerms & TurnedCardsTerm)
-        list.push_back(m_turnedCardsTerm);
-    if (m_setTerms & FullPackTerm)
-        list.push_back(m_fullPackTerm);
-
-    return list;
 }

@@ -18,28 +18,8 @@
 std::vector<std::unique_ptr<Strategy>> GetStrategies(const CommandLineArguments& args)
 {
     std::vector<std::unique_ptr<Strategy>> strats;
-    auto strat = std::make_unique<Strategy>();
-    strats.emplace_back(move(strat));
-    return strats;
-
-// ===============================================
-
-    // Just return the above default strategy until
-    // the command line processing of parameters is ready.
-
-    for (int i = 0; i < 5; i++)
-    {
-        for (int k = 0; k < 5; k++)
-        {
-            BoardScorer boardScorer;
-            boardScorer.SetHolesTerm((float)(6 + i * 1.0));
-            boardScorer.SetTurnedCardsTerm((float)(3.0 + k * 0.2));
-
-            auto strat = std::make_unique<Strategy>(boardScorer);
-            strats.emplace_back(move(strat));
-        }
-    }
-
+    auto strategy = std::make_unique<Strategy>();
+    strats.emplace_back(move(strategy));
     return strats;
 }
 
@@ -59,23 +39,17 @@ void RunASeriesOfGames(const CommandLineArguments& args, CsvTable& csv)
 
     const std::vector<int> seeds = args.GetRandomSeeds();
     const std::vector<int> depths = args.GetTreeDepths();
-    //int depth = args.GetTreeDepth();
 
     auto strategyList = GetStrategies(args);
     int stratCount = (int)strategyList.size();
-    //SeriesTotal total = { 0, 0, 0, 0.0 };
 
     int completed = 0;
     int64_t totalTime = 0;
     int totalWins = 0;
 
-    auto termNames = strategyList[0]->GetModifiedTermNames();
-    AddFloatColumnsToCsv(csv, termNames);
-
     for (auto& stratPtr : strategyList)
     {
         Strategy& strategy = *stratPtr.get();
-        auto termValues = strategy.GetModifiedTerms();
 
         int suits = args.GetSuits();
         bool dealUp = args.GetDealUp();
@@ -101,10 +75,6 @@ void RunASeriesOfGames(const CommandLineArguments& args, CsvTable& csv)
                 csv.AddValue(MyCsv::microsecsHeader, result.usecs);
                 csv.AddValue(MyCsv::timedOutHeader, result.timedOut);
                 csv.AddValue(MyCsv::winHeader, result.won);
-
-
-                for (int i = 0; i < (int)termNames.size(); i++)
-                    csv.AddValue(termNames[i], termValues[i]);
 
                 //CollectTotals(result, total);
                 totalTime += result.usecs;

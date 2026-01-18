@@ -1,7 +1,8 @@
 #pragma once
 
-#include "spidersolvercore/Model/SpiderTableau.h"
-#include "spidersolvercore/Model/StackStats.h"
+#include "spidersolvercore/model/SpiderTableau.h"
+#include "spidersolvercore/model/StackStats.h"
+#include "spidersolvercore/model/SpiderConstants.h"
 
 #include <array>
 #include <vector>
@@ -22,6 +23,7 @@ public:
     int GetNumberOfTurnedCards() const;  // 44 - down cards
     int GetNumberOfCompletedPacks() const;
     int GetNumberOfDealsRemaining() const;
+    const std::array<int, NUM_RANKS> GetRunLengthCounts() const;
 
     static int WinNumberOfHoles();
     static int WinNumberOfTurnedCards(); // 44 - down cards
@@ -30,6 +32,7 @@ public:
 private:
     int ComputeNumberOfHoles();
     int ComputeNumberOfTurnedCards();
+    std::array<int, NUM_RANKS> ComputeRunLengthCounts();
 
 protected:
     int m_numberOfHoles;
@@ -37,5 +40,6 @@ protected:
     int m_numberOfCompletedPacks;
     int m_numberOfDealsRemaining;
 
+    std::array<int, NUM_RANKS> m_runLengthCounts;
     std::array<StackStats, SpiderTableau::NUM_STACKS> m_stackStats;
 };

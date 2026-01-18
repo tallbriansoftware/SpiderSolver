@@ -1,9 +1,10 @@
 #include "spidersolvercore/strategy/BoardStats.h"
+#include "spidersolvercore/model/SpiderConstants.h"
 
 BoardStats::BoardStats(const SpiderTableau& tableau)
     : TableauStats(tableau)
 {
-    ComputeNumberOfSuitedRunCards();
+    ComputeSuitedRunScore();
     ComputeTurnedCardDepthScore();
 }
 
@@ -19,15 +20,12 @@ namespace
     }
 }
 
-void BoardStats::ComputeNumberOfSuitedRunCards()
+void BoardStats::ComputeSuitedRunScore()
 {
     float suitedRunLengthSum = 0;
-    for (auto& stat : m_stackStats)
+    for (int len = 1; len < SuitLength; len++)
     {
-        for (int runLength : stat.SuitedRunLengths())
-        {
-            suitedRunLengthSum += RunLengthScore(runLength);
-        }
+        suitedRunLengthSum += RunLengthScore(len) * m_runLengthCounts[len];
     }
     suitedRunLengthSum += m_numberOfCompletedPacks * RunLengthScore(SuitLength);
 
@@ -46,8 +44,6 @@ float BoardStats::WinSuitedRunsScore()
 
 namespace
 {
-    // int TurnedCardsStackScore[] = { 13, 9, 6, 4, 3, 2 };
-
     int TurnedCardsStackScore[] = { 15, 10, 6, 3, 1, 0 };
     int HoleCountScores[] = { 0, 5, 7, 9, 10, 10, 10, 10, 10, 10, 10 };
 }

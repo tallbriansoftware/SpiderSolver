@@ -24,7 +24,7 @@ public:
     static int WinHoleScore();
 
 private:
-    void ComputeNumberOfSuitedRunCards();
+    void ComputeSuitedRunScore();
     void ComputeTurnedCardDepthScore();
 
 private:

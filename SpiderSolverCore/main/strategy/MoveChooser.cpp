@@ -42,7 +42,7 @@ MoveCombo MoveChooser::ComputeBestMove()
     // In normal cases look for moves that:
     // - Don't consume holes
     // - Don't split suited runs.
-    if (ComputeBestMove(MoveFindingFunc::Normal))
+    if (ComputeBestMove(MoveFinder::Normal))
     {
         // If we know a path that will improve the score
         // then take it.
@@ -55,9 +55,8 @@ MoveCombo MoveChooser::ComputeBestMove()
     if (m_tableau->GetHoleCount() == 0)
         return MoveCombo::None();
 
-    // If there are holes then look for *any* move that
-    // that might turn a card.
-    if (ComputeBestMove(MoveFindingFunc::Any))
+    // If there are holes then look for *any*
+    if (ComputeBestMove(MoveFinder::Any))
         return GetBestMove().GetMove();
 
     //if(ComputeBestMove())

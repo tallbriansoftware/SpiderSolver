@@ -14,12 +14,6 @@ public:
     float ComputeScore(const SpiderTableau& tableau) const;
     float MaxScore() const;
 
-    void SetHolesTerm(float term);
-    void SetTurnedCardsTerm(float term);
-
-    std::vector<float> GetModifiedTerms() const;
-    std::vector<std::string> GetModifiedTermNames() const;
-
 private:
     unsigned int m_setTerms;
 
