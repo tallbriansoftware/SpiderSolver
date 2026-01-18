@@ -27,7 +27,9 @@ public:
     const std::vector<ScoredMove> GetAllChoices() const;
     const std::vector<MoveCombo> GetDisregardedChoices() const;
 
-    // std::vector<MoveCombo> GetCardTurningPath();
+private:
+    bool ComputeBestMove(MoveFinderFunc moveFinder);
+    ScoredMove GetBestMove();
 
 private:
     std::shared_ptr<SpiderTableau> m_tableau;

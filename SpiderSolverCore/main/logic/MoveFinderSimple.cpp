@@ -85,7 +85,9 @@ namespace {
             return -1;
 
         int srcHeadIndex = src.GetRunHead(0);
-        if (srcHeadIndex < 0)
+
+        // Don't make a hole to fill a hole (no change)
+        if (srcHeadIndex <= 0)
             return -1;
 
         return srcHeadIndex;

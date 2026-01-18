@@ -17,25 +17,52 @@ MoveChooser::MoveChooser(
 {
 }
 
-MoveCombo MoveChooser::ComputeBestMove()
+ScoredMove MoveChooser::GetBestMove()
 {
-    auto moveFinderFunc = MoveFindingFunc::NormalAndHoleFilling;
-    float boardScore = m_strategy.ComputeScore(*m_tableau);
+    return m_moveChoices[0];
+}
 
+bool MoveChooser::ComputeBestMove(MoveFinderFunc moveFinderFunc)
+{
     m_moveChoices = m_strategy.FindScoredMoves(
         moveFinderFunc, m_disregardedChoices, *m_tableau, m_ancestry, m_depth);
 
-    if(m_moveChoices.empty())
-        return MoveCombo::None();
+    if (m_moveChoices.empty())
+        return false;
 
     StrategyUtil::SortTiedBestMoves(m_moveChoices, m_strategy, *m_tableau);
-    ScoredMove bestMove = m_moveChoices[0];
-#ifdef FONLY
-    if (bestMove.GetScore() <= boardScore)
-        return MoveCombo::None();
-#endif
+    return true;
+}
 
-    return bestMove.GetMove();
+
+MoveCombo MoveChooser::ComputeBestMove()
+{
+    float boardScore = m_strategy.ComputeScore(*m_tableau);
+
+    // In normal cases look for moves that:
+    // - Don't consume holes
+    // - Don't split suited runs.
+    if (ComputeBestMove(MoveFindingFunc::Normal))
+    {
+        // If we know a path that will improve the score
+        // then take it.
+        if (GetBestMove().GetScore() > boardScore)
+            return GetBestMove().GetMove();
+    }
+
+    // If there are not moves that lead to an improvment
+    // and we don't have any holes then "Deal".
+    if (m_tableau->GetHoleCount() == 0)
+        return MoveCombo::None();
+
+    // If there are holes then look for *any* move that
+    // that might turn a card.
+    if (ComputeBestMove(MoveFindingFunc::Any))
+        return GetBestMove().GetMove();
+
+    //if(ComputeBestMove())
+    return MoveCombo::None();
+
 }
 
 void MoveChooser::CommitMove(const MoveCombo& move)

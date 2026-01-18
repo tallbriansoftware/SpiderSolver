@@ -11,13 +11,13 @@ class SpiderStack;
 namespace MoveFindingFunc
 {
     std::vector<MoveCombo> Normal(const SpiderTableau& tableau);
-    std::vector<MoveCombo> NormalAndHoleFilling(const SpiderTableau& tableau);
+    std::vector<MoveCombo> Any(const SpiderTableau& tableau);
     std::vector<MoveCombo> JustHoleFilling(const SpiderTableau& tableau);
+};
 
-
-    // Some Helpers that might be of public usefullness
-    //
-    std::vector<MoveCombo> ConvertSingleMovesToComboMoves(
-        const std::vector<MoveSingle>& smoves);
-
+class MoveFinder
+{
+public:
+    std::vector<MoveCombo> Normal(const SpiderTableau& tableau);
+    std::vector<MoveCombo> FillHoleThenNorma(const SpiderTableau& tableau);
 };
