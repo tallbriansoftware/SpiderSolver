@@ -29,7 +29,8 @@ public:
     const Strategy& GetStrategy() const;
 
 private:
-    bool ComputeBestMove(MoveFinderFunc moveFinder);
+    bool ComputeBestMove(MoveFinderFunc moveFinder, const SpiderTableau& tableau);
+    bool ComputeBestMoveThatFillsAHole();
     ScoredMove GetBestMove();
 
 private:

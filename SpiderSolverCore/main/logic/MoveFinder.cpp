@@ -56,8 +56,6 @@ std::vector<MoveCombo> MoveFinder::JustHoleFilling(const SpiderTableau& tableau)
     std::vector<MoveSingle> moves;
 
     MoveFinderSimple::AddHoleFillingMoves(moves, tableau);
-
     auto comboMoves = ConvertSingleMovesToComboMoves(moves);
-
     return comboMoves;
 }

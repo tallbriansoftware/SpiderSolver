@@ -6,6 +6,20 @@
 #include "spidersolvercore/strategy/Strategy.h"
 #include "spidersolvercore/strategy/StrategyUtil.h"
 
+#include <algorithm>
+
+namespace
+{
+    void SortScoredMoves(std::vector<ScoredMove>& scoredMoves)
+    {
+        // Sort the moves by score,  greatest to least.
+        std::sort(begin(scoredMoves), end(scoredMoves), [](ScoredMove& a, ScoredMove& b)
+            {
+                return a.GetScore() > b.GetScore();
+            });
+    }
+}
+
 MoveChooser::MoveChooser(
     std::shared_ptr<SpiderTableau> tableau,
     Strategy& strategy,
@@ -22,18 +36,51 @@ ScoredMove MoveChooser::GetBestMove()
     return m_moveChoices[0];
 }
 
-bool MoveChooser::ComputeBestMove(MoveFinderFunc moveFinderFunc)
+bool MoveChooser::ComputeBestMove(
+                MoveFinderFunc moveFinderFunc,
+                const SpiderTableau& tableau)
 {
     m_moveChoices = m_strategy.FindScoredMoves(
-        moveFinderFunc, m_disregardedChoices, *m_tableau, m_ancestry, m_depth);
+        moveFinderFunc, m_disregardedChoices, tableau, m_ancestry, m_depth);
 
     if (m_moveChoices.empty())
         return false;
 
-    StrategyUtil::SortTiedBestMoves(m_moveChoices, m_strategy, *m_tableau);
+    StrategyUtil::SortTiedBestMoves(m_moveChoices, m_strategy, tableau);
     return true;
 }
 
+bool MoveChooser::ComputeBestMoveThatFillsAHole()
+{
+    auto holeMoves = MoveFinder::JustHoleFilling(*m_tableau);
+    if (holeMoves.size() == 0)
+        return false;
+
+    std::vector<ScoredMove> resultMoves;
+    SpiderTableau tableau(*m_tableau);
+    for (auto currentHoleMove : holeMoves)
+    {
+        SpiderTableau::SavePoint save(tableau);
+        tableau.DoMove(currentHoleMove, DoTurnCard::No);
+
+        float score = m_strategy.ComputeScore(tableau);
+
+        if (ComputeBestMove(MoveFinder::Any, tableau))
+        {
+            score = GetBestMove().GetScore();
+        }
+        ScoredMove scMove(score, currentHoleMove);
+        resultMoves.push_back(scMove);
+    }
+    m_moveChoices = resultMoves;
+    m_disregardedChoices.clear();
+    if (m_moveChoices.empty())
+        return false;
+
+    SortScoredMoves(m_moveChoices);
+    StrategyUtil::SortTiedBestMoves(m_moveChoices, m_strategy, *m_tableau);
+    return true;
+}
 
 MoveCombo MoveChooser::ComputeBestMove()
 {
@@ -42,26 +89,33 @@ MoveCombo MoveChooser::ComputeBestMove()
     // In normal cases look for moves that:
     // - Don't consume holes
     // - Don't split suited runs.
-    if (ComputeBestMove(MoveFinder::Normal))
+    if (ComputeBestMove(MoveFinder::Normal, *m_tableau))
     {
-        // If we know a path that will improve the score
-        // then take it.
+        // Only take moves if they improve the position.
         if (GetBestMove().GetScore() > boardScore)
             return GetBestMove().GetMove();
     }
 
-    // If there are not moves that lead to an improvment
+    // If there are no moves that lead to an improvment
     // and we don't have any holes then "Deal".
     if (m_tableau->GetHoleCount() == 0)
         return MoveCombo::None();
 
-    // If there are holes then look for *any*
-    if (ComputeBestMove(MoveFinder::Any))
+    // Look for an improving move using the "Any" finder.
+    // this will fill holes or split suited runs (and normal) moves.
+    if (ComputeBestMove(MoveFinder::Any, *m_tableau))
+    {
+        // Only take moves if they improve the position.
+        if (GetBestMove().GetScore() > boardScore)
+            return GetBestMove().GetMove();
+    }
+
+    // If northing can be found to improve the position.
+    // Then just plug a hole before the impending "Deal"
+    if (ComputeBestMoveThatFillsAHole())
         return GetBestMove().GetMove();
 
-    //if(ComputeBestMove())
     return MoveCombo::None();
-
 }
 
 void MoveChooser::CommitMove(const MoveCombo& move)
