@@ -18,7 +18,35 @@ namespace
         float result = fres + (fres * fres / 10);
         return result;
     }
+
+    float DownCardsStackScore[] = { 15, 10, 6, 3, 1, 0 };
+    float HoleCountScores[] = { 0, 20, 30, 40, 50, 50, 50, 50, 50, 50, 50 };
 }
+
+// --------- Hole Score
+
+float BoardStats::GetHoleScore() const
+{
+    return HoleCountScores[m_numberOfHoles];
+}
+
+ScoreStat BoardStats::GetHoleStats() const
+{
+    if (m_holesStats == nullptr)
+    {
+        std::vector<int> holes;
+        holes.push_back(m_numberOfHoles);
+        m_holesStats = std::make_unique<ScoreStat>(GetHoleScore(), holes);
+    }
+    return *m_holesStats;
+}
+
+float BoardStats::WinHoleScore()
+{
+    return HoleCountScores[10];
+}
+
+// --------- Suited Runs
 
 void BoardStats::ComputeSuitedRunScore()
 {
@@ -37,15 +65,20 @@ float BoardStats::GetSuitedRunsScore() const
     return m_suitedRunScore;
 }
 
+ScoreStat BoardStats::GetSuitedRunStats() const
+{
+    if (m_suitedRunsStats == nullptr)
+    {
+        std::vector<int> runs(std::begin(m_runLengthCounts), std::end(m_runLengthCounts));
+        runs.push_back(m_numberOfCompletedPacks);
+        m_suitedRunsStats = std::make_unique<ScoreStat>(GetSuitedRunsScore(), runs);
+    }
+    return *m_suitedRunsStats;
+}
+
 float BoardStats::WinSuitedRunsScore()
 {
     return NumPacks * RunLengthScore(SuitLength);
-}
-
-namespace
-{
-    float TurnedCardsStackScore[] = { 15, 10, 6, 3, 1, 0 };
-    float HoleCountScores[] = { 0, 5, 7, 9, 10, 10, 10, 10, 10, 10, 10 };
 }
 
 // -------- Turned Cards Depth Score
@@ -54,31 +87,30 @@ void BoardStats::ComputeTurnedCardDepthScore()
 {
     float turnedCardsScore = 0;
     for (auto& stat : m_stackStats)
-        turnedCardsScore += TurnedCardsStackScore[stat.NumberOfDownCards()];
+        turnedCardsScore += DownCardsStackScore[stat.NumberOfDownCards()];
 
-    m_turnedCardDepthScore = turnedCardsScore;
+    m_downCardScore = turnedCardsScore;
 }
 
-float BoardStats::GetTurnedCardDepthScore() const
+float BoardStats::GetDownCardScore() const
 {
-    return m_turnedCardDepthScore;
+    return m_downCardScore;
+}
+
+ScoreStat BoardStats::GetDownCardStats() const
+{
+    if (m_suitedRunsStats == nullptr)
+    {
+        std::vector<int> numDown(6);
+        for (auto& stat : m_stackStats)
+            numDown[stat.NumberOfDownCards()] += 1;
+        m_downCardStats = std::make_unique<ScoreStat>(GetDownCardScore(), numDown);
+    }
+    return *m_downCardStats;
 }
 
 
-
-float BoardStats::WinTurnedCardDepthScore()
+float BoardStats::WinDownCardScore()
 {
-    return TurnedCardsStackScore[0] * SpiderTableau::NUM_STACKS;
-}
-
-// --------- Hole Score
-
-float BoardStats::GetHoleScore() const
-{
-    return HoleCountScores[m_numberOfHoles];
-}
-
-float BoardStats::WinHoleScore()
-{
-    return HoleCountScores[10];
+    return DownCardsStackScore[0] * SpiderTableau::NUM_STACKS;
 }

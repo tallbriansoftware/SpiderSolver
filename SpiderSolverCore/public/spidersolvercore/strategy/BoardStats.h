@@ -6,23 +6,28 @@
 
 #include <array>
 #include <vector>
+#include <memory>
 
 class SpiderTableau;
+
+using ScoreStat = std::pair<float, std::vector<int>>;
 
 class BoardStats : public TableauStats
 {
 public:
     BoardStats(const SpiderTableau& tableau);
 
-    float GetSuitedRunsScore() const;
-    static float WinSuitedRunsScore();
-    //const ScoreStat GetSuitedRunStats() const;
-
-    float GetTurnedCardDepthScore() const;
-    static float WinTurnedCardDepthScore();
-
     float GetHoleScore() const;
+    ScoreStat GetHoleStats() const;
     static float WinHoleScore();
+
+    float GetDownCardScore() const;
+    ScoreStat GetDownCardStats() const;
+    static float WinDownCardScore();
+
+    float GetSuitedRunsScore() const;
+    ScoreStat GetSuitedRunStats() const;
+    static float WinSuitedRunsScore();
 
 private:
     void ComputeSuitedRunScore();
@@ -30,6 +35,10 @@ private:
 
 private:
     float m_suitedRunScore;
-    float m_turnedCardDepthScore;
+    float m_downCardScore;
     float m_holeScore;
+
+    mutable std::unique_ptr<ScoreStat> m_holesStats;
+    mutable std::unique_ptr<ScoreStat> m_downCardStats;
+    mutable std::unique_ptr<ScoreStat> m_suitedRunsStats;
 };

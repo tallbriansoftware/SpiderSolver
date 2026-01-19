@@ -88,6 +88,12 @@ const std::vector<MoveCombo> MoveChooser::GetDisregardedChoices() const
     return m_disregardedChoices;
 }
 
+const Strategy& MoveChooser::GetStrategy() const
+{
+    return m_strategy;
+}
+
+
 int MoveChooser::GetMoveNumber() const
 {
     return m_ancestry.GetLength();

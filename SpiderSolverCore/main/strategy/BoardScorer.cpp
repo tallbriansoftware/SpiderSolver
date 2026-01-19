@@ -9,9 +9,9 @@ const int FullPackTerm = 0x04;
 
 BoardScorer::BoardScorer()
     : m_suitedRunTerm(1.0)  // Everything is relative to this.
-    , m_holesTerm(10)
+    , m_holesTerm(1)
     , m_turnedCardsTerm(1)
-    , m_fullPackTerm(10)
+    , m_fullPackTerm(4)
 {
 }
 
@@ -23,7 +23,7 @@ float BoardScorer::ComputeScore(const SpiderTableau& tableau) const
 
     total += m_suitedRunTerm * bscore.GetSuitedRunsScore();
     total += m_holesTerm * bscore.GetHoleScore();
-    total += m_turnedCardsTerm * bscore.GetTurnedCardDepthScore();
+    total += m_turnedCardsTerm * bscore.GetDownCardScore();
     total += m_fullPackTerm * bscore.GetNumberOfCompletedPacks();
 
     return total;
@@ -35,7 +35,7 @@ float BoardScorer::MaxScore() const
 
     total += m_suitedRunTerm * BoardStats::WinSuitedRunsScore();
     total += m_holesTerm * BoardStats::WinHoleScore();
-    total += m_turnedCardsTerm * BoardStats::WinTurnedCardDepthScore();
+    total += m_turnedCardsTerm * BoardStats::WinDownCardScore();
     total += m_fullPackTerm * BoardStats::WinNumberOfCompletedPacks();
 
     return total;

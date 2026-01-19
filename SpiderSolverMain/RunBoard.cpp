@@ -11,11 +11,13 @@
 #include "spidersolvercore/strategy/MoveChooser.h"
 #include "spidersolvercore/strategy/ScoredMove.h"
 #include "spidersolvercore/strategy/Strategy.h"
+#include "spidersolvercore/strategy/BoardStats.h"
 #include "spidersolvercore/strategy/StrategyUtil.h"
 #include "spidersolvercore/utils/SpiderPrint.h"
 #include "spidersolvercore/logic/MoveFinder.h"
 
 #include <iostream>
+#include <sstream>
 
 void OutputBoard(const std::string& leadPadding, const SpiderTableau& tableau, const TableauStats& tStats)
 {
@@ -25,25 +27,64 @@ void OutputBoard(const std::string& leadPadding, const SpiderTableau& tableau, c
 
     std::cout << leadPadding << SpiderPrint::PrintTableauStatsHeaders() << std::endl;
     std::cout << leadPadding << SpiderPrint::PrintTableauStats(tStats) << std::endl;
-    // std::cout << tableau.GetTableauString() << std::endl;
+}
+
+std::string ToString(const ScoreStat& stat)
+{
+    std::stringstream ss;
+    ss << "[" << stat.first << ":";
+    size_t sz = stat.second.size();
+    for(size_t i=0; i<sz-1; i++)
+        ss << stat.second[i] << " ";
+    ss << stat.second[sz-1] << "]";
+    return ss.str();
+}
+
+std::string Str_Stats(const SpiderTableau& tableau)
+{
+    std::stringstream ss;
+
+    BoardStats bscore(tableau);
+    std::string holeString = ToString(bscore.GetHoleStats());
+    std::string turnedCardString = ToString(bscore.GetDownCardStats());
+    std::string suitedRunString = ToString(bscore.GetSuitedRunStats());
+    ss << " Hole:" << holeString
+        << " Down:" << turnedCardString
+        << " Runs:" << suitedRunString;
+    return ss.str();
 }
 
 void OutputScoredMoves(
     const SpiderTableau& tableau,
-    const std::vector<ScoredMove>& scoredMoves)
+    const std::vector<ScoredMove>& scoredMoves,
+    const Strategy& strategy)
 {
     // output moves with scores
     for (auto& scoredMove : scoredMoves)
     {
-         std::string moveString = SpiderPrint::PrintBookMove(
-         tableau,
-         scoredMove.GetMove(),
-         DoTurnCard::No);
+        std::string moveString = SpiderPrint::PrintBookMove(
+                                tableau,
+                                scoredMove.GetMove(),
+                                DoTurnCard::No);
 
         std::cout << scoredMove.GetScore();
         if (scoredMove.GetLocalScore() != -1.0)
             std::cout << "(" << scoredMove.GetLocalScore() << ")";
-        std::cout << "   " << moveString << std::endl;
+        else
+        {
+            ScoredMove copy = scoredMove;
+            copy.SetLocalScore(strategy, tableau);
+            std::cout << "($" << copy.GetLocalScore() << ")";
+        }
+        std::cout << "   " << moveString;
+
+        {
+            SpiderTableau tableauWithMove(tableau);
+            SpiderTableau::SavePoint save(tableauWithMove);
+            tableauWithMove.DoMove(scoredMove.GetMove(), DoTurnCard::No);
+
+            std::cout << Str_Stats(tableauWithMove) << std::endl;
+        }
     }
 }
 
@@ -71,9 +112,10 @@ void Pr_ShowMoves(
         if (!move.IsDeal())
         {
             const std::vector<ScoredMove>& otherMoves = moveChooser.GetAllChoices();
+            const Strategy& strategy = moveChooser.GetStrategy();
             if (!otherMoves.empty())
             {
-                OutputScoredMoves(tableauView, otherMoves);
+                OutputScoredMoves(tableauView, otherMoves, strategy);
             }
 
             const std::vector<MoveCombo>& skippedMoves = moveChooser.GetDisregardedChoices();

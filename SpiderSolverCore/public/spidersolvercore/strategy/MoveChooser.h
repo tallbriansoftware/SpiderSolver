@@ -26,6 +26,7 @@ public:
 
     const std::vector<ScoredMove> GetAllChoices() const;
     const std::vector<MoveCombo> GetDisregardedChoices() const;
+    const Strategy& GetStrategy() const;
 
 private:
     bool ComputeBestMove(MoveFinderFunc moveFinder);
