@@ -2,9 +2,9 @@
 
 #include <string>
 #include <vector>
+#include <array>
 
 class SpiderTableau;
-
 
 class BoardScorer
 {
@@ -15,8 +15,6 @@ public:
     float MaxScore() const;
 
 private:
-    unsigned int m_setTerms;
-
     float m_suitedRunTerm;
     float m_holesTerm;
     float m_turnedCardsTerm;

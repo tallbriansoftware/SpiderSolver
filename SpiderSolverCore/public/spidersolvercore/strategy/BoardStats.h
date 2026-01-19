@@ -16,12 +16,13 @@ public:
 
     float GetSuitedRunsScore() const;
     static float WinSuitedRunsScore();
+    //const ScoreStat GetSuitedRunStats() const;
 
-    int GetTurnedCardDepthScore() const;
-    static int WinTurnedCardDepthScore();
+    float GetTurnedCardDepthScore() const;
+    static float WinTurnedCardDepthScore();
 
-    int GetHoleScore() const;
-    static int WinHoleScore();
+    float GetHoleScore() const;
+    static float WinHoleScore();
 
 private:
     void ComputeSuitedRunScore();
@@ -29,6 +30,6 @@ private:
 
 private:
     float m_suitedRunScore;
-    int m_turnedCardDepthScore;
-    int m_holeScore;
+    float m_turnedCardDepthScore;
+    float m_holeScore;
 };

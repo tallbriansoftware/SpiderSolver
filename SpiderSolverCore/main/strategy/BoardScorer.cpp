@@ -8,8 +8,7 @@ const int TurnedCardsTerm = 0x02;
 const int FullPackTerm = 0x04;
 
 BoardScorer::BoardScorer()
-    : m_setTerms(0)
-    , m_suitedRunTerm(1.0)  // Everything is relative to this.
+    : m_suitedRunTerm(1.0)  // Everything is relative to this.
     , m_holesTerm(10)
     , m_turnedCardsTerm(1)
     , m_fullPackTerm(10)

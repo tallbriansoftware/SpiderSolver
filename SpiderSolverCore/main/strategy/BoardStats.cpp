@@ -44,39 +44,41 @@ float BoardStats::WinSuitedRunsScore()
 
 namespace
 {
-    int TurnedCardsStackScore[] = { 15, 10, 6, 3, 1, 0 };
-    int HoleCountScores[] = { 0, 5, 7, 9, 10, 10, 10, 10, 10, 10, 10 };
+    float TurnedCardsStackScore[] = { 15, 10, 6, 3, 1, 0 };
+    float HoleCountScores[] = { 0, 5, 7, 9, 10, 10, 10, 10, 10, 10, 10 };
 }
 
 // -------- Turned Cards Depth Score
 
 void BoardStats::ComputeTurnedCardDepthScore()
 {
-    int turnedCardsScore = 0;
+    float turnedCardsScore = 0;
     for (auto& stat : m_stackStats)
         turnedCardsScore += TurnedCardsStackScore[stat.NumberOfDownCards()];
 
     m_turnedCardDepthScore = turnedCardsScore;
 }
 
-int BoardStats::GetTurnedCardDepthScore() const
+float BoardStats::GetTurnedCardDepthScore() const
 {
     return m_turnedCardDepthScore;
 }
 
-int BoardStats::WinTurnedCardDepthScore()
+
+
+float BoardStats::WinTurnedCardDepthScore()
 {
     return TurnedCardsStackScore[0] * SpiderTableau::NUM_STACKS;
 }
 
 // --------- Hole Score
 
-int BoardStats::GetHoleScore() const
+float BoardStats::GetHoleScore() const
 {
     return HoleCountScores[m_numberOfHoles];
 }
 
-int BoardStats::WinHoleScore()
+float BoardStats::WinHoleScore()
 {
     return HoleCountScores[10];
 }
