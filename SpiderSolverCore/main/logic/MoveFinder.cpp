@@ -43,6 +43,8 @@ std::vector<MoveCombo> MoveFinder::Any(const SpiderTableau& tableau)
     MoveFinderSimple::AddSimpleMoves(moves, tableau);
     MoveFinderSimple::AddColorUpMoves(moves, tableau);
     MoveFinderSimple::AddHoleFillingMoves(moves, tableau);
+
+    // Simple run splitting moves are far too common and not often usefull.
     //MoveFinderSimple::AddRunSplittingMoves(moves, tableau);
 
     auto comboMoves = ConvertSingleMovesToComboMoves(moves);

@@ -486,8 +486,8 @@ int MoveFinderWithHole::AddSwapRuns(
 //
 // A0-A1 is a suited sequential run.  (that is split here)
 // Check that C-A1 and A1-B are sequential.
-// Also check that A0 coudl not go anywhere, Otherwise it 
-// would be better to just move all of A with C.
+// Also check that A0 could not go anywhere
+// Otherwise it would be better to just move all of A there.
 //
 int MoveFinderWithHole::AddSplitRun(std::vector<MoveCombo>& moves, const SpiderTableau& tableau)
 {
