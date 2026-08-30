@@ -23,11 +23,11 @@ namespace
 MoveChooser::MoveChooser(
     std::shared_ptr<SpiderTableau> tableau,
     Strategy& strategy,
-    int depth)
+    int maxDepth)
     : m_tableau(tableau)
     , m_strategy(strategy)
     , m_ancestry(*tableau)
-    , m_depth(depth)
+    , m_maxDepth(maxDepth)
 {
 }
 
@@ -41,7 +41,7 @@ bool MoveChooser::ComputeBestMove(
                 const SpiderTableau& tableau)
 {
     m_moveChoices = m_strategy.FindScoredMoves(
-        moveFinderFunc, m_disregardedChoices, tableau, m_ancestry, m_depth);
+        moveFinderFunc, m_disregardedChoices, tableau, m_ancestry, m_maxDepth);
 
     if (m_moveChoices.empty())
         return false;

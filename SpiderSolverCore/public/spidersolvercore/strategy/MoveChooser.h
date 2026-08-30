@@ -37,7 +37,7 @@ private:
     std::shared_ptr<SpiderTableau> m_tableau;
     Strategy& m_strategy;
     Ancestry m_ancestry;
-    int m_depth;
+    int m_maxDepth;
 
     // caching fields
     std::vector<ScoredMove> m_moveChoices;
