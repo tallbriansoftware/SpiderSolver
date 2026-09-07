@@ -93,10 +93,10 @@ std::vector<std::string> SpiderPrint::PrintTableau(const SpiderTableau& tableau)
 
     for (int i = 0; i < maxLength; ++i)
     {
-        buffer.str(" ");
-        buffer << i;
+        buffer.str("");
         if (i < 10)
             buffer << " ";
+        buffer << i;
         buffer << " ";
         for (int stackIndex = 0; stackIndex < SpiderTableau::NUM_STACKS; ++stackIndex)
         {

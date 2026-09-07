@@ -157,7 +157,7 @@ void Pr_OutputBoard(
     if (printting)
     {
         auto currentScore = strategy.ComputeScore(tableauView);
-        OutputBoard("     ", tableauView, TableauStats(tableauView));
+        OutputBoard("    ", tableauView, TableauStats(tableauView));
         std::cout << "Board Score=" << currentScore << "/" << strategy.MaxScore() << std::endl;
     }
 }
