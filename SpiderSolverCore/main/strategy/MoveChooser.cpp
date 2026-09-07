@@ -25,6 +25,11 @@ namespace
             return MoveCombo::Deal();
         return MoveCombo::None();
     }
+
+    bool IsAParentPosition(const Ancestry& ancestry, std::string tabString)
+    {
+        return (ancestry.FindRepeatIndex(tabString) > 0);
+    }
 }
 
 MoveChooser::MoveChooser(
@@ -69,6 +74,10 @@ bool MoveChooser::ComputeBestMoveThatFillsAHole()
     {
         SpiderTableau::SavePoint save(tableau);
         tableau.DoMove(currentHoleMove, DoTurnCard::No);
+
+        std::string tabString = tableau.GetTableauString();
+        if (IsAParentPosition(m_ancestry, tabString))
+            continue;
 
         float score = m_strategy.ComputeScore(tableau);
 
