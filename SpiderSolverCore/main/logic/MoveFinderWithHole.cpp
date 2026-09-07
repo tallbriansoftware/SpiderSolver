@@ -21,11 +21,11 @@ std::vector<MoveCombo> MoveFinderWithHole::GetAllOneHoleMoves(const SpiderTablea
         return {};
 
     std::vector<MoveCombo> allMoves;
-    AddAllOneHoleMoves(allMoves, tableau);
+    AddOneHoleUsingMoves(allMoves, tableau);
     return allMoves;
 }
 
-int MoveFinderWithHole::AddAllOneHoleMoves(std::vector<MoveCombo>& moves, const SpiderTableau& tableau)
+int MoveFinderWithHole::AddOneHoleUsingMoves(std::vector<MoveCombo>& moves, const SpiderTableau& tableau)
 {
     if (tableau.GetHoleCount() == 0)
         return 0;

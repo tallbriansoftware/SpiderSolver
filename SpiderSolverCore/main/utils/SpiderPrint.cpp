@@ -86,17 +86,18 @@ std::vector<std::string> SpiderPrint::PrintTableau(const SpiderTableau& tableau)
     std::vector<std::string> lines;
 
     std::stringstream buffer;
-    buffer << "  ";
+    buffer << "   ";
     for (int i = 0; i < SpiderTableau::NUM_STACKS; ++i)
         buffer << " " << i << " ";
     lines.push_back(buffer.str());
 
     for (int i = 0; i < maxLength; ++i)
     {
-        buffer.str("");
+        buffer.str(" ");
         buffer << i;
         if (i < 10)
             buffer << " ";
+        buffer << " ";
         for (int stackIndex = 0; stackIndex < SpiderTableau::NUM_STACKS; ++stackIndex)
         {
             auto stack = tableau.GetStack(stackIndex);

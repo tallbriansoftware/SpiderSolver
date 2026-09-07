@@ -30,7 +30,7 @@ std::vector<MoveCombo> MoveFinder::Normal(const SpiderTableau& tableau)
 
     auto comboMoves = ConvertSingleMovesToComboMoves(moves);
 
-    MoveFinderWithHole::AddAllOneHoleMoves(comboMoves, tableau);
+    MoveFinderWithHole::AddOneHoleUsingMoves(comboMoves, tableau);
 
     return comboMoves;
 }
@@ -49,7 +49,7 @@ std::vector<MoveCombo> MoveFinder::Any(const SpiderTableau& tableau)
 
     auto comboMoves = ConvertSingleMovesToComboMoves(moves);
 
-    MoveFinderWithHole::AddAllOneHoleMoves(comboMoves, tableau);
+    MoveFinderWithHole::AddOneHoleUsingMoves(comboMoves, tableau);
 
     return comboMoves;
 }

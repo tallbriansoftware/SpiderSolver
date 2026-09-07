@@ -16,7 +16,7 @@ namespace {
     // -- Excludes pluging holes
     // -- Excludes breaking suited run
     //
-    int SimpleMove_TestFunc(const SpiderStack& src, const SpiderStack& dest)
+    int SimpleMove_CheckFunc(const SpiderStack& src, const SpiderStack& dest)
     {
         int srcIndex = src.GetRunHead(0);
         int destIndex = dest.GetRunTail(0);
@@ -35,7 +35,7 @@ namespace {
     // ColorUpMoves:  Find moves that make suited runs longer.
     // -- this will break suited runs.
     //
-    int ColorUpMove_TestFunc(const SpiderStack& src, const SpiderStack& dest)
+    int ColorUpMove_CheckFunc(const SpiderStack& src, const SpiderStack& dest)
     {
         int srcHeadIndex = src.GetRunHead(0);
         int destHeadIndex = dest.GetRunHead(0);
@@ -79,14 +79,15 @@ namespace {
         return srcTailIndex - countToMove + 1;
     }
 
-    int HoleFillingMove_TestFunc(const SpiderStack& src, const SpiderStack& dest)
+    int HoleFillingMove_CheckFunc(const SpiderStack& src, const SpiderStack& dest)
     {
         if (!dest.IsEmpty())
             return -1;
 
         int srcHeadIndex = src.GetRunHead(0);
 
-        // Don't make a hole to fill a hole (no change)
+        // Don't move a stack that creates a hole to fill a hole.
+        // That is not an actual change.
         if (srcHeadIndex <= 0)
             return -1;
 
@@ -97,7 +98,7 @@ namespace {
     // And the result does not need to be longer.
     // Not generally usefull except when used by "splitRun" moves through a hole.
     //
-    int RunSplittingMove_TestFunc(const SpiderStack& src, const SpiderStack& dest)
+    int RunSplittingMove_CheckFunc(const SpiderStack& src, const SpiderStack& dest)
     {
         int srcHeadIndex = src.GetRunHead(0);
         int destHeadIndex = dest.GetRunHead(0);
@@ -198,12 +199,12 @@ namespace {
 
 int MoveFinderSimple::AddSimpleMoves(std::vector<MoveSingle>& moves, const SpiderTableau& tableau)
 {
-    return ScanMoveTestFunc(moves, tableau, SimpleMove_TestFunc);
+    return ScanMoveTestFunc(moves, tableau, SimpleMove_CheckFunc);
 }
 
 int MoveFinderSimple::AddColorUpMoves(std::vector<MoveSingle>& moves, const SpiderTableau& tableau)
 {
-    return ScanMoveTestFunc(moves, tableau, ColorUpMove_TestFunc);
+    return ScanMoveTestFunc(moves, tableau, ColorUpMove_CheckFunc);
 }
 
 int MoveFinderSimple::AddHoleFillingMoves(std::vector<MoveSingle>& moves, const SpiderTableau& tableau)
@@ -213,10 +214,10 @@ int MoveFinderSimple::AddHoleFillingMoves(std::vector<MoveSingle>& moves, const 
         return 0;
 
     const auto& destStack = tableau.GetStack(holeIndex);
-    return ScanMoveTestFunc_DestStack(moves, destStack, tableau, HoleFillingMove_TestFunc);
+    return ScanMoveTestFunc_DestStack(moves, destStack, tableau, HoleFillingMove_CheckFunc);
 }
 
 int MoveFinderSimple::AddRunSplittingMoves(std::vector<MoveSingle>& moves, const SpiderTableau& tableau)
 {
-    return ScanMoveTestFunc(moves, tableau, RunSplittingMove_TestFunc);
+    return ScanMoveTestFunc(moves, tableau, RunSplittingMove_CheckFunc);
 }
