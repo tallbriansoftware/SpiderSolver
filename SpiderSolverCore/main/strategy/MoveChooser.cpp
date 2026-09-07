@@ -18,6 +18,13 @@ namespace
                 return a.GetScore() > b.GetScore();
             });
     }
+
+    MoveCombo NoneOrDeal(const SpiderTableau& tableau)
+    {
+        if (tableau.CanDeal())
+            return MoveCombo::Deal();
+        return MoveCombo::None();
+    }
 }
 
 MoveChooser::MoveChooser(
@@ -88,7 +95,7 @@ MoveCombo MoveChooser::ComputeBestMove()
 
     // In normal cases look for moves that:
     // - Don't consume holes
-    // - Don't split suited runs.
+    // - Only split suited runs to make longer suited runs.
     if (ComputeBestMove(MoveFinder::Normal, *m_tableau))
     {
         // Only take moves if they improve the position.
@@ -99,7 +106,7 @@ MoveCombo MoveChooser::ComputeBestMove()
     // If there are no moves that lead to an improvment
     // and we don't have any holes then "Deal".
     if (m_tableau->GetHoleCount() == 0)
-        return MoveCombo::None();
+        return NoneOrDeal(*m_tableau);
 
     // Look for an improving move using the "Any" finder.
     // this will fill holes or split suited runs (and normal) moves.
@@ -110,12 +117,12 @@ MoveCombo MoveChooser::ComputeBestMove()
             return GetBestMove().GetMove();
     }
 
-    // If northing can be found to improve the position.
+    // If nothing can be found to improve the position.
     // Then just plug a hole before the impending "Deal"
     if (ComputeBestMoveThatFillsAHole())
         return GetBestMove().GetMove();
 
-    return MoveCombo::None();
+    return NoneOrDeal(*m_tableau);
 }
 
 void MoveChooser::CommitMove(const MoveCombo& move)

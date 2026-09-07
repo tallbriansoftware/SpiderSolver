@@ -194,8 +194,6 @@ BoardResult RunOneGame(
 
         Pr_OutputBoard(args, *tableauView, strategy);
         move = moveChooser.ComputeBestMove();
-        if (move == MoveCombo::None() && tableauView->CanDeal())
-            move = MoveCombo::Deal();
 
         if (gameTimer.TimeIsUp())
         {

@@ -33,7 +33,7 @@ namespace {
     }
 
     // ColorUpMoves:  Find moves that make suited runs longer.
-    // -- of course this allows the breaking up of other suited runs.
+    // -- this will break suited runs.
     //
     int ColorUpMove_TestFunc(const SpiderStack& src, const SpiderStack& dest)
     {
